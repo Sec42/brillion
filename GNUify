@@ -3,7 +3,7 @@
 source=Makefile
 target=GNUmakefile
 
-echo GNUifying the Makefile...
+echo GNUifying the ${source}...
 
 (
 echo "#"
@@ -20,5 +20,3 @@ s/^if exists\(([^)]+)\)/ifneq "" "\$(wildcard $1)"/;
 /^include/ && s/"//g;
 
 '
-
-#echo "include .depend" >>$target
