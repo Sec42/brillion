@@ -8,31 +8,53 @@
 #define MX 640
 #define MY 480
 
-void load_graphics(graphic * gp);
-SDL_Surface* color_graphic(graphic* g, SDL_Surface* in, int color, int alpha);
+/* Seems like an ugly hack, but I know no sane way */
+SDL_Surface* color_graphic(graphic* g, SDL_Surface* in, int color, int alpha){
+  SDL_Surface* out;
+  Uint32* p4;
+  Uint16* p2;
+  Uint8* p1;
 
-graphic* init_graphic(){
-  SDL_Surface* disp;
-  graphic* g;
+  out=SDL_ConvertSurface(in, g->display->format, SDL_HWSURFACE);
+  assert(out!=NULL);
 
-  if(SDL_Init(SDL_INIT_VIDEO)){
-    fprintf(stderr,"Could not initialize SDL: %s.\n", SDL_GetError());
-    exit(-1);
+  switch(out->format->BytesPerPixel){
+    case 4:
+      for(p4=out->pixels;p4<(Uint32*)out->pixels+(out->w*out->h);p4++){
+	if(*p4 == g->colors[BLUE])
+	  *p4=g->colors[color];
+	if(alpha)
+	  if(*p4 == g->colors[WHITE])
+	    *p4=g->colors[NONE];
+      };
+      break;
+    case 2:
+      for(p2=out->pixels;p2<(Uint16*)out->pixels+(out->w*out->h);p2++){
+	if(*p2 == g->colors[BLUE])
+	  *p2=g->colors[color];
+	if(alpha)
+	  if(*p2 == g->colors[WHITE])
+	    *p2=g->colors[NONE];
+      };
+      break;
+    case 1:
+      for(p1=out->pixels;p1<(Uint8*)out->pixels+(out->w*out->h);p1++){
+	if(*p1 == g->colors[BLUE])
+	  *p1=g->colors[color];
+	if(alpha)
+	  if(*p1 == g->colors[WHITE])
+	    *p1=g->colors[NONE];
+      };
+      break;
+    default:
+      fprintf(stderr,"This is a %d byte/pixel display, which is not supported\n",out->format->BytesPerPixel);
+      fprintf(stderr,"You can try removing SDL_ANYFORMAT in graphics.c\n");
+
+      exit(-1);
   };
-  if(!(disp=SDL_SetVideoMode(MX, MY, 32, SDL_ANYFORMAT|SDL_DOUBLEBUF))){
-    printf("Could not set videomode: %s.\n", SDL_GetError());
-    exit(-1);
-  };
-  assert(SDL_MUSTLOCK(disp)==0);
 
-  SDL_WM_SetCaption(prog, prog);
-
-  g=calloc(1,sizeof(graphic));
-  g->display=disp;
-
-  load_graphics(g);
-  return g;
-}
+  return(out);
+};
 
 void load_graphics(graphic * gp){
   SDL_Surface* pad;
@@ -82,55 +104,40 @@ void load_graphics(graphic * gp){
   gp->death=SDL_ConvertSurface(pad, gp->display->format, SDL_HWSURFACE);
   assert(gp->death!=NULL);
   SDL_FreeSurface(pad);
-};
 
-/* Seems like an ugly hack, but I know no sane way */
-SDL_Surface* color_graphic(graphic* g, SDL_Surface* in, int color, int alpha){
-  SDL_Surface* out;
-  Uint32* p4;
-  Uint16* p2;
-  Uint8* p1;
-
-  out=SDL_ConvertSurface(in, g->display->format, SDL_HWSURFACE);
-  assert(out!=NULL);
-
-  switch(out->format->BytesPerPixel){
-    case 4:
-      for(p4=out->pixels;p4<(Uint32*)out->pixels+(out->w*out->h);p4++){
-	if(*p4 == g->colors[BLUE])
-	  *p4=g->colors[color];
-	if(alpha)
-	  if(*p4 == g->colors[WHITE])
-	    *p4=g->colors[NONE];
-      };
-      break;
-    case 2:
-      for(p2=out->pixels;p2<(Uint16*)out->pixels+(out->w*out->h);p2++){
-	if(*p2 == g->colors[BLUE])
-	  *p2=g->colors[color];
-	if(alpha)
-	  if(*p2 == g->colors[WHITE])
-	    *p2=g->colors[NONE];
-      };
-      break;
-    case 1:
-      for(p1=out->pixels;p1<(Uint8*)out->pixels+(out->w*out->h);p1++){
-	if(*p1 == g->colors[BLUE])
-	  *p1=g->colors[color];
-	if(alpha)
-	  if(*p1 == g->colors[WHITE])
-	    *p1=g->colors[NONE];
-      };
-      break;
-    default:
-      fprintf(stderr,"This is a %d byte/pixel display, which is not supported\n",out->format->BytesPerPixel);
-      fprintf(stderr,"You can try removing SDL_ANYFORMAT in graphics.c\n");
-
-      exit(-1);
+  pad=IMG_Load("graphics/bkg.png");
+  if(pad){
+    gp->xoff=20;gp->yoff=(gp->display->h - (QUAD*11))/2;
+    SDL_BlitSurface(pad, NULL, gp->display, NULL);
+    SDL_FreeSurface(pad);
   };
 
-  return(out);
+  //SDL_FillRect(gp->display,NULL,gp->colors[WHITE]);
 };
+
+graphic* init_graphic(){
+  SDL_Surface* disp;
+  graphic* g;
+
+  if(SDL_Init(SDL_INIT_VIDEO)){
+    fprintf(stderr,"Could not initialize SDL: %s.\n", SDL_GetError());
+    exit(-1);
+  };
+  if(!(disp=SDL_SetVideoMode(MX, MY, 32, SDL_ANYFORMAT|SDL_DOUBLEBUF))){
+    printf("Could not set videomode: %s.\n", SDL_GetError());
+    exit(-1);
+  };
+  assert(SDL_MUSTLOCK(disp)==0);
+
+  SDL_WM_SetCaption(prog, prog);
+
+  g=calloc(1,sizeof(graphic));
+  g->display=disp;
+
+  load_graphics(g);
+
+  return g;
+}
 
 /* -------------------------------------------------------------------- */
 
@@ -147,8 +154,8 @@ void paint_ball(graphic* g, field* lvl){
   SDL_Rect rect;
 
   rect.w=rect.h=QUAD/2;
-  rect.x=QUAD/2*(lvl->x-2);
-  rect.y=QUAD/2*(lvl->y-2);
+  rect.x=QUAD/2*(lvl->x-2)+g->xoff;
+  rect.y=QUAD/2*(lvl->y-2)+g->yoff;
   SDL_BlitSurface(g->ball[lvl->color], NULL, g->display, &rect);
 
   return;
@@ -158,8 +165,8 @@ void paint_block(graphic* g, field* lvl, int x, int y){
   SDL_Rect rect;
 
   rect.w=rect.h=QUAD;
-  rect.y=QUAD*(y-1);
-  rect.x=QUAD*(x-1);
+  rect.x=QUAD*(x-1)+g->xoff;
+  rect.y=QUAD*(y-1)+g->yoff;
 
   switch(PIECE(x,y)){
     case BLOCK:
@@ -196,7 +203,7 @@ void snapshot(graphic* g){
     return;
   };
 
-  sprintf(name,"snap_%d",++q);
+  sprintf(name,"snap_%d.pnm",++q);
   pic=fopen(name,"w");
   fprintf(pic,"P6\n%d %d\n%d\n",g->display->w,g->display->h,255);
   for (x=g->display->pixels;
@@ -205,5 +212,40 @@ void snapshot(graphic* g){
       x+=g->display->format->BytesPerPixel)
     fprintf(pic,"%c%c%c",*(x+2),*(x+1),*(x+0));
   fclose(pic);
+}
+
+void fade (SDL_Surface* s, Uint32 ticks, int fadein){
+  SDL_Surface* black, *copy;
+  Uint32 old_time, curr_time;
+  float alpha=0;
+
+  black=SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
+  copy= SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
+
+  if(!black || !copy){
+      fprintf (stderr, "fade: failure creating surface\n");
+      return;
+  }
+
+  SDL_FillRect(black, NULL, SDL_MapRGB(s->format,0,0,0));
+  SDL_BlitSurface(s, NULL, copy, NULL);
+
+  curr_time=SDL_GetTicks();
+
+  while (alpha < 255.0){
+    SDL_BlitSurface(copy, NULL, s, NULL);
+    SDL_SetAlpha(black, SDL_SRCALPHA, (Uint8)(fadein?255-alpha:alpha));
+    SDL_BlitSurface(black, NULL, s, NULL);
+
+    old_time=curr_time;
+    curr_time=SDL_GetTicks();
+
+    SDL_Flip (s);
+
+    alpha += 255 * ((float) (curr_time - old_time) / ticks);
+  };
+
+  SDL_FreeSurface(black);
+  SDL_FreeSurface(copy);
 }
 

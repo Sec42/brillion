@@ -18,6 +18,7 @@ void game(){
   Uint32 now;
   Uint32 round;
   Sint32 round_d;
+  Uint32 speed=0;
 
   graphic * g;
   field * lvl;
@@ -30,6 +31,8 @@ void game(){
 
   g=init_graphic();
   paint_level(g, lvl);
+
+  fade (g->display, 1000, 1);
 
   now = SDL_GetTicks();
   q=0;
@@ -75,6 +78,8 @@ void game(){
 	  break;
       };
     }
+
+    speed+=SDL_GetTicks()-round;
     round_d=SPEED-(SDL_GetTicks()-round);
     if(round_d<0)
       printf("CPU to slow by %d ticks/round\n",round_d);
@@ -83,7 +88,8 @@ void game(){
 
     if(lvl->blocks==0){quit=1;};
     if(quit){
-      fprintf(stderr,"%f frames / sec\n",(float)q/(SDL_GetTicks()-now)*1000);
+      fprintf(stderr,"%f Ticks/frame\n",(float)speed/q);
+      fade (g->display, 1000, 0);
       SDL_Quit();
       return;
     }

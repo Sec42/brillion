@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
- * vim:set cin sm ts=4 sw=4:
- * $Id: brillion.h,v 1.2 2002/10/14 18:23:39 sec Exp $
+ * vim:set cin sm ts=8 sw=8:
+ * $Id: brillion.h,v 1.3 2002/10/15 00:16:30 sec Exp $
  */
 
 #include <stdio.h>
@@ -54,16 +54,17 @@ typedef struct {
 #define COLOR(x,y) lvl->colors[(x)*lvl->w+(y)]
 #define PIECE(x,y) lvl->pieces[(x)*lvl->w+(y)]
 
-	int blocks;		/* Blocks remaining */
-	int time;	 	/* Time remaining */
-	int x,y;		/* Ball position */
+	int blocks;	/* Blocks remaining */
+	int time; 	/* Time remaining */
+	int x,y;	/* Ball position */
 	signed int dir; /* Ball direction */
-	int color;		/* Ball color */
+	int color;	/* Ball color */
 } field;
 
 typedef struct {
 	SDL_Surface * display;
 	Uint32 colors[MAX_COLORS];
+	int xoff, yoff;	/* Offset of the level area in main window */
 
 	/* block graphics */
 	SDL_Surface * wall;
@@ -89,6 +90,7 @@ void paint_level(graphic* g, field* lvl);
 void paint_block(graphic* g, field* lvl, int x, int y);
 void paint_ball(graphic* g, field* lvl);
 void snapshot(graphic* g);
+void fade (SDL_Surface* s, Uint32 ticks, int fadein);
 
 /* play.c */
 void game();
