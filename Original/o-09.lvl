@@ -1,7 +1,9 @@
-Clvl 42
-desc Original Level #9
-start 27 2 +1 4
+Blvl 42
+desc Original Level #09
 time 599
+points 125
+color 4
+start 27  3 +1
 level 15 11
 ...............
 ........d.....d
@@ -12,5 +14,5 @@ level 15 11
 ...............
 .#.#.#.#.#.#.#.
 .#.#.#.#.#.#.#.
-.5.2.3.2.1.6.4.
-.#e#b#c#b#a#f#d
+.6.3.1.3.5.2.4.
+.#f#c#a#c#e#b#d

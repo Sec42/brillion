@@ -1,16 +1,18 @@
-Clvl 42
-desc Original Level #8
-start 15 11 +1 2
+Blvl 42
+desc Original Level #08
 time 999
+points 63
+color 3
+start 15 11 +1
 level 15 11
-....2.......ddf
-....2.6.....ddf
+....3.......ddb
+....3.2.....ddb
 ....#####...ddd
-....#.#.#...dfd
-....#.#.#...fff
-....#.#.#...fdd
-#**B..#.#...fdf
-........#...fff
-ee5e........ddd
-..b.........dff
-4bbb........dfb
+....#.#.#...dbd
+....#.#.#...bbb
+....#.#.#...bdd
+#**C..#.#...bdb
+........#...bbb
+ff6f........ddd
+..c.........dbb
+4ccc........dbc

@@ -1,16 +1,18 @@
-Clvl 42
-desc Original Level #3
-start 3 5 +1 1
+Blvl 42
+desc Original Level #03
 time 799
+points 39
+color 5
+start  3  5 +1
 level 15 11
-*a*a*a*a*a*a*a*
-.a.a.a.a.a.a.a.
-...a.a.a.a.a...
-.a...a.a.a...a.
-.a.a...a...a.a.
-.a.a.a...a.a.a.
-.a.a...a...a.a.
-.a...a.a.a...a.
-...a.a.a.a.a...
-.a.a.a.a.a.a.a.
-.a.a.a.a.a.a.a.
+*e*e*e*e*e*e*e*
+.e.e.e.e.e.e.e.
+...e.e.e.e.e...
+.e...e.e.e...e.
+.e.e...e...e.e.
+.e.e.e...e.e.e.
+.e.e...e...e.e.
+.e...e.e.e...e.
+...e.e.e.e.e...
+.e.e.e.e.e.e.e.
+.e.e.e.e.e.e.e.

@@ -1,16 +1,18 @@
-Clvl 42
-desc Original Level #6
-start 5 19 +1 5
+Blvl 42
+desc Original Level #06
 time 799
+points 43
+color 6
+start  4 19 +1
 level 15 11
-e.e.e.EeE.e.e.e
-.e.e.E.E.E.e.e.
-e.e.e.EeE.e.e.e
-.e.e.E.E.E.e.e.
-e.e.e.EeE.e.e.e
-.e.e.E.E.E.e.e.
-e.e.e.EeE.e.e.e
-.e.e.E.E.E.e.e.
-e.e.e.EeE.e.e.e
-.e.e.E.E.E.e.e.
-e.e.e.EeE.e.e.e
+f.f.f.FfF.f.f.f
+.f.f.F.F.F.f.f.
+f.f.f.FfF.f.f.f
+.f.f.F.F.F.f.f.
+f.f.f.FfF.f.f.f
+.f.f.F.F.F.f.f.
+f.f.f.FfF.f.f.f
+.f.f.F.F.F.f.f.
+f.f.f.FfF.f.f.f
+.f.f.F.F.F.f.f.
+f.f.f.FfF.f.f.f
