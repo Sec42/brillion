@@ -1,5 +1,5 @@
 #define EXTERN extern
-#include "SDL_image.h"
+#include <SDL_image.h>
 #include "brillion.h"
 /* vim:set cin sw=2 ts=8 sm: */
 

@@ -3,8 +3,8 @@ To compile this, you need
 - SDL,       from http://www.libsdl.org/download-1.2.php
 - SDL_image, from http://www.libsdl.org/projects/SDL_image/
 
-The dependency on SDL_image will perhaps go away again, I haven't
-made up my mind, yet.
+It uses 
+- BFont, which is included in the BFontv1.0.4-1 subdirectory
 
 Simply typing 'make' should build the program.
 
