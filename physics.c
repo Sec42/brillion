@@ -1,12 +1,15 @@
-#define EXTERN extern
+/* Game physics/mechanics - i.e. How do things move inside the game
+ * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
+ * $Id: physics.c,v 1.12 2003/03/14 11:08:16 sec Exp $
+ */
 #include "brillion.h"
-/* vim:set cin sw=2 ts=8 sm: */
 
 
-void move_step(graphic* gp,music* m,field* lvl, signed int input){
+void move_step(signed int input){
   int x,y;
   int xn,yn;
   int ballx,bally;
+  field *lvl=play->f;
 
   ballx=lvl->x;bally=lvl->y;
 
@@ -28,21 +31,21 @@ void move_step(graphic* gp,music* m,field* lvl, signed int input){
    * 'hit' the block without moving simultaneously with the first frame.
    */
   if(PIECE(x,y)) /* Are we inside something? Can happen at start of level */
-	move_touch(gp,m,lvl,x,y,0,0);
+	move_touch(x,y,0,0);
 
   /* Where are we moving into? */
   if(xn==x){
     if(yn==y){
       /* inside of own square */;
     }else{
-      if (move_touch(gp,m,lvl,xn,yn,0,lvl->dir)){
+      if (move_touch(xn,yn,0,lvl->dir)){
 	lvl->dir=-lvl->dir;
 	lvl->y+=2*lvl->dir;
       }
     };
   }else{
     if(yn==y){
-      if(move_touch(gp,m,lvl,xn,yn,input,0)){
+      if(move_touch(xn,yn,input,0)){
 	input=-input;
 	lvl->x+=2*input;
       };
@@ -50,24 +53,24 @@ void move_step(graphic* gp,music* m,field* lvl, signed int input){
       if(PIECE(x,yn) && PIECE(xn,y)){
 	// XXX: What happens if both are STAR?
 	// XXX: This does only move one disk in the original.
-	move_touch(gp,m,lvl,x,yn,0,lvl->dir);
-	move_touch(gp,m,lvl,xn,y,input,0);
+	move_touch(x,yn,0,lvl->dir);
+	move_touch(xn,y,input,0);
 	input=-input;
 	lvl->x+=2*input;
 	lvl->dir=-lvl->dir;
 	lvl->y+=2*lvl->dir;
       }else if(PIECE(x,yn)){
-	if(move_touch(gp,m,lvl,x,yn,0,lvl->dir)){
+	if(move_touch(x,yn,0,lvl->dir)){
 	  lvl->dir=-lvl->dir;
 	  lvl->y+=2*lvl->dir;
 	};
       }else if(PIECE(xn,y)){
-	if(move_touch(gp,m,lvl,xn,y,input,0)){
+	if(move_touch(xn,y,input,0)){
 	  input=-input;
 	  lvl->x+=2*input;
 	};
       }else{
-	if(move_touch(gp,m,lvl,xn,yn,0,0)){
+	if(move_touch(xn,yn,0,0)){
 	  input=-input;
 	  lvl->x+=2*input;
 	  lvl->dir=-lvl->dir;
@@ -77,7 +80,7 @@ void move_step(graphic* gp,music* m,field* lvl, signed int input){
     };
   };
 
-  if(b->p->status == S_DIE){ // Don't move if you die
+  if(play->status == S_DIE){ // Don't move if you die
     lvl->x=ballx;
     lvl->y=bally;
   }else{
@@ -86,8 +89,9 @@ void move_step(graphic* gp,music* m,field* lvl, signed int input){
   return;
 };
 
-int move_touch(graphic* gp, music* m, field* lvl, int x, int y,signed int dx,signed int dy){
+int move_touch(int x, int y,signed int dx,signed int dy){
   int bounce=1;
+  field *lvl=play->f;
 
   switch(PIECE(x,y)){
     case SPACE:
@@ -100,7 +104,7 @@ int move_touch(graphic* gp, music* m, field* lvl, int x, int y,signed int dx,sig
     case DEATH:
       play_touch(m, DEATH);
       printf("You die, how embarrassing!\n");
-      b->p->status=S_DIE; // XXX: layering
+      play->status=S_DIE; // XXX: layering
       break;
     case BLOCK:
       if(lvl->color==COLOR(x,y)){
@@ -111,9 +115,9 @@ int move_touch(graphic* gp, music* m, field* lvl, int x, int y,signed int dx,sig
 	create_staticanim(A_EXPLODE,COLOR(x,y),x,y);
 
 	if(--lvl->blocks ==0)
-	  b->p->status=S_FINISH;
+	  play->status=S_FINISH;
 
-	b->p->points+=lvl->ppb; // XXX: Layering
+	play->points+=lvl->ppb;
       };
       break;
     case DISK:

@@ -1,6 +1,8 @@
-#define EXTERN extern
+/* Do all the audible stuff
+ * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
+ * $Id: music.c,v 1.5 2003/03/14 11:08:16 sec Exp $
+ */
 #include "brillion.h"
-/* vim:set cin sw=2 ts=8 sm: */
 
 music* init_music(){
   music* m;

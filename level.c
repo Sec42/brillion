@@ -1,6 +1,8 @@
-#define EXTERN extern
+/* Parse the level setup file
+ * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
+ * $Id: level.c,v 1.8 2003/03/14 11:08:16 sec Exp $
+ */
 #include "brillion.h"
-/* vim:set cin sw=2 ts=8 sm: */
 
 /* Level format:
    first line has to be "Blvl <version>"
@@ -175,6 +177,14 @@ field * read_level(char * file){
 
   return lvl;
 };
+
+void free_level(field *lvl){
+    if(lvl){
+	free(play->f->pieces);
+	free(play->f->colors);
+	free(play->f);
+    };
+}
 
 void dump_level(field * lvl){
   int x,y;
