@@ -1,6 +1,6 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.11 2004/06/14 22:17:08 sec Exp $
+ * $Id: score.c,v 1.12 2004/06/15 10:46:06 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -115,10 +115,8 @@ the_scores* read_scores(void){
 
 void write_scores(the_scores* scores){
     int x;
-//    the_scores* scores;
     FILE	*f;
 
-//    scores=b->game->scores;
     assert(scores!=NULL);
 
     rename("Scores","Scores.bak");
@@ -149,7 +147,7 @@ void add_score(the_scores* scores, int points){
     struct passwd* pw;
 
     if(scores==NULL){
-	fprintf(stderr,"Error: no scores\n"); // XXX: fixme;
+	fprintf(stderr,"Error: no scores\n"); /* XXX: fixme; */
 	return;
     }else{
 	if(scores->maxscore == (MAX_SCORES-1))

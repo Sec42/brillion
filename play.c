@@ -1,7 +1,8 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.41 2004/06/14 22:18:00 sec Exp $
+ * $Id: play.c,v 1.42 2004/06/15 10:46:06 sec Exp $
  */
+#include <string.h>
 #include "brillion.h"
 
 #define QUAD  32 /* Size of Standard Block, must be divisible by 2 */
@@ -104,11 +105,6 @@ void play_game(a_game* game){
 	printf("Congrats, you made it through all levels alive!\n");
 
     printf("You accumulated %d points\n",play->points);
-
-    /* XXX: uninit_graphic/_music ? */
-
-//    free(play);
-//    SDL_Quit();
 }
 
 int play_level(void){
