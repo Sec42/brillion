@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.28 2003/03/25 15:51:20 sec Exp $
+ * $Id: brillion.h,v 1.29 2003/03/26 18:01:14 sec Exp $
  */
 
 #include <stdio.h>
@@ -261,6 +261,7 @@ void paint_block(int x, int y);
 void paint_ball(void);
 void snapshot(void);
 void update_scoreboard(void);
+void clear_number_cache(void);
 
 /* play.c */
 void play_game(a_game* game);
