@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.5 2002/10/15 12:04:34 sec Exp $
+ * $Id: brillion.h,v 1.6 2002/10/16 02:54:35 sec Exp $
  */
 
 #include <stdio.h>
@@ -15,8 +15,12 @@
 #include <float.h>
 #include <SDL.h>
 
+#ifdef SOUND
+#include <SDL_mixer.h>
+#endif
+
 #ifdef DMALLOC
-#include "dmalloc.h"
+#include <dmalloc.h>
 #endif
 
 /* zwei kleine globals */
@@ -43,6 +47,7 @@ EXTERN char verbose;  // Debugging-Level
 #define	STAR	3
 #define WALL	4
 #define DEATH	5
+#define OUTER_WALL 6
 
 typedef struct {
 	char level[100];
@@ -79,11 +84,28 @@ typedef struct {
 	SDL_Surface * disk[GAME_COLORS];
 	SDL_Surface * block[GAME_COLORS];
 	SDL_Surface * star[GAME_COLORS];
+
+	/* font */
+	SDL_Surface * font;
 } graphic;
 
+typedef struct {
+#ifdef SOUND
+	Mix_Music* bg;
+
+	/* touch sounds */
+	Mix_Chunk* wall;
+	Mix_Chunk* death;
+	Mix_Chunk* disk;
+	Mix_Chunk* block;
+	Mix_Chunk* star;
+#else
+#endif
+} music;
+
 /* physics.c */
-void move_step(graphic* g, field* lvl, signed int input);
-int move_touch(graphic* g, field* lvl, int x,int y,signed int dx,signed int dy);
+void move_step(graphic* g, music* m,field* lvl, signed int input);
+int move_touch(graphic* g, music* m,field* lvl, int x,int y,signed int dx,signed int dy);
 
 /* level.c */
 field* read_level(char * file);
@@ -96,6 +118,16 @@ void paint_block(graphic* g, field* lvl, int x, int y);
 void paint_ball(graphic* g, field* lvl);
 void snapshot(graphic* g);
 void fade (SDL_Surface* s, Uint32 ticks, int fadein);
+void update_scoreboard(graphic* g, field* lvl);
 
 /* play.c */
 void game(config* cfg);
+
+#ifdef SOUND
+/* music.c */
+music* init_music();
+void play_touch(music* m,int piece);
+#else
+#define init_music() NULL
+#define play_touch(a,b)
+#endif

@@ -20,8 +20,9 @@ void game(config* c){
   Sint32 round_d;
   Uint32 speed=0;
 
-  graphic * g;
-  field * lvl;
+  graphic* g;
+  music* m;
+  field* lvl;
 
   if(c->onelevel)
 	  lvl=read_level(c->level);
@@ -33,6 +34,7 @@ void game(config* c){
   };
 
   g=init_graphic();
+  m=init_music();
   paint_level(g, lvl);
 
   fade (g->display, 1000, 1);
@@ -43,7 +45,8 @@ void game(config* c){
     q++;
     round=SDL_GetTicks();
 
-    move_step(g, lvl, userx);
+    move_step(g, m, lvl, userx);
+    update_scoreboard(g, lvl);
 
     SDL_Flip(g->display); 
 

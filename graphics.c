@@ -112,6 +112,8 @@ void load_graphics(graphic * gp){
     SDL_FreeSurface(pad);
   };
 
+  gp->font=IMG_Load("graphics/numbers.png");
+
   //SDL_FillRect(gp->display,NULL,gp->colors[WHITE]);
 };
 
@@ -249,3 +251,30 @@ void fade (SDL_Surface* s, Uint32 ticks, int fadein){
   SDL_FreeSurface(copy);
 }
 
+void update_scoreboard(graphic* g, field* lvl){
+  char t[10];
+  char *x;
+  char fudge=5;
+  char wid=25;
+  char hei=31;
+
+  SDL_Rect dst,r;
+  sprintf(t,"%3d",lvl->blocks);
+
+  dst.x=550;dst.y=200;
+
+  r.w=dst.w=wid-fudge*2;
+  r.h=dst.h=hei;
+
+  for(x=t;*x!=0;x++){
+    if(*x!=' '){
+      int xoff=*x-'0';
+      r.x=wid*xoff+fudge;
+
+      SDL_BlitSurface(g->font, &r, g->display, &dst);
+    }else{
+      SDL_FillRect(g->display, &dst, g->colors[BLACK]);
+    };
+    dst.x+=dst.w;
+  }
+};

@@ -3,7 +3,7 @@
 /* vim:set cin sw=2 ts=8 sm: */
 
 
-void move_step(graphic* gp,field* lvl, signed int input){
+void move_step(graphic* gp,music* m,field* lvl, signed int input){
   int x,y;
   int xn,yn;
 
@@ -16,21 +16,21 @@ void move_step(graphic* gp,field* lvl, signed int input){
 
   /* Are we inside something? Can happen at start of level */
   if(PIECE(x,y))
-	move_touch(gp,lvl,x,y,0,0);
+	move_touch(gp,m,lvl,x,y,0,0);
 
   /* Where are we moving into? */
   if(xn==x){
     if(yn==y){
       /* inside of own square */;
     }else{
-      if (move_touch(gp,lvl,xn,yn,0,lvl->dir)){
+      if (move_touch(gp,m,lvl,xn,yn,0,lvl->dir)){
 	lvl->dir=-lvl->dir;
 	lvl->y+=2*lvl->dir;
       }
     };
   }else{
     if(yn==y){
-      if(move_touch(gp,lvl,xn,yn,input,0)){
+      if(move_touch(gp,m,lvl,xn,yn,input,0)){
 	input=-input;
 	lvl->x+=2*input;
       };
@@ -38,24 +38,24 @@ void move_step(graphic* gp,field* lvl, signed int input){
       if(PIECE(x,yn) && PIECE(xn,y)){
 	// XXX: What happens if both are STAR?
 	// XXX: This does only move one disk in the original.
-	move_touch(gp,lvl,x,yn,0,lvl->dir);
-	move_touch(gp,lvl,xn,y,input,0);
+	move_touch(gp,m,lvl,x,yn,0,lvl->dir);
+	move_touch(gp,m,lvl,xn,y,input,0);
 	input=-input;
 	lvl->x+=2*input;
 	lvl->dir=-lvl->dir;
 	lvl->y+=2*lvl->dir;
       }else if(PIECE(x,yn)){
-	if(move_touch(gp,lvl,x,yn,0,lvl->dir)){
+	if(move_touch(gp,m,lvl,x,yn,0,lvl->dir)){
 	  lvl->dir=-lvl->dir;
 	  lvl->y+=2*lvl->dir;
 	};
       }else if(PIECE(xn,y)){
-	if(move_touch(gp,lvl,xn,y,input,0)){
+	if(move_touch(gp,m,lvl,xn,y,input,0)){
 	  input=-input;
 	  lvl->x+=2*input;
 	};
       }else{
-	if(move_touch(gp,lvl,xn,yn,0,0)){
+	if(move_touch(gp,m,lvl,xn,yn,0,0)){
 	  input=-input;
 	  lvl->x+=2*input;
 	  lvl->dir=-lvl->dir;
@@ -69,7 +69,7 @@ void move_step(graphic* gp,field* lvl, signed int input){
   return;
 };
 
-int move_touch(graphic* gp, field* lvl, int x, int y,signed int dx,signed int dy){
+int move_touch(graphic* gp, music* m, field* lvl, int x, int y,signed int dx,signed int dy){
   int bounce=1;
 
   switch(PIECE(x,y)){
@@ -77,14 +77,17 @@ int move_touch(graphic* gp, field* lvl, int x, int y,signed int dx,signed int dy
       bounce=0;
       break;
     case WALL:
+    case OUTER_WALL:
+      play_touch(m, PIECE(x,y));
       break;
     case DEATH:
+      play_touch(m, DEATH);
       printf("You die, how embarrassing!\n");
       lvl->blocks=0; // XXX
-//      Mix_PlayChannel(1,music, 0);
       break;
     case BLOCK:
       if(lvl->color==COLOR(x,y)){
+	play_touch(m, BLOCK);
 	PIECE(x,y)=SPACE;
 	paint_block(gp,lvl,x,y);
 	lvl->blocks--;
@@ -93,6 +96,7 @@ int move_touch(graphic* gp, field* lvl, int x, int y,signed int dx,signed int dy
     case DISK:
       if(lvl->color==COLOR(x,y)){
 	if(!PIECE(x+dx,y+dy)){
+	  play_touch(m, DISK);
 	  PIECE(x+dx,y+dy)=PIECE(x,y);
 	  COLOR(x+dx,y+dy)=COLOR(x,y);
 	  PIECE(x,y)=SPACE;
@@ -102,8 +106,8 @@ int move_touch(graphic* gp, field* lvl, int x, int y,signed int dx,signed int dy
       };
       break;
     case STAR:
+      play_touch(m, STAR);
       lvl->color=COLOR(x,y);
-//      Mix_PlayChannel(-1,music2, 0);
       break;
     default:
       printf("Whoops?\n");

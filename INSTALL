@@ -2,6 +2,7 @@ To compile this, you need
 
 - SDL,       from http://www.libsdl.org/download-1.2.php
 - SDL_image, from http://www.libsdl.org/projects/SDL_image/
+- SDL_mixer
 
 It uses 
 - BFont, which is included in the BFontv1.0.4-1 subdirectory

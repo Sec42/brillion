@@ -76,14 +76,14 @@ field * read_level(char * file){
 	lvl->pieces=malloc((lvl->w+1)*(lvl->h+1)*sizeof(int));
 	lvl->colors=malloc((lvl->w+1)*(lvl->h+1)*sizeof(int));
 	for (x=0;x<=lvl->w;x++){ // Wall around gamefield.
-	  PIECE(x,0)=WALL;
-	  PIECE(x,lvl->h)=WALL;
+	  PIECE(x,0)=OUTER_WALL;
+	  PIECE(x,lvl->h)=OUTER_WALL;
 	  COLOR(x,0)=BLACK;
 	  COLOR(x,lvl->h)=BLACK;
 	}
 	for (y=0;y<=lvl->h;y++){
-	  PIECE(0,y)=WALL;
-	  PIECE(lvl->w,y)=WALL;
+	  PIECE(0,y)=OUTER_WALL;
+	  PIECE(lvl->w,y)=OUTER_WALL;
 	  COLOR(0,y)=BLACK;
 	  COLOR(lvl->w,y)=BLACK;
 	};

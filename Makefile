@@ -4,7 +4,7 @@ CFLAGS?=-g -O -pipe
 
 # It shouldn't be necessary to edit anything below this line.
 PRG=brillion
-OBJ=brillion.o graphics.o level.o physics.o play.o BFont.o
+OBJ=brillion.o graphics.o level.o physics.o play.o
 
 INC=-IBFontv1.0.4-1
 VPATH=BFontv1.0.4-1
@@ -13,8 +13,14 @@ VPATH=BFontv1.0.4-1
 CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe
 .endif
 
-CFLAGS+=-Wall `${SDL_CONFIG} --cflags`
-LDFLAGS+=`${SDL_CONFIG} --libs` -lSDL_image # -lSDL_mixer
+CFLAGS+=-Wall `${SDL_CONFIG} --cflags` -IBFontv1.0.4-1
+LDFLAGS+=`${SDL_CONFIG} --libs` -lSDL_image
+
+.ifndef NOSOUND
+CFLAGS+=-DSOUND
+LDFLAGS+=-lSDL_mixer
+OBJ+=music.o
+.endif
 
 .ifdef DMALLOC_OPTIONS
 CFLAGS+=-I/usr/local/include/ -DDMALLOC
