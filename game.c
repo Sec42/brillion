@@ -1,6 +1,6 @@
 /* The game settings file parser
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: game.c,v 1.5 2003/03/15 02:10:25 sec Exp $
+ * $Id: game.c,v 1.6 2003/03/17 19:36:07 sec Exp $
  */
 #include "brillion.h"
 
@@ -76,6 +76,10 @@ a_game* read_game(const char * file){
 	    };
 	    word[++x]=NULL;
 
+	    if(word[0][0] == '#'){ /* Handle comments */
+		word[0][0]=0; x=1;
+	    }
+
 //      for(num=0;num<x;num++) fprintf(stderr,"%d: '%s'\n",num,word[num]);
 
 #define BEG_PARSE(s,z) if(!strncmp(word[0],s,strlen(s)+1)){if((z+1)!=x){fprintf(stderr,"Directive %s requires %d words\n",s,(z+1));error++;}else
@@ -125,7 +129,6 @@ a_game* read_game(const char * file){
     }; /* end while */
 
     game->maxlevel=levelnum;
-    free(word[0]);
 
     if(game->lives == 0){
 	fprintf(stderr,"Defaulting to 3 lives/game\n");
@@ -135,7 +138,9 @@ a_game* read_game(const char * file){
     if(error){
 	fprintf(stderr,"Game '%s': Parse error at '%s'\n",file,word[0]);
 	free(game);
+	free(word[0]);
 	return(NULL);
     };
+    free(word[0]);
     return game;
 };
