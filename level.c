@@ -78,10 +78,14 @@ field * read_level(char * file){
 	for (x=0;x<=lvl->w;x++){ // Wall around gamefield.
 	  PIECE(x,0)=WALL;
 	  PIECE(x,lvl->h)=WALL;
+	  COLOR(x,0)=BLACK;
+	  COLOR(x,lvl->h)=BLACK;
 	}
 	for (y=0;y<=lvl->h;y++){
 	  PIECE(0,y)=WALL;
 	  PIECE(lvl->w,y)=WALL;
+	  COLOR(0,y)=BLACK;
+	  COLOR(lvl->w,y)=BLACK;
 	};
 
 	for (y=1;y<lvl->h;y++){ // For each line.
