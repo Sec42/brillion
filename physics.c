@@ -1,6 +1,6 @@
 /* Game physics/mechanics - i.e. How do things move inside the game
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: physics.c,v 1.12 2003/03/14 11:08:16 sec Exp $
+ * $Id: physics.c,v 1.13 2003/03/14 13:09:30 sec Exp $
  */
 #include "brillion.h"
 
@@ -99,16 +99,16 @@ int move_touch(int x, int y,signed int dx,signed int dy){
       break;
     case WALL:
     case OUTER_WALL:
-      play_touch(m, PIECE(x,y));
+      play_touch(PIECE(x,y));
       break;
     case DEATH:
-      play_touch(m, DEATH);
+      play_touch(DEATH);
       printf("You die, how embarrassing!\n");
       play->status=S_DIE; // XXX: layering
       break;
     case BLOCK:
       if(lvl->color==COLOR(x,y)){
-	play_touch(m, BLOCK);
+	play_touch(BLOCK);
 	PIECE(x,y)=SPACE;
 //	paint_block(gp,lvl,x,y);
 
@@ -123,7 +123,7 @@ int move_touch(int x, int y,signed int dx,signed int dy){
     case DISK:
       if(lvl->color==COLOR(x,y)){
 	if(!PIECE(x+dx,y+dy)){
-	  play_touch(m, DISK);
+	  play_touch(DISK);
 	  PIECE(x+dx,y+dy)=PIECE(x,y);
 	  COLOR(x+dx,y+dy)=COLOR(x,y);
 	  PIECE(x,y)=SPACE;
@@ -135,7 +135,7 @@ int move_touch(int x, int y,signed int dx,signed int dy){
       };
       break;
     case STAR:
-      play_touch(m, STAR);
+      play_touch(STAR);
       lvl->color=COLOR(x,y);
       break;
     default:

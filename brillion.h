@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.22 2003/03/14 11:08:16 sec Exp $
+ * $Id: brillion.h,v 1.23 2003/03/14 13:09:30 sec Exp $
  */
 
 #include <stdio.h>
@@ -251,10 +251,10 @@ void play_game(a_game* game);
 #ifdef SOUND
 /* music.c */
 music* init_music(void);
-void play_touch(music* m,int piece);
+void play_touch(int piece);
 #else
 #define init_music() NULL
-#define play_touch(a,b)
+#define play_touch(a)
 #endif
 
 /* game.c */

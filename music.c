@@ -1,6 +1,6 @@
 /* Do all the audible stuff
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: music.c,v 1.5 2003/03/14 11:08:16 sec Exp $
+ * $Id: music.c,v 1.6 2003/03/14 13:09:30 sec Exp $
  */
 #include "brillion.h"
 
@@ -24,7 +24,9 @@ music* init_music(){
   return m;
 }
 
-void play_touch(music* m,int piece){
+void play_touch(int piece){
+    music *m = play->m;
+
 //  printf("Playing snd %d\n",piece);
   switch(piece){
     case WALL:
