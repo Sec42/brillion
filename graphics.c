@@ -251,30 +251,40 @@ void fade (SDL_Surface* s, Uint32 ticks, int fadein){
   SDL_FreeSurface(copy);
 }
 
-void update_scoreboard(graphic* g, field* lvl){
-  char t[10];
-  char *x;
+void print_number(graphic *g, char *str, int x, int y){
+  char *c;
+  SDL_Rect dst,r;
+
+  /* Font specifics ... */
   char fudge=5;
   char wid=25;
   char hei=31;
 
-  SDL_Rect dst,r;
-  sprintf(t,"%3d",lvl->blocks);
-
-  dst.x=550;dst.y=200;
+  dst.x=x;dst.y=y;
 
   r.w=dst.w=wid-fudge*2;
   r.h=dst.h=hei;
+  r.y=0;
 
-  for(x=t;*x!=0;x++){
-    if(*x!=' '){
-      int xoff=*x-'0';
+  for(c=str;*c!=0;c++){
+    if(*c!=' '){
+      int xoff=*c-'0';
       r.x=wid*xoff+fudge;
-
       SDL_BlitSurface(g->font, &r, g->display, &dst);
     }else{
       SDL_FillRect(g->display, &dst, g->colors[BLACK]);
     };
     dst.x+=dst.w;
   }
+};
+
+
+void update_scoreboard(graphic* g, field* lvl){
+  char t[10];
+
+  sprintf(t,"%3d",lvl->blocks);
+  print_number(g,t,550,200);
+
+  sprintf(t,"%3d",lvl->time);
+  print_number(g,t,550,250);
 };

@@ -26,19 +26,19 @@ void play_touch(music* m,int piece){
   switch(piece){
     case WALL:
       if(m->wall)
-	Mix_PlayChannel(-1,m->wall, 0);
+	Mix_PlayChannel(1,m->wall, 0);
       break;
     case DEATH:
       if(m->death)
-	Mix_PlayChannel(-1,m->death, 0);
+	Mix_PlayChannel(1,m->death, 0);
       break;
     case DISK:
       if(m->disk)
-	Mix_PlayChannel(-1,m->disk, 0);
+	Mix_PlayChannel(1,m->disk, 0);
       break;
     case STAR:
       if(m->star)
-	Mix_PlayChannel(-1,m->star, 0);
+	Mix_PlayChannel(1,m->star, 0);
       break;
     default:
       //printf("Whoops, unknown sound %d?\n",piece);

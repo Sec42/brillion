@@ -46,6 +46,10 @@ void game(config* c){
     round=SDL_GetTicks();
 
     move_step(g, m, lvl, userx);
+    if(q%2==0)
+      lvl->time--;
+    if(lvl->time ==0)
+      quit=1;
     update_scoreboard(g, lvl);
 
     SDL_Flip(g->display); 
