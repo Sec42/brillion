@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.6 2002/10/16 02:54:35 sec Exp $
+ * $Id: brillion.h,v 1.7 2002/10/25 00:38:45 sec Exp $
  */
 
 #include <stdio.h>
@@ -48,6 +48,7 @@ EXTERN char verbose;  // Debugging-Level
 #define WALL	4
 #define DEATH	5
 #define OUTER_WALL 6
+#define MAX_PIECE 7
 
 typedef struct {
 	char level[100];
@@ -102,6 +103,39 @@ typedef struct {
 #else
 #endif
 } music;
+
+typedef struct {
+	int x, y;
+} coord;
+
+typedef struct {
+	char*  gfx[MAX_PIECE]; /* Block Graphics */
+	char*  sfx[MAX_PIECE]; /* Soundbites */
+	char*  bg;             /* Background graphic */
+	char*  txtfont;        /* Font for level name */
+	char*  numfont;        /* Font for digits */
+	char*  bgsound;        /* Music during title */
+	char*  level;          /* Filename of the level file */
+	coord  pts;            
+	coord  bonus;
+	coord  blocks;
+	coord  lives;
+	coord  name;
+	coord  field;
+//	coord  fieldsz; // Just assume it matches :)
+} desc;
+
+typedef struct {
+	graphic* g;
+	music*   m;
+	field*   f;
+} play;
+
+typedef struct {
+	desc** levels;
+	int    maxlevel;
+} gameing;
+
 
 /* physics.c */
 void move_step(graphic* g, music* m,field* lvl, signed int input);
