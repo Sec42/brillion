@@ -1,6 +1,6 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.3 2003/12/10 22:12:18 sec Exp $
+ * $Id: score.c,v 1.4 2003/12/11 00:28:22 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -157,6 +157,7 @@ void add_score(void){
     scores->scores[x].howlong=0;
 };
 
+
 /* Plan:
 // Display background
 // List scores (possibly current one highlighted)
@@ -204,6 +205,37 @@ void display_scores(void){
     }
     SDL_Flip(s);
 
-    sleep(5);
+    time_event(3,SDL_USER_ENDOFSCORES);
+
+    while(1){
+	SDL_Event event;
+	while( SDL_PollEvent( &event ) ){
+	    switch( event.type ){
+		case SDL_KEYDOWN:
+		    switch(event.key.keysym.sym){
+			case SDLK_ESCAPE:
+			case SDLK_q:
+			    return;
+			default:
+			    break;
+		    };
+		    break;
+		case SDL_USEREVENT:
+		    switch(event.user.code){
+			case SDL_USER_ENDOFSCORES:
+			    return;
+			default:
+			    break;
+		    };
+		    break;
+		case SDL_QUIT: /* SDL_QUIT event (window close) */
+		    exit(-1); /* XXX */
+		    break;
+		default:
+		    break;
+	    }
+	}
+    }
+
 };
 
