@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=4 sw=4:
- * $Id: brillion.h,v 1.1 2002/10/14 17:59:09 sec Exp $
+ * $Id: brillion.h,v 1.2 2002/10/14 18:23:39 sec Exp $
  */
 
 #include <stdio.h>
@@ -88,6 +88,7 @@ graphic* init_graphic();
 void paint_level(graphic* g, field* lvl);
 void paint_block(graphic* g, field* lvl, int x, int y);
 void paint_ball(graphic* g, field* lvl);
+void snapshot(graphic* g);
 
 /* play.c */
 void game();

@@ -159,3 +159,26 @@ void paint_block(graphic* g, field* lvl, int x, int y){
       fprintf(stderr,"Cannot draw %d at %d/%d\n",PIECE(x,y),x,y);
   };
 };
+
+void snapshot(graphic* g){
+  static int q=0;
+  char name[40];
+  FILE* pic;
+  unsigned char* x;
+
+  if(g->display->format->BytesPerPixel!=4){
+    fprintf(stderr,"Das geht nicht\n");
+    return;
+  };
+
+  sprintf(name,"snap_%d",++q);
+  pic=fopen(name,"w");
+  fprintf(pic,"P6\n%d %d\n%d\n",g->display->w,g->display->h,255);
+  for (x=g->display->pixels;
+      x<(unsigned char*)(g->display->pixels+
+	g->display->w * g->display->h * g->display->format->BytesPerPixel);
+      x+=g->display->format->BytesPerPixel)
+    fprintf(pic,"%c%c%c",*(x+2),*(x+1),*(x+0));
+  fclose(pic);
+}
+

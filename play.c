@@ -52,29 +52,19 @@ void game(){
 	  } else if (event.key.keysym.sym == SDLK_d){
 	    dump_level(lvl);
 	  } else if (event.key.keysym.sym == SDLK_p){
-	    /*
-	    char name[40];
-	    FILE * pic;
-	    unsigned char * x;
-	    sprintf(name,"snap_%d",q);
-	    pic=fopen(name,"w");
-	    fprintf(pic,"P6\n%d %d\n%d\n",MX,MY,255);
-	    for (x=disp->pixels;x<(unsigned char*)(disp->pixels+MX*MY*MZ);x+=4)
-	      fprintf(pic,"%c%c%c",*(x+2),*(x+1),*(x+0));
-	    fclose(pic);
-	    */
+	    snapshot(g);
 	  } else if (event.key.keysym.sym == SDLK_RIGHT){
-	    userx=1;
+	    userx++;
 	  } else if (event.key.keysym.sym == SDLK_LEFT){
-	    userx=-1;
+	    userx--;
 	  };
 	  break;
 
 	case SDL_KEYUP:
 	  if (event.key.keysym.sym == SDLK_RIGHT){
-	    userx=0;
+	    userx--;
 	  } else if (event.key.keysym.sym == SDLK_LEFT){
-	    userx=-0;
+	    userx++;
 	  };
 	  break;
 	case SDL_QUIT: /* SDL_QUIT event (window close) */
