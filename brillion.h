@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.42 2004/08/06 10:23:01 sec Exp $
+ * $Id: brillion.h,v 1.43 2004/08/08 01:07:24 sec Exp $
  */
 
 #include <stdio.h>
@@ -346,8 +346,13 @@ void display_scores(void);
 void add_score(the_scores* scores, int points);
 
 /* title.c */
+typedef struct {
+    char * name;
+    void (*callback) (SDL_Surface *,int);
+} menuentry; 
+
 int title_main(void);
-SDL_Surface* create_title(int oldscore);
+SDL_Surface * create_title(menuentry *);
 
 /* timer.c */
 #define SDL_USER_NOTHING     0

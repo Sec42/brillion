@@ -1,29 +1,111 @@
 /* Display the title screen, and handle the main menu...
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: title.c,v 1.10 2004/06/21 12:28:49 sec Exp $
+ * $Id: title.c,v 1.11 2004/08/08 01:07:23 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
 
-#define MENU_ENTRIES 5
+#define MENU_LINE 40
+#define MENU_ENTRIES 5 // XXXXXXXXXXXXXXXXXXXXXXXX!!!!
 
-char menus[][80] = { "PLAY", "SOUND", "LEVEL", "SCORES", "QUIT" };
-int  menux[]     = {100,100,100,100,100};
-int  menuy[]     = {280,320,360,400,440};
+SDL_Surface * create_title(menuentry * entries){
+    SDL_Surface *title,*black,*s,*bkg;
+    int x;
+    int oldscore=0;
+    int xk,yk;
 
-int title_main(){
-    SDL_Event event;
-    SDL_Rect r,lvlr, sndr;
-    signed int menu=1,omenu=0,done=0;
+    s=play->g->display;
+
+    title=IMG_Load("title.png");
+    assert(title!=NULL);
+
+    /* sleep(1); */ /* I'd like to have a cool intro here ;-) */
+
+    black=NULL;
+    /* To make it more readable, perhaps?
+    black=SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, 
+	    s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, 
+	    s->format->Bmask, s->format->Amask);
+    SDL_FillRect(black, NULL, SDL_MapRGB(s->format,0,0,0));
+    SDL_SetAlpha(black, SDL_SRCALPHA, 64);
+    SDL_BlitSurface(black, NULL, title, NULL);
+    */
+
+    bkg=SDL_ConvertSurface(title, s->format, SDL_SWSURFACE);
+    SDL_FreeSurface(title);
+
+    xk=100;yk=280; /* XXX: Main_menu only */
+    for(x=0;entries[x].name;x++){
+	render_font_to(xk,yk,entries[x].name,bkg);
+	yk+=MENU_LINE;
+    };
+
+    /* Display it, for good measure */
+    SDL_BlitSurface(bkg,NULL,s,NULL);
+    SDL_Flip(s);
+
+    return bkg; /* Caller must SDL_FreeSurface(bkg) eventually. */
+};
+
+void cb_sound(SDL_Surface *title,int dwim){
+    SDL_Rect sndr;
     graphic * g=play->g;
-    int lvl=1, olvl=0;
+
+    if(dwim){
+		if(play->m){
+		    uninit_music();
+		}else{
+		    play->m=init_music();
+		};
+    }
+
+    sndr.x=240;sndr.w=100; sndr.y=320;sndr.h=40; /* XXX: Why there? */
+    SDL_BlitSurface(title,&sndr,play->g->display,&sndr);
+#ifdef SOUND
+	if(play->m){
+	    render_font(sndr.x,sndr.y,"On");
+	}else{
+	    render_font(sndr.x,sndr.y,"Off");
+	};
+#else
+	render_font(sndr.x,sndr.y,"n/a");
+#endif
+	UPDATE(sndr);
+};
+
+void cb_lvl(SDL_Surface *title,int dwim){
+    SDL_Rect lvlr;
+    graphic * g=play->g;
     char lvlnum[50];
+
+    if(dwim){
+	play->level+=4;
+	if(play->level>20)play->level=0;
+    }
+
+    lvlr.x=240;lvlr.w=100; lvlr.y=360;lvlr.h=50; /* XXX: Why there? */
+    sprintf(lvlnum,"%2d",play->level+1);
+
+    SDL_BlitSurface(title,&lvlr,play->g->display,&lvlr);
+    render_font(lvlr.x,lvlr.y,lvlnum);
+    UPDATE(lvlr);
+};
+
+signed int menu(menuentry *entries){
+    SDL_Event event;
+    SDL_Rect r;
+    signed int menu,omenu=1,done=0;
+    graphic * g=play->g;
     SDL_Surface *title;
 
-    title=create_title(0);
     r.x=0;r.y=0;r.w=16;r.h=16; /* XXX: QUAD/2? :) */
-    sndr.x=240;sndr.w=100; sndr.y=320;sndr.h=40; /* XXX: Why there? */
-    lvlr.x=240;lvlr.w=100; lvlr.y=360;lvlr.h=50; /* XXX: Why there? */
+    title=create_title(entries);
+
+    for(menu=0;entries[menu].name;menu++){
+	if (entries[menu].callback)
+	    (entries[menu].callback)(title,0);
+    };
+    menu=0;
 
     while(!done){
 	while( !done && SDL_PollEvent( &event ) ){
@@ -33,33 +115,21 @@ int title_main(){
 		    switch(event.key.keysym.sym){
 			case SDLK_ESCAPE:
 			case SDLK_q:
-			    exit(-1);		/* Quit game */
+			    omenu=menu=-1;		/* Quit menu */
+			    done=1;
 			    break;
 			case SDLK_UP:
-			    menu--;
+			    if (--menu<0) menu+=MENU_ENTRIES;
 			    break;
 			case SDLK_DOWN:
-			    menu++;
+			    if (++menu>=MENU_ENTRIES) menu-=MENU_ENTRIES;
 			    break;
 			case SDLK_RETURN:
 			case SDLK_SPACE:
-			    switch(menu){
-				case 1:            /* Play */
-				    play->level=lvl-1;
-				case 4:            /* scores */
-				case MENU_ENTRIES: /* Quit */
-				    done=1;
-				    break;
-				case 2:	           /* snd */
-				    done=1;
-				    break;
-				case 3:            /* lvl */
-				    lvl+=4;
-				    if(lvl>21)lvl=1;
-				    break;
-				default:
-				    assert("unhandled menu item"&&NULL);
-			    };
+			    if (entries[menu].callback){
+				entries[menu].callback (title,1);
+			    }else
+				done=1;
 			    break;
 			default:		/* perhaps beep? */
 			    break;
@@ -76,38 +146,15 @@ int title_main(){
 		default:
 		    break;
 	    };
-
-	    while (menu<1) menu+=MENU_ENTRIES;
-	    while (menu>MENU_ENTRIES) menu-=MENU_ENTRIES;
 	};
 
 	if(omenu!=menu){
 	    SDL_BlitSurface(title,&r,play->g->display,&r);
 	    UPDATE(r);
-	    r.x=menux[menu-1]-20;r.y=menuy[menu-1]+6;
+	    r.x=100-20;r.y=280+MENU_LINE*menu+6; // XXX!
 	    SDL_BlitSurface(play->g->ball[BLUE],NULL,play->g->display,&r);
 	    UPDATE(r);
 	    omenu=menu;
-	};
-
-#ifdef SOUND
-	if(play->m){
-	    render_font(sndr.x,sndr.y,"On");
-	}else{
-	    render_font(sndr.x,sndr.y,"Off");
-	};
-#else
-	render_font(sndr.x,sndr.y,"n/a");
-#endif
-	UPDATE(sndr);
-
-	if(olvl!=lvl){
-	    olvl=lvl;
-	    sprintf(lvlnum,"%2d",lvl);
-
-	    SDL_BlitSurface(title,&lvlr,play->g->display,&lvlr);
-	    render_font(lvlr.x,lvlr.y,lvlnum);
-	    UPDATE(lvlr);
 	};
 
 	if(!done){
@@ -115,7 +162,7 @@ int title_main(){
 	    SDL_Delay(100);
 	    SDL_BlitSurface(title,&r,play->g->display,&r);
 	    UPDATE(r);
-	    r.x=menux[menu-1]-20;r.y=menuy[menu-1]+6;
+	    r.x=100-20;r.y=280+MENU_LINE*menu+6; // XXX!
 	    switch(rand()&7){
 		case 0:
 		    r.x++;r.y++;break;
@@ -144,42 +191,16 @@ int title_main(){
     return(menu);
 }
 
-SDL_Surface * create_title(int oldscore){
-    SDL_Surface *title,*black,*s,*bkg;
-    int x;
-
-    s=play->g->display;
-
-    title=IMG_Load("title.png");
-    assert(title!=NULL);
-
-    /* sleep(1); */ /* I'd like to have a cool intro here ;-) */
-
-    black=NULL;
-    /* To make it more readable, perhaps?
-    black=SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, 
-	    s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, 
-	    s->format->Bmask, s->format->Amask);
-    SDL_FillRect(black, NULL, SDL_MapRGB(s->format,0,0,0));
-    SDL_SetAlpha(black, SDL_SRCALPHA, 64);
-    SDL_BlitSurface(black, NULL, title, NULL);
-    */
-
-    bkg=SDL_ConvertSurface(title, s->format, SDL_SWSURFACE);
-    SDL_FreeSurface(title);
-    for(x=0;x<MENU_ENTRIES;x++){
-	render_font_to(menux[x],menuy[x],menus[x],bkg);
+signed int title_main(){
+    menuentry me[MENU_ENTRIES+1] = {
+	{"PLAY", NULL},
+	{"SOUND", &cb_sound},
+	{"LEVEL", &cb_lvl},
+	{"SCORES", NULL},
+	{"QUIT", NULL},
+	{NULL, NULL}
     };
 
-    if(oldscore >0){
-	char sc[100];
-	sprintf(sc,"Your Score: %6d",oldscore);
-	render_font_to(300,10,sc,bkg);
-    };
-
-    /* Display it, for good measure */
-    SDL_BlitSurface(bkg,NULL,s,NULL);
-    SDL_Flip(s);
-
-    return bkg; /* Caller must SDL_FreeSurface(bkg) eventually. */
+    return menu(me);
 }
+
