@@ -1,11 +1,12 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.23 2003/03/14 13:09:30 sec Exp $
+ * $Id: brillion.h,v 1.24 2003/03/15 02:10:25 sec Exp $
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <limits.h>
@@ -210,7 +211,7 @@ typedef struct {
 
 typedef struct {
 	int	    verbose;	// Debugging level
-	char	    *prog;	// Binary name
+	const char  *prog;	// Binary name
 	char	    *dir;	// Data directory
 
 	// We can argue if they should be here...
@@ -258,7 +259,7 @@ void play_touch(int piece);
 #endif
 
 /* game.c */
-a_game* read_game(char* file);
+a_game* read_game(const char* file);
 
 /* graphics.c (should be anim.c?) */
 #define AFRAMES 4

@@ -1,6 +1,6 @@
 /* The game settings file parser
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: game.c,v 1.4 2003/03/14 11:08:16 sec Exp $
+ * $Id: game.c,v 1.5 2003/03/15 02:10:25 sec Exp $
  */
 #include "brillion.h"
 
@@ -15,7 +15,7 @@ many:
    "level \w+" (level setup filename)
  */
 
-a_game* read_game(char * file){
+a_game* read_game(const char * file){
     FILE	 * f;
     a_game * game;
     a_level level;
@@ -57,7 +57,7 @@ a_game* read_game(char * file){
     game=calloc(1,sizeof(a_game));
     game->layout=calloc(1,sizeof(a_layout));
 
-    while(!error && (fgets(word[0],LINELEN,f))>0){
+    while(!error && (fgets(word[0],LINELEN,f)!=NULL)){
 	if((num=strlen(word[0]))==LINELEN){
 	    fprintf(stderr,"Game '%s': Line too long\n",file);
 	    error++;

@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.25 2003/03/14 11:14:51 sec Exp $
+ * $Id: play.c,v 1.26 2003/03/15 02:10:25 sec Exp $
  */
 #include "brillion.h"
 
@@ -10,7 +10,7 @@
 #define MX 640
 #define MY 480
 
-int play_level();
+int play_level(void);
 
 void play_game(a_game* game){
     int	    old_lvl=999; // Just != cur_lvl
@@ -84,7 +84,7 @@ void play_game(a_game* game){
     SDL_Quit();
 };
 
-int play_level(){
+int play_level(void){
     SDL_Event event;
     static int userl=0;  /* user moves left */
     static int userlr=0; /* user released left */

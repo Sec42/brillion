@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.26 2003/03/14 11:08:16 sec Exp $
+ * $Id: graphics.c,v 1.27 2003/03/15 02:10:25 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -259,8 +259,8 @@ void snapshot(void){
     pic=fopen(name,"w");
     fprintf(pic,"P6\n%d %d\n%d\n",g->display->w,g->display->h,255);
     for (x=g->display->pixels; 
-	    x<(unsigned char*)(g->display->pixels+ g->display->w * 
-		g->display->h * g->display->format->BytesPerPixel);
+	    x<(unsigned char*)g->display->pixels+ g->display->w * 
+		g->display->h * g->display->format->BytesPerPixel;
 	    x+=g->display->format->BytesPerPixel)
 	fprintf(pic,"%c%c%c",*(x+2),*(x+1),*(x+0));
     fclose(pic);
