@@ -1,3 +1,6 @@
+24.2.04:
++ Highscores ae buggy.
+
 7.12.:
 + cheat -> no highscore
 + scores: flags (cheat, startinglvl?), howlong. sane printing of times.

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.28 2003/12/11 01:21:27 sec Exp $
+# $Id: Makefile,v 1.29 2004/02/24 09:49:22 sec Exp $
 #Config this:
 CFLAGS?=-O -pipe
 CFLAGS+=-g
@@ -76,6 +76,10 @@ install: $(PRG)
 
 res.o: res.rc
 	windres -i $< -o $@
+
+# Requires the nullsoft installer: http://sourceforge.net/projects/nsis/
+installer: $(PRG)
+	/cygdrive/c/Programme/NSIS/makensis brillion.nsi
 
 .depend: brillion.c brillion.h graphics.c level.c physics.c play.c game.c
 	-$(CC) $(CFLAGS) -MM *.c>.depend
