@@ -1,6 +1,6 @@
 /* Glue code - Things that have to be done differently on certain OSs
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: portab.c,v 1.1 2004/06/21 10:39:35 sec Exp $
+ * $Id: portab.c,v 1.2 2004/06/22 21:30:43 sec Exp $
  */
 
 #include "brillion.h"
@@ -21,7 +21,7 @@ char * getuser(void){
     if (GetUserName(acUserName, &nUserName)) {
 	return(acUserName);
     } else {
-	fprintf(stderr,"Failed to lookup user name, error code %d.\n", GetLastError());
+	fprintf(stderr,"Failed to lookup user name, error code %lu.\n", GetLastError());
     }
     return("<fail>");
 }
