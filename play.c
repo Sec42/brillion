@@ -54,19 +54,23 @@ void play_game(a_game* game){
 
 		// Clear Animation list
 		bzero(play->a,sizeof(play->a));
+		play->status=S_PLAY;
 
-		switch (play_level(play)){
-			case 0:
+		play_level(play);
+		switch (play->status){
+			case S_DIE:
 				play->lives--;
 				split(play->g->display,&play->g->level,300,VERT_OUT);
 				break;
-			case 1:
+			case S_FINISH:
 				play->points+=10*(play->f->time+1);
 				cur_lvl++;
 				break;
-			case 2: /* Aborted */
+			case S_QUIT: /* Aborted */
 				play->lives=0;
 				break;
+			case S_PLAY:
+				die("Exited level with S_PLAY");
 		};
 		print_save(play->s);
 
@@ -93,7 +97,6 @@ int play_level(a_play* play){
   static int userlr=0; /* user released left */
   static int userr=0;  /* user moves right */
   static int userrr=0; /* user released right */
-  char quit=0;
   int frames; // Number of frames displayed
   int z; // Animation counter...
   int dead=0; // Player dead? (ignore input)
@@ -120,17 +123,17 @@ int play_level(a_play* play){
       switch( event.type ){
 	case SDL_KEYDOWN:
 	  if( event.key.keysym.sym == SDLK_q){
-	    quit=1; // Abort game
+	    play->status=S_QUIT; // Abort game
 	  } else if (event.key.keysym.sym == SDLK_RIGHT){
 	    userr=2;userrr=0;
 	  } else if (event.key.keysym.sym == SDLK_LEFT){
 	    userl=2;userlr=0;
 	  } else if (event.key.keysym.sym == SDLK_ESCAPE){
-	    lvl->blocks=-1; // Kill this life.
+	    play->status=S_DIE; // Kill this life.
 	  } else if (event.key.keysym.sym == SDLK_d){
 	    dump_level(lvl);
 	  } else if (event.key.keysym.sym == SDLK_s){
-	    lvl->blocks=0; // XXX: Cheat ;-)
+	    play->status=S_FINISH; // XXX: Cheat ;-)
 	  } else if (event.key.keysym.sym == SDLK_p){
 	    snapshot(g);
 	  };
@@ -153,7 +156,7 @@ int play_level(a_play* play){
 	  break;
 
 	case SDL_QUIT: /* SDL_QUIT event (window close) */
-	  quit = 1;
+	  play->status=S_QUIT;
 	  break;
 
 	default:
@@ -211,9 +214,9 @@ int play_level(a_play* play){
       printf("CPU to slow by %d ticks/round\n",-t_left);
     };
 
-    if(quit || lvl->blocks<=0){ // Basically, time to exit.
+    if(play->status!=S_PLAY){ // Basically, time to exit.
 
-      if(lvl->blocks==-1 && !dead){
+      if(play->status == S_DIE && !dead){
 	create_staticanim(A_DIE,lvl->color,lvl->x,lvl->y);
 	dead=1;
       };
@@ -226,13 +229,7 @@ int play_level(a_play* play){
 
       if(!keepalive){
 	fprintf(stderr,"%f Ticks/frame\n",(float)ticks/frames);
-	if(quit) // Abort
-	  return(2);
-
-	if(lvl->blocks==0) // Sucess
-	  return(1);
-
-	return(0); // Die
+	return(0);
       };
     };
 

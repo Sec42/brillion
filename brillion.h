@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.20 2003/03/09 22:32:32 sec Exp $
+ * $Id: brillion.h,v 1.21 2003/03/12 14:05:28 sec Exp $
  */
 
 #include <stdio.h>
@@ -172,6 +172,13 @@ typedef struct {
 	int	 pos;
 } a_save;
 
+typedef enum {
+	S_PLAY,
+	S_DIE,
+	S_QUIT,
+	S_FINISH
+} status_t;
+
 typedef struct {
 	graphic* g;
 	music*   m;
@@ -180,6 +187,7 @@ typedef struct {
 	int      anims;
 	int	 lives;
 	int	 points;
+	status_t status;
 	a_save*  s;
 } a_play;
 

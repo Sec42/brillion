@@ -77,7 +77,7 @@ void move_step(graphic* gp,music* m,field* lvl, signed int input){
     };
   };
 
-  if(lvl->blocks==-1){ // Don't move if you die
+  if(b->p->status == S_DIE){ // Don't move if you die
     lvl->x=ballx;
     lvl->y=bally;
   }else{
@@ -100,7 +100,7 @@ int move_touch(graphic* gp, music* m, field* lvl, int x, int y,signed int dx,sig
     case DEATH:
       play_touch(m, DEATH);
       printf("You die, how embarrassing!\n");
-      lvl->blocks=-1; // XXX: layering
+      b->p->status=S_DIE; // XXX: layering
       break;
     case BLOCK:
       if(lvl->color==COLOR(x,y)){
@@ -110,7 +110,9 @@ int move_touch(graphic* gp, music* m, field* lvl, int x, int y,signed int dx,sig
 
 	create_staticanim(A_EXPLODE,COLOR(x,y),x,y);
 
-	lvl->blocks--;
+	if(--lvl->blocks ==0)
+	  b->p->status=S_FINISH;
+
 	b->p->points+=lvl->ppb; // XXX: Layering
       };
       break;
