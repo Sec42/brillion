@@ -1,6 +1,6 @@
 #!/bin/sh
 
-id='$Id: config.sh,v 1.9 2004/06/16 23:18:29 sec Exp $'
+id='$Id: config.sh,v 1.10 2004/06/22 21:31:21 sec Exp $'
 
 echo '*** Welcome to the configuration checker for brillion (V0.1)'
 echo ''
@@ -74,7 +74,7 @@ fi
 
 if [ -z "$SOUND" ] ; then
 echo -n "checking for sound lib ...      "
-set -- `sdl-config --libs`
+set -- `$SDL_CONFIG --libs`
 for a in $* ; do
 case $a in
 -L*) libpath=${a#-L};;
