@@ -7,3 +7,6 @@ Oliver Paulzen <opp@muffin.org>
 
 Harold Gutch <logix@foobar.franken.de>
 	for sending in the first patch, and some testing.
+
+Markus Wennrich <nick@schoko.org>
+	for using Update_Rects instad of Flip, thus making it 3 times faster.

@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.10 2003/02/26 03:48:17 sec Exp $
+ * $Id: brillion.h,v 1.11 2003/03/02 02:35:28 sec Exp $
  */
 
 #include <stdio.h>
@@ -89,6 +89,14 @@ typedef struct {
 
 typedef struct {
 	SDL_Surface * display;
+
+	/* UpdateRects list */
+	SDL_Rect * rects;
+	int numrects;
+#define MAXRECTS 256 /* 164 or so for startup */
+#define UPDATE(rect) do{assert(b->p->g->numrects<MAXRECTS);memcpy(b->p->g->rects+(b->p->g->numrects++),&rect,sizeof(SDL_Rect));}while(0)
+#define DISPLAY do{SDL_UpdateRects(b->p->g->display,b->p->g->numrects,b->p->g->rects);b->p->g->numrects=0;}while(0)
+
 	Uint32 colors[MAX_COLORS];
 
 	/* For background */

@@ -106,7 +106,7 @@ int play_level(a_play* play){
       lvl->time--;
     update_scoreboard(play);
 
-    SDL_Flip(g->display); 
+    DISPLAY;
 
     while( SDL_PollEvent( &event ) ){
       /* We are only worried about SDL_KEYDOWN and SDL_KEYUP events */

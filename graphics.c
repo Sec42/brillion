@@ -123,7 +123,7 @@ graphic* init_graphic(){
     fprintf(stderr,"Could not initialize SDL: %s.\n", SDL_GetError());
     exit(-1);
   };
-  if(!(disp=SDL_SetVideoMode(MX, MY, 24, SDL_ANYFORMAT|SDL_DOUBLEBUF))){
+  if(!(disp=SDL_SetVideoMode(MX, MY, 24, SDL_ANYFORMAT))){
     printf("Could not set videomode: %s.\n", SDL_GetError());
     exit(-1);
   };
@@ -134,6 +134,9 @@ graphic* init_graphic(){
 
   g=calloc(1,sizeof(graphic));
   g->display=disp;
+
+  g->rects=calloc(MAXRECTS,sizeof(SDL_Rect));
+  g->numrects=0;
 
   load_graphics(g);
 
@@ -158,6 +161,7 @@ void paint_ball(graphic* g, field* lvl){
   rect.x=QUAD/2*(lvl->x-2)+g->xoff;
   rect.y=QUAD/2*(lvl->y-2)+g->yoff;
   SDL_BlitSurface(g->ball[lvl->color], NULL, g->display, &rect);
+  UPDATE(rect);
 
   return;
 };
@@ -191,6 +195,7 @@ void paint_block(graphic* g, field* lvl, int x, int y){
     default:
       fprintf(stderr,"Cannot draw %d at %d/%d\n",PIECE(x,y),x,y);
   };
+  UPDATE(rect);
 };
 
 void snapshot(graphic* g){
@@ -224,6 +229,7 @@ void fade (SDL_Surface* s, Uint32 ticks, int fadein){
     fprintf(stderr,"Fading currently not supported for palette displays\n");
     if(!fadein)
       SDL_FillRect(s, NULL, SDL_MapRGB(s->format,0,0,0));
+    SDL_Flip(s);
     return;
   };
 
@@ -298,6 +304,7 @@ void print_number(graphic *g, char *str, int x, int y, int alignment){
     }else{
       SDL_FillRect(g->display, &dst, g->colors[BLACK]);
     };
+    UPDATE(dst);
     dst.x+=dst.w;
   }
 };
