@@ -21,4 +21,4 @@ s/^if exists\(([^)]+)\)/ifneq "" "\$(wildcard $1)"/;
 
 '
 
-echo "include .depend" >>$target
+#echo "include .depend" >>$target

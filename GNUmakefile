@@ -24,6 +24,15 @@ ifdef OPTIMIZE
 CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe
 endif
 
+# misses -pedantic (warns too much about system headers)
+# and -ansi (errors out on C++-style comments)
+ifdef PEDANTIC
+CFLAGS+= -D_POSIX_SOURCE -W -Wall -Wbad-function-cast -Wcast-align \
+	-Wcast-qual -Wchar-subscripts -Winline \
+	-Wmissing-prototypes -Wnested-externs -Wpointer-arith \
+	-Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings
+endif
+
 CFLAGS+=-Wall `${SDL_CONFIG} --cflags` -IBFontv1.0.4-1
 LDFLAGS+=`${SDL_CONFIG} --libs` -lSDL_image
 
@@ -78,4 +87,3 @@ config: .config
 gnu: GNUmakefile
 GNUmakefile: Makefile GNUify
 	./GNUify
-include .depend
