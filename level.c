@@ -3,9 +3,9 @@
 /* vim:set cin sw=2 ts=8 sm: */
 
 /* Level format:
-   first line has to be "Clvl <version>"
+   first line has to be "Blvl <version>"
      only <version>==42 is currently supported
-   then (desc|start|time) in random order
+   then (desc|start|time|points|color) in random order
    lastly "level <x> <y>"
    followed by the level in ascii
 
