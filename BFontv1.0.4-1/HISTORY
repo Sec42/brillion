@@ -1,0 +1,34 @@
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+HISTORY
+=======
+
+ 1.0.2
+    - First release
+
+ 1.0.3
+    - Added functions:
+        - SetFontColor();
+
+ 1.0.4
+    - Added functions:
+        - LoadFontFromSurface();
+
+ 1.0.4-1
+
+    - Fixed bug:
+        - BFont could crash the running process by entering a string longer 
+          than 1000 characters with these function:
+            - PrintString ();
+            - PrintStringFont ();
+            - CenteredPrintString ();
+            - CenteredPrintStringFont ();
+            - RightPrintString ();
+            - RightPrintStringFont ();
+            - LeftPrintString ();
+            - LeftPrintStringFont ();
+            - JustifiedPrintString ();
+            - JustifiedPrintStringFont ();
+
+         - Problems:
+            - Under Visual C++ 6 the funciont vsnprintf() is not declareted 
+              in <stdio.h>. See BFont.c for more informations.
