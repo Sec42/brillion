@@ -94,6 +94,7 @@ int play_level(a_play* play){
   Uint32 a_start,a_end,a_gone,a_now;
   Sint32 t_left,a_left;
   Uint32 ticks;
+  Uint32 q;
 
   graphic* g=play->g;
   music*   m=play->m;
@@ -165,12 +166,12 @@ int play_level(a_play* play){
       lvl->time--;
     update_scoreboard(play);
 
-#define DELAY(left,end) left-=10;if(left>0) SDL_Delay(left); while(SDL_GetTicks()<end){;};
+#define DELAY(left,end) left-=10;if(left>9)SDL_Delay(left); while(SDL_GetTicks()<end){q++;};
 
 //    printf("Already lost %d ticks\n",t_start-SDL_GetTicks());
     for(z=1;z<=AFRAMES;z++){
       a_start=SDL_GetTicks();
-      a_end=a_start+(SPEED/(AFRAMES+1));
+      a_end=a_start+(SPEED/(AFRAMES));
 
       animate(g,a,z); // Move what is to move.
 //      printf("%d rects\n",g->numrects);
@@ -182,11 +183,12 @@ int play_level(a_play* play){
 	a_left=a_end-a_now;
 
 //	printf("anim_sleep: %d\n",a_left);
+	q=0;
 	if(a_left>0){
 	  ticks-=a_left;
 	  DELAY(a_left,a_end);
 	};
-//	printf("actually slept %d => %d\n",a_left,SDL_GetTicks()-a_now);
+//	printf("sleep: wanted:%d actually:%d bsy=%d\n",a_left+10,SDL_GetTicks()-a_now,q);
       };
     };
 
@@ -194,7 +196,7 @@ int play_level(a_play* play){
     t_gone=t_now-t_start;
     t_left=t_end-t_now;
 
-//    printf("Speed: ran for %d ticks at %d/anim\n",t_gone,SPEED/(AFRAMES+1));
+//    printf("Speed: ran for %d ticks at %d/anim\n",t_gone,SPEED/AFRAMES);
 
     ticks+=t_gone;
     if(t_left>0){
