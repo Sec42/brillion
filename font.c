@@ -1,6 +1,6 @@
 /* A very simple font blitter - uses SFont/BFont style proportional fonts.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: font.c,v 1.5 2003/12/08 16:36:30 sec Exp $
+ * $Id: font.c,v 1.6 2003/12/10 21:59:34 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -143,20 +143,20 @@ void neu_render_text(SDL_Rect *rd,const char *txt,a_font *f,int maxw){
     };
 }
 
-void size_text(SDL_Rect sr,const char *txt,a_font *f){
+void size_text(SDL_Rect *sr,const char *txt,a_font *f){
     const char *c;
 
     assert(f !=NULL);
 
-    sr.w=0;
-    sr.h=f->h-1;
+    sr->w=0;
+    sr->h=f->h-1;
 
     for(c=txt;*c!=0;c++){
 	if(*c<FONTBEG){
-	    sr.w+=f->space;
+	    sr->w+=f->space;
 	    continue;
 	};
 	assert((*c-FONTBEG)<f->len);
-	sr.w+=f->wid[*c-FONTBEG];
+	sr->w+=f->wid[*c-FONTBEG];
     };
 }

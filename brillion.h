@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.31 2003/12/08 16:36:30 sec Exp $
+ * $Id: brillion.h,v 1.32 2003/12/10 21:59:34 sec Exp $
  */
 
 #include <stdio.h>
@@ -335,6 +335,7 @@ void print_save(a_save *s);
 a_font* init_font(const char *file);
 void render_font(int x, int y,const char *txt);
 SDL_Rect *render_text(int x, int y,const char *txt,a_font *f,int maxw);
+void size_text(SDL_Rect *sr,const char *txt,a_font *f);
 
 /* score.c */
 the_scores* read_scores(void);
