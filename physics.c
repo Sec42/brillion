@@ -13,8 +13,6 @@ void move_step(graphic* gp,music* m,field* lvl, signed int input){
   x=lvl->x/2; y=lvl->y/2; 
 
 //  paint_block(gp,lvl,x,y); /* Restore background */
-  b->p->a[0].from.x=lvl->x;
-  b->p->a[0].from.y=lvl->y;
 
   lvl->y+=lvl->dir; lvl->x+=input;
   xn=lvl->x/2; yn=lvl->y/2; 
@@ -70,7 +68,7 @@ void move_step(graphic* gp,music* m,field* lvl, signed int input){
     };
   };
 
-  create_moveanim(A_BALL,ballx,bally,lvl->x,lvl->y);
+  create_moveanim(A_BALL,lvl->color,ballx,bally,lvl->x,lvl->y);
   return;
 };
 
@@ -106,14 +104,8 @@ int move_touch(graphic* gp, music* m, field* lvl, int x, int y,signed int dx,sig
 	  PIECE(x+dx,y+dy)=PIECE(x,y);
 	  COLOR(x+dx,y+dy)=COLOR(x,y);
 	  PIECE(x,y)=SPACE;
-#define ANIM(t,x,y,xx,yy) \
-	  b->p->a[1].type=t; \
-	  b->p->a[1].from.x=x; \
-	  b->p->a[1].from.y=y; \
-	  b->p->a[1].to.x=xx; \
-	  b->p->a[1].to.y=yy;
 
-	  ANIM(A_DISK,x,y,x+dx,y+dy);
+	  create_moveanim(A_DISK, COLOR(x,y), x, y, x+dx, y+dy);
 //	  paint_block(gp,lvl,x+dx,y+dy);
 //	  paint_block(gp,lvl,x,y);
 	}

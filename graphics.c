@@ -343,27 +343,47 @@ a_anim* init_anim(){
   return a;
 };
 
-void create_moveanim(enum animations type, int ox, int oy, int nx, int ny){
+void create_moveanim(enum animations type, int color, int ox, int oy, int nx, int ny){
   a_anim*  a=b->p->a;
   graphic* g=b->p->g;
+  int v;
 
-  switch(type){
+  while(a->type != A_NONE) a++; // Search free anim space.
+
+  a->duration=0;
+  a->color=color;
+  switch(a->type=type){
     case A_BALL:
       a->type=A_BALL;
-      a->block[0].x=ox/2;
-      a->block[0].y=oy/2;
-      a->block[1].x=nx/2;
-      a->block[1].y=ny/2;
 
-//    if((a->block[0].x==a->block[1].x)&&(a->block[0].y==a->block[1].y)) a->block[1].x=0;
-
+      if(ox>nx) v=1; else v=0;
+      a->block[v].x=ox/2;
+      a->block[1-v].x=nx/2;
+      if(oy>ny) v=1; else v=0;
+      a->block[v].y=oy/2;
+      a->block[1-v].y=ny/2;
       a->pixel[0].x=QUAD/2*(ox-2)+g->xoff;
       a->pixel[0].y=QUAD/2*(oy-2)+g->yoff;
       a->pixel[1].x=QUAD/2*(nx-2)+g->xoff-a->pixel[0].x;
       a->pixel[1].y=QUAD/2*(ny-2)+g->yoff-a->pixel[0].y;
-
       break;
+
+    case A_DISK:
+      if(ox>nx) v=1; else v=0;
+      a->block[v].x=ox;
+      a->block[1-v].x=nx;
+      if(oy>ny) v=1; else v=0;
+      a->block[v].y=oy;
+      a->block[1-v].y=ny;
+
+      a->pixel[0].x=QUAD*(ox-1)+g->xoff;
+      a->pixel[1].x=QUAD*(nx-1)+g->xoff-a->pixel[0].x;
+      a->pixel[0].y=QUAD*(oy-1)+g->yoff;
+      a->pixel[1].y=QUAD*(ny-1)+g->yoff-a->pixel[0].y;
+      break;
+
     default:
+      a->type=A_NONE;
       printf("Unknown type %d in create_moveanim\n",type);
       break;
     };
@@ -373,32 +393,42 @@ void create_moveanim(enum animations type, int ox, int oy, int nx, int ny){
 void animate(graphic*g, a_anim*a, int step){
   SDL_Rect rect;
   int aidx=0;
+  int x1,y1;
 
   for (aidx=0;aidx < MAX_ANIM; aidx++){
     switch(a[aidx].type){
       case A_NONE:
 //	printf("No animation here\n");
 	break;
+
       case A_BALL:
+	for(x1=a[aidx].block[0].x;x1<=a[aidx].block[1].x;x1++)
+	  for(y1=a[aidx].block[0].y;y1<=a[aidx].block[1].y;y1++)
+	    blank_block(g,x1,y1);
+
+	rect.w=rect.h=QUAD/2;
+	rect.x=a[aidx].pixel[0].x+(a[aidx].pixel[1].x*step/AFRAMES);
+	rect.y=a[aidx].pixel[0].y+(a[aidx].pixel[1].y*step/AFRAMES);
+	SDL_BlitSurface(g->ball[a[aidx].color], NULL, g->display, &rect);
+
+	if(step == AFRAMES){ // Ball Animation is one Frame long
+	    a[aidx].type=A_NONE;
+	};
+	break;
+
+      case A_DISK:
 	blank_block(g,a[aidx].block[0].x,a[aidx].block[0].y);
 	blank_block(g,a[aidx].block[1].x,a[aidx].block[1].y);
-//	paint_block(g,b->p->f,a[aidx].from.x/2,a[aidx].from.y/2);
 
+	rect.w=rect.h=QUAD;
+	rect.x=a[aidx].pixel[0].x+(a[aidx].pixel[1].x*(step+AFRAMES*a[aidx].duration)/(2*AFRAMES));
+	rect.y=a[aidx].pixel[0].y+(a[aidx].pixel[1].y*(step+AFRAMES*a[aidx].duration)/(2*AFRAMES));
+	SDL_BlitSurface(g->disk[b->p->f->color], NULL, g->display, &rect);
 
-  rect.w=rect.h=QUAD/2;
-  rect.x=a[aidx].pixel[0].x+(a[aidx].pixel[1].x*step/AFRAMES);
-  rect.y=a[aidx].pixel[0].y+(a[aidx].pixel[1].y*step/AFRAMES);
-//  printf("Ball: step=%d, %d/%d\n",step,rect.x,rect.y);
-  SDL_BlitSurface(g->ball[b->p->f->color], NULL, g->display, &rect);
-	if(step == AFRAMES)
-	  a[aidx].type=A_NONE;
-
-	break;
-      case A_DISK:
-	if(step == AFRAMES){
-	  paint_block(g,b->p->f,a[aidx].from.x,a[aidx].from.y);
-	  paint_block(g,b->p->f,a[aidx].to.x,a[aidx].to.y);
-	  a[aidx].type=A_NONE;
+	if(step == AFRAMES){ // Disk Animation is be 2 Frames long
+	  if(++a[aidx].duration==2){
+	    a[aidx].type=A_NONE;
+	  };
 	};
 	break;
       default:

@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.14 2003/03/02 17:16:00 sec Exp $
+ * $Id: brillion.h,v 1.15 2003/03/02 18:36:16 sec Exp $
  */
 
 #include <stdio.h>
@@ -60,17 +60,15 @@ typedef struct {
 	int x, y;
 } coord;
 
-
-#define MAX_ANIM 3
+#define MAX_ANIM 5
 
 typedef struct {
 	enum animations	type;
+	int  color;
+	int  duration;
 
 	coord	block[2];
 	coord	pixel[2];
-
-	coord		from;
-	coord		to;
 } a_anim;
 
 typedef struct {
@@ -99,7 +97,10 @@ typedef struct {
 	int numrects;
 #define MAXRECTS 256 /* 164 or so for startup */
 #define UPDATE(rect) do{assert(b->p->g->numrects<MAXRECTS);memcpy(b->p->g->rects+(b->p->g->numrects++),&rect,sizeof(SDL_Rect));}while(0)
+
 #define DISPLAY do{SDL_UpdateRects(b->p->g->display,b->p->g->numrects,b->p->g->rects);b->p->g->numrects=0;}while(0)
+// For development:
+//#define DISPLAY do{SDL_Flip(b->p->g->display);b->p->g->numrects=0;}while(0)
 
 	Uint32 colors[MAX_COLORS];
 
@@ -156,6 +157,7 @@ typedef struct {
 	music*   m;
 	field*   f;
 	a_anim*	 a;
+	int      anims;
 	int	 lives;
 	int	 points;
 } a_play;
@@ -219,9 +221,9 @@ a_game* read_game(char* file);
 #define AFRAMES 4
 a_anim* init_anim();
 void animate(graphic*g, a_anim*a, int step);
-void create_moveanim(enum animations type, int ox, int oy, int nx, int ny);
+void create_moveanim(enum animations type, int color, int ox, int oy, int nx, int ny);
 
-/* These depend on you scheduler 20/10 seems a sane default */
+/* These depend on you scheduler 20/10 (msec) seems a sane default */
 #define SLEEP_MIN 20
 #define SLEEP_GRAN 10
 
