@@ -5,18 +5,12 @@
 /* Game file format:
    first line has to be "Brillion <version>"
      only <version>==42 is currently supported
-   [
-   then any number of "<option>" lines
-   followed by one "level <levelname>" line
-   ] 1 or more of this.
-
-   options are:
-   sfx <type> <file>  (type = disk, death, star, block, wall)
-   gfx <type> <file>  (type = disk, death, star, block, space)
-   bg <file> (background image) (offx, offy, wx, wy - playfield)?
-   txtfont <file> (level name) (offx, offy, wid?)?
-   ptsfont <file> (blocks, time, levelno?, lives){xoff,yoff,wid?}?
-   bgsound <file>
+once:
+   "lives \d+" (number of lives)
+   
+many:
+   "bg \w+"    (background image filename)
+   "level \w+" (level setup filename)
  */
 
 a_game* read_game(char * file){
