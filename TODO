@@ -1,30 +1,45 @@
+8.8.04:
++ ANIM_ENGINE: ball should get squashed at bounce.
++ options menu // gernericize menu code
++ "Labels" in "Original" game background
+
+16.6.04:
+. higscores: empty name creates broken file
+. every score gets at least last place
++ corrupt file breaks HS alltogether
+
 24.2.04:
-+ Highscores ae buggy.
+. Highscores are buggy.
 
 7.12.:
-+ cheat -> no highscore
+. cheat -> no highscore
 + scores: flags (cheat, startinglvl?), howlong. sane printing of times.
 + font: right-justfied printing for numbers. perhaps fixed.witdhprinting?
 + end of levels -> random levels
 + saner handling of Scorefile brokenness/nonexistence.
 
 + Add better(complete) sound FX
+  -> SFX added. Could still be improved.
 . Add mini-animation engine
   (moving: ball, disk; stationary: stone_explosion, ball_explosion, "twinkle")
   [all done. "twinkle" is too expensive for now]
 + Add music (ingame, title, credits) (cecile?)
 + Add better stone models (rotfl?)
-  + Round ball: use either png:transparent or
+  . Round ball: use either png:transparent or
     color keying instead of current method.
+    -> works fine with color keying.
 + Add better bg graphic
 . Add layout description file & parser.
   (should now be in 'Settings' file)
-+ Add title screen, credits
+. Add title screen,
++ Add credits
 + Add game rules description (perhaps in-game?)
 
 ? How to print level names? Use BFont? Use monospaced? Use COLOR_KEYING?
+  . Wrote own font routine, uses proportional font. Transparency still missing
 ? color stones in-program or externally?
   (currently in-program, but may get complicated with shaded stones)
+  shading works fine, but maybe make colors "Theme"-configurable?
 ? In printing routine, maybe add caching?
   How to decide when to use alpha? it is probably to slow to do that everywhere.
 . Is it actually okay to use DBLBUF? or better single, and update_Rect?
@@ -35,8 +50,9 @@
 . Should the gamefield be completely static? Or e.g. the borders be
   pieces itself?
   (completely static, for now)
-? should sound effects be all played, or cut themselfs off like in the
+. should sound effects be all played, or cut themselfs off like in the
   original
+  -> We only cut off effects of the same type.
 
 . heroes is quite fast but yet doesn't use ANYFORMAT, but palette instead.
   perhaps their way of managing the screen themselves and just telling SDL 
@@ -57,4 +73,4 @@ diff: original game contains different 'Wall' blocks. No difference in
 ? should the ball deform itself on impact?
   (original does that on top and bottom)
 
-? found out when extra lives are granted
+? find out when extra lives are granted
