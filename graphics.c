@@ -421,7 +421,7 @@ void animate(graphic*g, a_anim*a, int step){
 	rect.w=rect.h=QUAD;
 	rect.x=a[aidx].pixel[0].x+(a[aidx].pixel[1].x*(step+AFRAMES*a[aidx].duration)/(2*AFRAMES));
 	rect.y=a[aidx].pixel[0].y+(a[aidx].pixel[1].y*(step+AFRAMES*a[aidx].duration)/(2*AFRAMES));
-	SDL_BlitSurface(g->disk[b->p->f->color], NULL, g->display, &rect);
+	SDL_BlitSurface(g->disk[a[aidx].color], NULL, g->display, &rect);
 
 	if(step == AFRAMES){ // Disk Animation is be 2 Frames long
 	  if(++a[aidx].duration==2){
