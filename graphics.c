@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.33 2003/03/19 14:52:53 sec Exp $
+ * $Id: graphics.c,v 1.34 2003/03/19 15:32:26 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -333,12 +333,10 @@ void snapshot(void){
     fclose(pic);
 }
 
-#define ALIGN_LEFT  0
-#define ALIGN_RIGHT 1
-
-void print_number(char *str, coord co, int alignment){
-    char *c;
+void print_number(int cacheno, int num, coord co){
+    char *c,*d;
     SDL_Rect dst,r;
+    static char cache[100];
     graphic *g=play->g;
 
     /* Font specifics ... */
@@ -350,63 +348,35 @@ void print_number(char *str, coord co, int alignment){
     r.h=dst.h=hei;
     r.y=0;
 
-    dst.y=co.y;
-    switch (alignment) {
-	case ALIGN_RIGHT:
-	    dst.x=co.x-(strlen(str)*dst.w);
-	    break;
-	default:
-	case ALIGN_LEFT:
-	    dst.x=co.x;
-    }
+    sprintf(cache,"%5d",num);
 
-    for(c=str;*c!=0;c++){
-	if(*c!=' '){
-	    int xoff=*c-'0';
-	    r.x=wid*xoff+fudge;
-	    SDL_BlitSurface(g->font, &r, g->display, &dst);
-	}else{
-	    SDL_FillRect(g->display, &dst, g->colors[BLACK]);
+    dst.y=co.y;
+    dst.x=co.x-(5*dst.w);
+
+    assert((cacheno+1)*8<100);
+    for(d=(c=cache)+(cacheno*8);*c!=0;c++,d++){
+	if(*c != *d){
+	    if(*c!=' '){
+		int xoff=*c-'0';
+		r.x=wid*xoff+fudge;
+		SDL_BlitSurface(g->font, &r, g->display, &dst);
+	    }else{
+		SDL_FillRect(g->display, &dst, g->colors[BLACK]);
+	    };
+	    UPDATE(dst);
+	    dst.x+=dst.w;
 	};
-	UPDATE(dst);
-	dst.x+=dst.w;
     }
 };
 
 void update_scoreboard(void){
-    char t[10];
     a_layout *l=play->layout;
-    static int level=1,points=1,blocks=0,time=0,lives=0;
 
-    if(play->level != level){
-	level=play->level;
-	sprintf(t,"%1d",play->level+1);
-	print_number(t,l->level, ALIGN_RIGHT);
-    };
-
-    if(play->points != points){
-	points=play->points;
-	sprintf(t,"%5d",play->points);
-	print_number(t,l->pts, ALIGN_RIGHT);
-    };
-
-    if(play->f->blocks != blocks){
-	blocks=play->f->blocks;
-	sprintf(t,"%3d",play->f->blocks);
-	print_number(t,l->blocks, ALIGN_RIGHT);
-    };
-
-    if(play->f->time != time){
-	time=play->f->time;
-	sprintf(t,"%3d",play->f->time);
-	print_number(t,l->time, ALIGN_RIGHT);
-    };
-
-    if(play->lives != lives){
-	lives=play->lives;
-	sprintf(t,"%3d",play->lives);
-	print_number(t,l->lives, ALIGN_RIGHT);
-    };
+    print_number(1, play->level+1,  l->level);
+    print_number(2, play->points,   l->pts);
+    print_number(3, play->f->blocks,l->blocks);
+    print_number(4, play->f->time,  l->time);
+    print_number(5, play->lives,    l->lives);
 };
 
 a_anim* init_anim(void){
