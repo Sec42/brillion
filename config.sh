@@ -1,6 +1,6 @@
 #!/bin/sh
 
-id='$Id: config.sh,v 1.8 2004/06/15 10:40:38 sec Exp $'
+id='$Id: config.sh,v 1.9 2004/06/16 23:18:29 sec Exp $'
 
 echo '*** Welcome to the configuration checker for brillion (V0.1)'
 echo ''
@@ -19,20 +19,22 @@ while [ $# -gt 0 ] ; do
 	case $1 in
 	profile) 	PROFILE=yes;;
 	sound)		SOUND=yes;;
+	nosound)	SOUND=no;;
 	optimize) 	OPTIMIZE=yes;;
 	pedantic)	PEDANTIC=yes;;
 	devel)		DEVEL=yes;;
 	save)		SAVE=yes;;
 	windows)	WINDOWS=yes;;
+	nowindows)	WINDOWS=no;;
 	--help|help|-h) 
 		echo "Usage: ./config.sh [options]"
 		echo "	profile		Compiles a binary with profiling support"
 		echo "	optimize	Compiles a more optimized binary"
 		echo "	pedantic	Turns on a lot of Warnings"
 		echo ""
-		echo "	sound		Turns on sound support"
+		echo "	[no]sound	Forces sound support on or off"
 		echo "	devel		devel support (semi-cheats)"
-		echo "	windows		add windows icon/resources"
+		echo "	[no]windows		add windows icon/resources"
 		echo ""
 		exit 1;;
 	*)		echo "Error: Unknown option $1";exit 1;;
@@ -41,23 +43,9 @@ while [ $# -gt 0 ] ; do
 	shift
 done
 
-### Check for windows
-
-echo -n "checking for windows extras ... "
-
-case `uname` in 
-CYGWIN*) WINDOWS=YES;;
-esac
-
-if [ -z "$WINDOWS" ] ; then
-	echo No
-else
-	echo Yes - poor boy.
-fi
-
 ### Check for sdl-config
 
-echo -n "looking for sdl-config ... "
+echo -n "looking for sdl-config ...      "
 
 [ -z "$SDL_CONFIG" ] && {
 sdl11-config --version && SDL_CONFIG=sdl11-config
@@ -71,7 +59,44 @@ else
 	echo $SDL_CONFIG
 fi
 
+### Check for windows
+
+if [ -z "$WINDOWS" ] ; then
+echo -n "checking for windows extras ... "
+WINDOWS=NO
+case `uname` in 
+CYGWIN*) WINDOWS=YES;;
+esac
+	echo $WINDOWS
+fi
+
+### Check for sound
+
+if [ -z "$SOUND" ] ; then
+echo -n "checking for sound lib ...      "
+set -- `sdl-config --libs`
+for a in $* ; do
+case $a in
+-L*) libpath=${a#-L};;
+esac
+done
+if [ -z "$libpath" ] ; then 
+SOUND=NO
+else
+if [ ! -f "$libpath/libSDL_mixer.a" ] ; then 
+SOUND=NO
+else
+SOUND=YES
+fi
+fi
+
+echo $SOUND
+fi
+
 ### End of checks, write .config
+
+[ "$SOUND" = "NO" ] && unset SOUND
+[ "$WINDOWS" = "NO" ] && unset WINDOWS
 
 :>.config
 for a in SDL_CONFIG PROFILE SOUND OPTIMIZE PEDANTIC WINDOWS; do
