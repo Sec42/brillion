@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.35 2003/12/08 16:36:30 sec Exp $
+ * $Id: play.c,v 1.36 2003/12/10 22:07:54 sec Exp $
  */
 #include "brillion.h"
 
@@ -141,6 +141,7 @@ int play_level(void){
 #ifdef DEVEL
 		    } else if (event.key.keysym.sym == SDLK_s){
 			play->status=S_FINISH;		/* XXX: Cheat ;-) */
+			play->f->time=0;
 		    } else if (event.key.keysym.sym == SDLK_p){
 			snapshot();
 		    } else if (event.key.keysym.sym == SDLK_BACKSPACE){
