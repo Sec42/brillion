@@ -1,6 +1,6 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.12 2004/06/15 10:46:06 sec Exp $
+ * $Id: score.c,v 1.13 2004/06/20 22:09:43 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -249,6 +249,8 @@ void display_scores(void){
 	strlcpy(scores->scores[do_inp].name,input_text(&inp,font),8); */
 	strncpy(scores->scores[do_inp].name,input_text(&inp,font),SCORENAMELEN);
 	scores->scores[do_inp].name[SCORENAMELEN-1]=0;
+	if(scores->scores[do_inp].name[0]==0)
+	    strncpy(scores->scores[do_inp].name,"?",SCORENAMELEN);
 	write_scores(scores);
     };
 
