@@ -87,6 +87,7 @@ field * read_level(char * file){
 	for (y=1;y<lvl->h;y++){ // For each line.
 	  fgets(word,50,level);
 	  for(x=1;x<lvl->w;x++){
+	    color=0;type=DEATH;
 	    switch(word[x-1]){
 	      case '1': case '2': case '3': case '4':
 	      case '5': case '6': case '7': case '8':

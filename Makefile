@@ -8,7 +8,7 @@ CFLAGS=-g -O -pipe
 
 # Don't touch this.
 CFLAGS+=-Wall `${SDL_CONFIG} --cflags`
-LDFLAGS+=`${SDL_CONFIG} --libs` -lSDL_image -lSDL_mixer
+LDFLAGS+=`${SDL_CONFIG} --libs` -lSDL_image # -lSDL_mixer
 
 .if(defined(DMALLOC_OPTIONS))
 CFLAGS+=-I/usr/local/include/ -DDMALLOC
