@@ -1,9 +1,9 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.44 2004/06/21 12:28:49 sec Exp $
+ * $Id: play.c,v 1.45 2004/06/22 22:30:12 sec Exp $
  */
 
-#include <string.h>
+#include <time.h>
 #include "brillion.h"
 
 #define QUAD  32 /* Size of Standard Block, must be divisible by 2 */
@@ -31,6 +31,7 @@ void run_game(a_game * game){
     play->s=init_save();
     play->points=0;
     init_timer();
+    play->starttime=time(NULL);
 
     play->level=0; /* XXX */
 
