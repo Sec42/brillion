@@ -80,6 +80,7 @@ int move_touch(graphic* gp, field* lvl, int x, int y,signed int dx,signed int dy
       break;
     case DEATH:
       printf("You die, how embarrassing!\n");
+      lvl->blocks=0; // XXX
 //      Mix_PlayChannel(1,music, 0);
       break;
     case BLOCK:
