@@ -28,6 +28,7 @@ CFLAGS+= -ansi -D_POSIX_SOURCE -D_POSIX_C_SOURCE=2 -W -Wall -Wcast-align \
 	-Wbad-function-cast -Wcast-qual -Wchar-subscripts -Winline \
 	-Wmissing-prototypes -Wnested-externs -Wpointer-arith \
 	-Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings
+.SILENT:
 .endif
 
 CFLAGS+=-Wall `${SDL_CONFIG} --cflags`
