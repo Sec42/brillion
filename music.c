@@ -12,12 +12,12 @@ music* init_music(){
   };
   Mix_AllocateChannels(4);
 
-//  bg=Mix_LoadMUS("sounds/Cymbals.mp3");
+//  bg=Mix_LoadMUS("Cymbals.mp3");
 //  Mix_PlayMusic(title, 1);
 
-  m->wall=Mix_LoadWAV("sounds/wall3.wav");
-  m->star=Mix_LoadWAV("sounds/star-cut.wav");
-  m->block=Mix_LoadWAV("sounds/e.wav");
+  m->wall=Mix_LoadWAV("wall.wav");
+  m->star=Mix_LoadWAV("star.wav");
+  m->block=Mix_LoadWAV("block.wav");
 
   return m;
 }
