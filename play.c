@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.30 2003/03/21 01:03:19 sec Exp $
+ * $Id: play.c,v 1.31 2003/03/26 17:37:33 sec Exp $
  */
 #include "brillion.h"
 
@@ -24,6 +24,8 @@ void play_game(a_game* game){
     play->a=init_anim();
     play->s=init_save();
     play->points=0;
+
+    display_title();
 
     play->lives=game->lives;
     play->level=0; /* XXX */
