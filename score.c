@@ -1,11 +1,20 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.7 2003/12/12 02:32:12 sec Exp $
+ * $Id: score.c,v 1.8 2004/02/20 18:20:31 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
-#include <pwd.h>
 #include <time.h>
+
+#ifndef __WIN32__
+#include <pwd.h>
+#else
+
+struct passwd {
+    char    *pw_name;       /* user name */
+};
+
+#endif
 
 the_scores* read_scores(void){
     FILE	*f;
@@ -122,7 +131,9 @@ void write_scores(void){
 		scores->scores[x].howlong
 	      );
     };
+#ifndef __WIN32__
     fsync(fileno(f));
+#endif
     fclose(f);
     unlink("Scores.bak");
     return;
@@ -147,13 +158,19 @@ void add_score(void){
 		break;
 	};
 	for(y=scores->maxscore;y>=x;y--){
-	    bcopy(&scores->scores[y],&scores->scores[y+1],sizeof(a_score));
+	    memcpy(&scores->scores[y+1],&scores->scores[y],sizeof(a_score));
 	};
 	scores->maxscore++;
     };
 
+    // XXX: Windows is stupid
+#ifndef __WIN32__
     pw=getpwuid(getuid());
     strlcpy(scores->scores[x].name,pw->pw_name,SCORENAMELEN);
+#else
+    assert(strlen("(me)")<SCORENAMELEN);
+    strcpy(scores->scores[x].name,"(me)");
+#endif
     scores->scores[x].name[0]=1;
     scores->scores[x].score=play->points;
     scores->scores[x].when=time(NULL);
@@ -226,7 +243,10 @@ void display_scores(void){
     }
     SDL_Flip(s);
     if(do_inp){
-	strlcpy(scores->scores[do_inp].name,input_text(&inp,font),8);
+	// XXX: Windows doesn't do strlcpy alert
+//	strlcpy(scores->scores[do_inp].name,input_text(&inp,font),8);
+	strncpy(scores->scores[do_inp].name,input_text(&inp,font),7);
+	scores->scores[do_inp].name[7]=0;
 	write_scores();
     };
 
