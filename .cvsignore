@@ -1,0 +1,8 @@
+data
+brillion
+.depend
+.config
+
+brillion.exe
+SDL.dll
+SDL_image.dll
