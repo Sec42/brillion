@@ -31,8 +31,10 @@ signed int handle_save(a_save* s,signed int dir){
     if(s->what==R_RECORD){
 	if(s->pos < s->len){
 	    s->game[s->pos++]=dir+1;
-	    return(dir);
+	}else{
+	    // Whoops, overflow %)
 	};
+	return(dir);
     };
 
     if(s->what==R_PLAY){
