@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.42 2004/06/15 10:46:06 sec Exp $
+ * $Id: play.c,v 1.43 2004/06/16 23:08:17 sec Exp $
  */
 #include <string.h>
 #include "brillion.h"
@@ -26,15 +26,18 @@ void run_game(a_game * game){
     play->points=0;
     init_timer();
 
+    play->level=0; /* XXX */
+    play->sound=1; /* XXX */
+
     while(1){
 	switch(title_main()){
 	    case 1:
 		play_game(game);
 		break;
-	    case 3:
+	    case 4:
 		display_scores();
 		break;
-	    case 4:
+	    case 5:
 		exit(0); /* XXX ? */
 	};
     };
@@ -43,7 +46,6 @@ void run_game(a_game * game){
 void play_game(a_game* game){
     int	    old_lvl;
 
-    play->level=0; /* XXX */
     old_lvl=999; /* Just != cur_lvl */
     play->points=0;
     play->lives=game->lives;

@@ -1,6 +1,6 @@
 /* Do all the audible stuff
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: music.c,v 1.9 2004/06/14 22:18:00 sec Exp $
+ * $Id: music.c,v 1.10 2004/06/16 23:08:17 sec Exp $
  */
 #include "brillion.h"
 
@@ -8,7 +8,7 @@ music* init_music(){
   music* m;
 
   m=calloc(1,sizeof(music));
-  if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY,MIX_DEFAULT_FORMAT,1,1024)){
+  if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY,MIX_DEFAULT_FORMAT,1,2048)){
     fprintf(stderr,"Could not initialize SDL/Audio: %s.\n", SDL_GetError());
     exit(-1);
   };
@@ -31,6 +31,9 @@ music* init_music(){
 
 void play_touch(int piece){
     music *m = play->m;
+
+    if(!play->sound)
+	return;
 
 /*  printf("Playing snd %d\n",piece); */
   switch(piece){

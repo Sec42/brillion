@@ -1,28 +1,30 @@
 /* Display the title screen, and handle the main menu...
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: title.c,v 1.8 2004/02/20 21:15:34 sec Exp $
+ * $Id: title.c,v 1.9 2004/06/16 23:08:17 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
 
-#define MENU_ENTRIES 4
+#define MENU_ENTRIES 5
 
-char menus[][80] = { "PLAY", "LEVEL", "SCORES", "QUIT" };
-int  menux[]     = {100,100,100,100};
-int  menuy[]     = {320,360,400,440};
+char menus[][80] = { "PLAY", "SOUND", "LEVEL", "SCORES", "QUIT" };
+int  menux[]     = {100,100,100,100,100};
+int  menuy[]     = {280,320,360,400,440};
 
 int title_main(){
     SDL_Event event;
-    SDL_Rect r,lvlr;
+    SDL_Rect r,lvlr, sndr;
     signed int menu=1,omenu=0,done=0;
     graphic * g=play->g;
     int lvl=1, olvl=0;
+    int snd=play->sound, osnd=2;
     char lvlnum[50];
     SDL_Surface *title;
 
     title=create_title(0);
     r.x=0;r.y=0;r.w=16;r.h=16; /* XXX: QUAD/2? :) */
-    lvlr.x=220;lvlr.w=100; lvlr.y=360;lvlr.h=50; /* XXX: Why there? */
+    sndr.x=240;sndr.w=100; sndr.y=320;sndr.h=40; /* XXX: Why there? */
+    lvlr.x=240;lvlr.w=100; lvlr.y=360;lvlr.h=50; /* XXX: Why there? */
 
     while(!done){
 	while( !done && SDL_PollEvent( &event ) ){
@@ -45,12 +47,15 @@ int title_main(){
 			    switch(menu){
 				case 1:            /* Play */
 				    play->level=lvl-1;
-				case 3:            /* scores */
+				    play->sound=snd;
+				case 4:            /* scores */
 				case MENU_ENTRIES: /* Quit */
 				    done=1;
 				    break;
-
-				case 2:            /* lvl */
+				case 2:	           /* snd */
+				    snd=1-snd;
+				    break;
+				case 3:            /* lvl */
 				    lvl+=4;
 				    if(lvl>21)lvl=1;
 				    break;
@@ -86,6 +91,21 @@ int title_main(){
 	    UPDATE(r);
 	    omenu=menu;
 	};
+	if(osnd!=snd){
+	    osnd=snd;
+	    SDL_BlitSurface(title,&sndr,play->g->display,&sndr);
+#ifdef SOUND
+	    if(snd){
+		render_font(sndr.x,sndr.y,"On");
+	    }else{
+		render_font(sndr.x,sndr.y,"Off");
+	    };
+#else
+	    render_font(sndr.x,sndr.y,"n/a");
+#endif
+	    UPDATE(sndr);
+	};
+
 	if(olvl!=lvl){
 	    olvl=lvl;
 	    sprintf(lvlnum,"%2d",lvl);
@@ -94,7 +114,6 @@ int title_main(){
 	    render_font(lvlr.x,lvlr.y,lvlnum);
 	    UPDATE(lvlr);
 	};
-
 
 	if(!done){
 	    /* While No events are pending, we can do funky idle things */

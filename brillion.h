@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.38 2004/06/14 22:18:00 sec Exp $
+ * $Id: brillion.h,v 1.39 2004/06/16 23:08:17 sec Exp $
  */
 
 #include <stdio.h>
@@ -216,6 +216,7 @@ typedef struct {
 	int	    lives;
 	int	    points;
 	int	    level;
+	int	    sound;
 	status_t    status;
 	a_save	    *s;
 	a_layout    *layout;
