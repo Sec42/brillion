@@ -1,3 +1,4 @@
+# $Id: Makefile,v 1.24 2003/03/26 01:38:46 sec Exp $
 #Config this:
 CFLAGS?=-O -pipe
 CFLAGS+=-g
