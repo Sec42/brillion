@@ -441,7 +441,11 @@ void create_moveanim(enum animations type, int color, int ox, int oy, int nx, in
   graphic* g=b->p->g;
   int v;
 
-  while(a->type != A_NONE) a++; // Search free anim space.
+  if(type!=A_BALL){ // Ball is always index 0.
+    a++;
+    while(a->type != A_NONE) a++; // Search free anim space.
+  };
+
 
   a->duration=0;
   a->color=color;
@@ -484,7 +488,9 @@ void create_staticanim(enum animations type, int color, int x, int y){
   a_anim*  a=b->p->a;
   graphic* g=b->p->g;
 
+  a++; // Index 0 is always the ball move.
   while(a->type != A_NONE) a++; // Search free anim space.
+  // XXX: Don't run over the end.
 
   a->duration=0;
   a->color=color;
@@ -526,14 +532,8 @@ void animate(graphic*g, a_anim*a, int step){
 	  for(y1=a[aidx].block[0].y;y1<=a[aidx].block[1].y;y1++)
 	    blank_block(g,x1,y1);
 
-	rect.w=rect.h=QUAD/2;
-	rect.x=a[aidx].pixel[0].x+(a[aidx].pixel[1].x*step/AFRAMES);
-	rect.y=a[aidx].pixel[0].y+(a[aidx].pixel[1].y*step/AFRAMES);
-	SDL_BlitSurface(g->ball[a[aidx].color], NULL, g->display, &rect);
-
-	if(step == AFRAMES){ // Ball Animation is one Frame long
-	    a[aidx].type=A_NONE;
-	};
+	// Ball displaying is last, so the ball can fly through another anim
+	// (only one relevant is A_EXPLODE for now)
 	break;
 
       case A_DISK:
@@ -596,5 +596,16 @@ void animate(graphic*g, a_anim*a, int step){
 	printf("Unknown animate %d\n",a[aidx].type);
 	break;
     };
+  };
+
+  if(a->type == A_BALL){
+	rect.w=rect.h=QUAD/2;
+	rect.x=a->pixel[0].x+(a->pixel[1].x*step/AFRAMES);
+	rect.y=a->pixel[0].y+(a->pixel[1].y*step/AFRAMES);
+	SDL_BlitSurface(g->ball[a->color], NULL, g->display, &rect);
+
+	if(step == AFRAMES){ // Ball Animation is one Frame long
+	    a->type=A_NONE;
+	};
   };
 };
