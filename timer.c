@@ -1,6 +1,6 @@
 /* Simple Timer helper function, only ONE timer at a time
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: timer.c,v 1.3 2003/12/11 02:46:47 sec Exp $
+ * $Id: timer.c,v 1.4 2003/12/12 02:30:44 sec Exp $
  */
 #include "brillion.h"
 
@@ -22,10 +22,11 @@ Uint32 MyTimerCallback(Uint32 interval, void *param){
     SDL_PushEvent(&event);
 
     *(int*)param=SDL_USER_NOTHING;
-    return 0; /* No further activations */
+    return 0;
+    /* further activations optional */
 }
 
-void time_event(unsigned int seconds,int eventtype){
+void time_event(unsigned int centiseconds,int eventtype){
     static SDL_TimerID no=NULL;
     static int type=SDL_USER_NOTHING;
 
@@ -37,7 +38,7 @@ void time_event(unsigned int seconds,int eventtype){
     assert(type==SDL_USER_NOTHING);
     type=eventtype;
 
-    no=SDL_AddTimer(seconds*1000, MyTimerCallback, &type);
+    no=SDL_AddTimer(centiseconds*100, MyTimerCallback, &type);
 
     if(no==NULL){
 	fprintf(stderr,"WARNING: time_event failed. Go figure\n");
