@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.16 2003/03/02 22:15:30 sec Exp $
+ * $Id: brillion.h,v 1.17 2003/03/02 23:00:14 sec Exp $
  */
 
 #include <stdio.h>
@@ -53,6 +53,7 @@ enum animations {
 	A_BALL,
 	A_DISK,
 	A_EXPLODE,
+	A_DIE,
 	A_TWINKLE
 };
 
@@ -113,6 +114,7 @@ typedef struct {
 	SDL_Surface * back;
 	SDL_Surface * death;
 	SDL_Surface * ball[GAME_COLORS];
+	SDL_Surface * ballx[GAME_COLORS];
 	SDL_Surface * disk[GAME_COLORS];
 	SDL_Surface * block[GAME_COLORS];
 	SDL_Surface * star[GAME_COLORS];
@@ -223,6 +225,7 @@ a_game* read_game(char* file);
 a_anim* init_anim();
 void animate(graphic*g, a_anim*a, int step);
 void create_moveanim(enum animations type, int color, int ox, int oy, int nx, int ny);
+void create_staticanim(enum animations type, int color, int x, int y);
 
 /* These depend on you scheduler 20/10 (msec) seems a sane default */
 #define SLEEP_MIN 20

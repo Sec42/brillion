@@ -75,6 +75,11 @@ void load_graphics(graphic * gp){
     gp->ball[x]=color_graphic(gp,pad,x,1);
   SDL_FreeSurface(pad);
 
+  pad=IMG_Load("ballX.gif");
+  for(x=1;x<GAME_COLORS;x++)
+    gp->ballx[x]=color_graphic(gp,pad,x,1);
+  SDL_FreeSurface(pad);
+
   pad=IMG_Load("block_blue.gif");
   for(x=1;x<GAME_COLORS;x++)
     gp->block[x]=color_graphic(gp,pad,x,0);
@@ -472,9 +477,33 @@ void create_moveanim(enum animations type, int color, int ox, int oy, int nx, in
     };
 };
 
+void create_staticanim(enum animations type, int color, int x, int y){
+  a_anim*  a=b->p->a;
+  graphic* g=b->p->g;
+
+  while(a->type != A_NONE) a++; // Search free anim space.
+
+  a->duration=0;
+  a->color=color;
+  switch(a->type=type){
+    case A_DIE:
+      a->block[0].x=x/2;
+      a->block[0].y=y/2;
+      a->pixel[0].x=QUAD/2*(x-2)+g->xoff;
+      a->pixel[0].y=QUAD/2*(y-2)+g->yoff;
+      a->duration=0;
+      break;
+
+    default:
+      a->type=A_NONE;
+      printf("Unknown type %d in create_moveanim\n",type);
+      break;
+    };
+};
+
 
 void animate(graphic*g, a_anim*a, int step){
-  SDL_Rect rect;
+  SDL_Rect rect,srect;
   int aidx=0;
   int x1,y1;
 
@@ -514,6 +543,25 @@ void animate(graphic*g, a_anim*a, int step){
 	  };
 	};
 	break;
+      case A_DIE:
+	blank_block(g,a[aidx].block[0].x,a[aidx].block[0].y);
+
+	rect.w=rect.h=QUAD/2;
+	rect.x=a[aidx].pixel[0].x;
+	rect.y=a[aidx].pixel[0].y;
+
+	srect.y=0;srect.x=(QUAD/2)*((a[aidx].duration*AFRAMES+step-1)>>1);
+	if(srect.x>g->ballx[a[aidx].color]->w){
+	  a[aidx].type=A_NONE;
+	}else{
+	  SDL_BlitSurface(g->ballx[a[aidx].color], &srect, g->display, &rect);
+	};
+
+	if(step == AFRAMES)
+	  a[aidx].duration++;
+
+	break;
+
       default:
 	printf("Step: %d, idx: %d, ",step,aidx);
 	printf("Unknown animate %d\n",a[aidx].type);

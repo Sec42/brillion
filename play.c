@@ -46,7 +46,7 @@ void play_game(a_game* game){
 		if(cur_lvl!=old_lvl) // Fade in...
 		  fade (play->g->display, 1000, 1);
 		else
-		  split(play->g->display,1000, 1, 1);
+		  split(play->g->display,200, 1, 1);
 
 		old_lvl=cur_lvl;
 		SDL_Flip(play->g->display);
@@ -57,7 +57,7 @@ void play_game(a_game* game){
 		switch (play_level(play)){
 			case 0:
 				play->lives--;
-				split(play->g->display,1000,0,0);
+				split(play->g->display,200,0,0);
 				break;
 			case 1:
 				play->points+=10*(play->f->time+1);
@@ -94,6 +94,7 @@ int play_level(a_play* play){
   char quit=0;
   int frames; // Number of frames displayed
   int z; // Animation counter...
+  int dead=0; // Player dead? (ignore input)
 
   Uint32 t_start,t_end,t_gone,t_now;
   Sint32 t_left;
@@ -160,7 +161,8 @@ int play_level(a_play* play){
     if(userr==2) userr=1;
     if(userl==2) userl=1;
 
-    move_step(g, m, lvl, userr-userl);
+    if(!dead)
+      move_step(g, m, lvl, userr-userl);
 
     if(userrr==1) userr=0;
     if(userlr==1) userl=0;
@@ -208,11 +210,21 @@ int play_level(a_play* play){
 
     if(quit || lvl->blocks<=0){
       fprintf(stderr,"%f Ticks/frame\n",(float)ticks/frames);
-	  if(quit)
-		  return(2);
-	  if(lvl->blocks==0)
-		  return(1);
-      return(0);
+      if(quit)
+	return(2);
+      if(lvl->blocks==0)
+	return(1);
+
+      if(!dead)
+	create_staticanim(A_DIE,lvl->color,lvl->x,lvl->y);
+
+      dead=1;
+      for (z=0;z < MAX_ANIM; z++){
+	if(a[z].type!=A_NONE)
+	  dead=2;
+      };
+      if(dead==1)
+	return(0);
     };
 
   }; /* while(1) */
