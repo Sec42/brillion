@@ -23,6 +23,7 @@ void game(config* c){
   graphic* g;
   music* m;
   field* lvl;
+  anim*	a;
 
   if(c->onelevel)
 	  lvl=read_level(c->level);
@@ -35,6 +36,7 @@ void game(config* c){
 
   g=init_graphic();
   m=init_music();
+  a=init_anim();
   paint_level(g, lvl);
 
   fade (g->display, 1000, 1);
@@ -46,10 +48,8 @@ void game(config* c){
     round=SDL_GetTicks();
 
     move_step(g, m, lvl, userx);
-    if(q%2==0)
+    if(q%2==0 && lvl->time>0)
       lvl->time--;
-    if(lvl->time ==0)
-      quit=1;
     update_scoreboard(g, lvl);
 
     SDL_Flip(g->display); 

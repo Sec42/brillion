@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.7 2002/10/25 00:38:45 sec Exp $
+ * $Id: brillion.h,v 1.8 2002/11/04 10:23:09 sec Exp $
  */
 
 #include <stdio.h>
@@ -49,6 +49,27 @@ EXTERN char verbose;  // Debugging-Level
 #define DEATH	5
 #define OUTER_WALL 6
 #define MAX_PIECE 7
+
+enum animations {
+	A_NONE,
+	A_BALL,
+	A_DISK,
+	A_EXPLODE,
+	A_TWINKLE
+};
+
+typedef struct {
+	int x, y;
+} coord;
+
+
+#define MAX_ANIM 3
+
+typedef struct {
+	enum animations	type;
+	coord		from;
+	coord		to;
+} anim;
 
 typedef struct {
 	char level[100];
@@ -105,10 +126,6 @@ typedef struct {
 } music;
 
 typedef struct {
-	int x, y;
-} coord;
-
-typedef struct {
 	char*  gfx[MAX_PIECE]; /* Block Graphics */
 	char*  sfx[MAX_PIECE]; /* Soundbites */
 	char*  bg;             /* Background graphic */
@@ -129,12 +146,14 @@ typedef struct {
 	graphic* g;
 	music*   m;
 	field*   f;
+	anim	 a[MAX_ANIM];
 } play;
 
 typedef struct {
 	desc** levels;
 	int    maxlevel;
 } gameing;
+
 
 
 /* physics.c */

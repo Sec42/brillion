@@ -300,3 +300,24 @@ void update_scoreboard(graphic* g, field* lvl){
   sprintf(t,"%3d",lvl->time);
   print_number(g,t,550,250);
 };
+
+anim* init_anim(){
+  anim *a;
+  a=calloc(MAX_ANIM,sizeof(anim));
+  return a;
+};
+
+void animate(graphic*g, anim*a, int step){
+  int aidx=0;
+  for (aidx=0;aidx < MAX_ANIM; aidx++){
+    switch(a[aidx].type){
+      case A_NONE:
+	printf(" No animation here\n");
+	break;
+      default:
+	printf(" Animate %d\n",a[aidx].type);
+	break;
+    };
+    aidx++;
+  };
+};
