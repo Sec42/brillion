@@ -1,8 +1,7 @@
 #!/bin/sh
 
-id='$Id: config.sh,v 1.3 2003/03/15 02:02:20 sec Exp $'
+id='$Id: config.sh,v 1.4 2003/03/15 17:11:12 sec Exp $'
 
-echo ''
 echo '*** Welcome to the configuration checker for brillion (V0.1)'
 echo ''
 
@@ -18,13 +17,22 @@ fi
 
 while [ $# -gt 0 ] ; do
 	case $1 in
-	--help|help|-h) echo "No help.";exit 1;;
 	profile) 	PROFILE=yes;;
 	sound)		SOUND=yes;;
 	optimize) 	OPTIMIZE=yes;;
 	pedantic)	PEDANTIC=yes;;
-	*)		echo "Unknown option $1";exit 1;;
+	--help|help|-h) 
+		echo "Usage: ./config.sh [options]"
+		echo "	profile		Compiles a binary with profiling support"
+		echo "	optimize	Compiles a more optimized binary"
+		echo "	pedantic	Turns on a lot of Warnings"
+		echo ""
+		echo "	sound		Turns on sound support"
+		echo ""
+		exit 1;;
+	*)		echo "Error: Unknown option $1";exit 1;;
 	esac
+	echo "Option $1 enabled"
 	shift
 done
 
@@ -48,7 +56,7 @@ fi
 
 :>.config
 for a in SDL_CONFIG PROFILE SOUND OPTIMIZE PEDANTIC; do
-eval "[ -z "\$$a" ] || echo \"$a=\$$a\"" >>.config
+	eval "[ -z "\$$a" ] || echo \"$a=\$$a\"" >>.config
 done
 
 echo ''

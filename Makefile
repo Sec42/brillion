@@ -17,13 +17,13 @@ INC=-IBFontv1.0.4-1
 VPATH=BFontv1.0.4-1
 
 .ifdef OPTIMIZE
-CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe
+CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe -DNDEBUG
 .endif
 
 # misses -pedantic (warns too much about system headers)
 # and -ansi (errors out on C++-style comments)
 .ifdef PEDANTIC
-CFLAGS+= -D_POSIX_SOURCE -W -Wall -Wbad-function-cast -Wcast-align \
+CFLAGS+= -D_POSIX_C_SOURCE=2  -W -Wall -Wbad-function-cast -Wcast-align \
 	-Wcast-qual -Wchar-subscripts -Winline \
 	-Wmissing-prototypes -Wnested-externs -Wpointer-arith \
 	-Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings
@@ -60,7 +60,7 @@ $(PRG): $(OBJ)
 	$(CC) $(OBJ) $(LDFLAGS) -o $@
 
 clean:
-	rm -f $(PRG) $(OBJ) *core
+	rm -f $(PRG) $(OBJ) *core Original/*core
 
 tags: brillion.c brillion.h graphics.c level.c physics.c play.c
 	-ctags *.[ch]
@@ -77,7 +77,7 @@ devel:	gnu tags .depend
 depend: .depend
 
 config: .config
-.config: Makefile
+.config: # Makefile
 	./config.sh
 
 gnu: GNUmakefile
