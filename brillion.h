@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.33 2003/12/11 00:00:50 sec Exp $
+ * $Id: brillion.h,v 1.34 2003/12/11 02:46:15 sec Exp $
  */
 
 #include <stdio.h>
@@ -342,6 +342,7 @@ the_scores* read_scores(void);
 void write_scores(void);
 void display_scores(void);
 void add_score(void);
+void input_text(SDL_Rect *in, a_font *f);
 
 /* title.c */
 void display_title(int oldscore);
@@ -349,5 +350,6 @@ void display_title(int oldscore);
 /* timer.c */
 #define SDL_USER_NOTHING     0
 #define SDL_USER_ENDOFSCORES 1
+#define SDL_USER_BLINK       2
 void init_timer(void);
 void time_event(unsigned int ticks,int eventtype);
