@@ -209,22 +209,25 @@ int play_level(a_play* play){
     };
 
     if(quit || lvl->blocks<=0){
-      fprintf(stderr,"%f Ticks/frame\n",(float)ticks/frames);
-      if(quit)
-	return(2);
-      if(lvl->blocks==0)
+
+      if(lvl->blocks==-1){
+	if(!dead)
+	  create_staticanim(A_DIE,lvl->color,lvl->x,lvl->y);
+
+	dead=1;
+	for (z=0;z < MAX_ANIM; z++){
+	  if(a[z].type!=A_NONE)
+	    dead=2;
+	};
+	if(dead==1)
+	  return(0);
+      }else{
+	fprintf(stderr,"%f Ticks/frame\n",(float)ticks/frames);
+	if(quit)
+	  return(2);
+
 	return(1);
-
-      if(!dead)
-	create_staticanim(A_DIE,lvl->color,lvl->x,lvl->y);
-
-      dead=1;
-      for (z=0;z < MAX_ANIM; z++){
-	if(a[z].type!=A_NONE)
-	  dead=2;
       };
-      if(dead==1)
-	return(0);
     };
 
   }; /* while(1) */
