@@ -43,6 +43,10 @@ LDFLAGS+=-lSDL_mixer
 OBJ+=music.o
 .endif
 
+.ifdef WINDOWS
+OBJ+=res.o
+.endif
+
 .ifdef DMALLOC_OPTIONS
 CFLAGS+=-I/usr/local/include/ -DDMALLOC
 LDFLAGS+=-L/usr/local/lib/ -ldmalloc
@@ -74,6 +78,9 @@ install: $(PRG)
 	cp $(PRG) /usr/X11R6/bin
 	-mkdir /usr/X11R6/share/brillion
 	cp -r Original /usr/X11R6/share/brillion
+
+res.o: res.rc
+	windres -i $< -o $@
 
 .depend: brillion.c brillion.h graphics.c level.c physics.c play.c game.c
 	-$(CC) $(CFLAGS) -MM *.c>.depend
