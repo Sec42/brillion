@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.13 2003/03/02 16:45:41 sec Exp $
+ * $Id: brillion.h,v 1.14 2003/03/02 17:16:00 sec Exp $
  */
 
 #include <stdio.h>
@@ -220,3 +220,14 @@ a_game* read_game(char* file);
 a_anim* init_anim();
 void animate(graphic*g, a_anim*a, int step);
 void create_moveanim(enum animations type, int ox, int oy, int nx, int ny);
+
+/* These depend on you scheduler 20/10 seems a sane default */
+#define SLEEP_MIN 20
+#define SLEEP_GRAN 10
+
+#define DELAY(left,end) do{ \
+    if(left>SLEEP_MIN) \
+	SDL_Delay(left-SLEEP_GRAN); \
+    while(SDL_GetTicks()<end){ q++; }; \
+}while(0)
+

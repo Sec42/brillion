@@ -1,0 +1,8 @@
+
+Since SDL_Delay has a granularity of ~10msec and a minimum wait time
+of ~20msec (both due to scheduler granularity) we have to do
+a lot of busy-waiting to fix that.
+If your OS does better than that (both FreeBSD and Linux can
+fix this by recompiling the kernel), you can change the
+#defines SLEEP_MIN and SLEEP_GRAN in brillion.h to lessen
+the load on your machine.

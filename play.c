@@ -166,8 +166,6 @@ int play_level(a_play* play){
       lvl->time--;
     update_scoreboard(play);
 
-#define DELAY(left,end) left-=10;if(left>9)SDL_Delay(left); while(SDL_GetTicks()<end){q++;};
-
 //    printf("Already lost %d ticks\n",t_start-SDL_GetTicks());
     for(z=1;z<=AFRAMES;z++){
       a_start=SDL_GetTicks();
@@ -188,7 +186,7 @@ int play_level(a_play* play){
 	  ticks-=a_left;
 	  DELAY(a_left,a_end);
 	};
-//	printf("sleep: wanted:%d actually:%d bsy=%d\n",a_left+10,SDL_GetTicks()-a_now,q);
+//	printf("sleep: wanted:%d actually:%d bsy=%d\n",a_left,SDL_GetTicks()-a_now,q);
       };
     };
 
