@@ -1,6 +1,6 @@
 /* main(). Paramter parsing and other setup.Written by Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: brillion.c,v 1.7 2003/03/15 02:10:25 sec Exp $
+ * $Id: brillion.c,v 1.8 2003/03/15 20:07:05 sec Exp $
  */
 
 #define EXTERN /* Global variable(s) here... */
@@ -38,6 +38,7 @@ int main(int argc,char **argv){
 
     b->verbose=0;
 
+#ifndef __WIN32__
     /* The getopt loop */
     while ((c = getopt(argc, argv, "g:l:vh")) != EOF)
 	switch (c) {
@@ -59,6 +60,7 @@ int main(int argc,char **argv){
 		fprintf(stderr, "%s: Eine Crillion-Implementierung von Sec <sec@42.org> 10/2002\n\n", b->prog);
 		exit(255);
 	}
+#endif
 
     if(!b->game)
 	b->game=read_game("Original");
