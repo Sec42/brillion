@@ -20,6 +20,10 @@ VPATH=BFontv1.0.4-1
 CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe -DNDEBUG
 .endif
 
+.ifdef DEVEL
+CFLAGS+= -DDEVEL
+.endif
+
 # misses -pedantic (warns too much about system headers)
 # and -ansi (errors out on C++-style comments)
 .ifdef PEDANTIC

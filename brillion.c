@@ -1,6 +1,6 @@
 /* main(). Paramter parsing and other setup.Written by Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: brillion.c,v 1.8 2003/03/15 20:07:05 sec Exp $
+ * $Id: brillion.c,v 1.9 2003/03/17 23:20:27 sec Exp $
  */
 
 #define EXTERN /* Global variable(s) here... */
@@ -50,11 +50,13 @@ int main(int argc,char **argv){
 		if(!b->game)
 		    die("Broken -g switch");
 		break;
+#ifdef DEVEL
 	    case 'l': // Ugly^99
 		b->game=read_game("Original");
 		b->game->maxlevel=1;
 		b->game->levels[0]->name=optarg;
 		break;
+#endif
 	    case 'h':
 	    default:
 		fprintf(stderr, "%s: Eine Crillion-Implementierung von Sec <sec@42.org> 10/2002\n\n", b->prog);

@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.27 2003/03/17 10:57:14 sec Exp $
+ * $Id: play.c,v 1.28 2003/03/17 23:20:28 sec Exp $
  */
 #include "brillion.h"
 
@@ -124,10 +124,14 @@ int play_level(void){
 			play->status=S_DIE;		// Kill this life.
 		    } else if (event.key.keysym.sym == SDLK_d){
 			dump_level(lvl);
+#ifdef DEVEL
 		    } else if (event.key.keysym.sym == SDLK_s){
 			play->status=S_FINISH;		// XXX: Cheat ;-)
 		    } else if (event.key.keysym.sym == SDLK_p){
 			snapshot();
+		    } else if (event.key.keysym.sym == SDLK_BACKSPACE){
+			dead=1-dead;
+#endif
 		    };
 		    break;
 
