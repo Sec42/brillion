@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.29 2003/03/17 10:53:58 sec Exp $
+ * $Id: graphics.c,v 1.30 2003/03/17 19:37:24 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -17,17 +17,51 @@ typedef struct {
     Uint8 a;
 } myc;
 
-myc mk_color(int color, int br, int sat){
+// hue: color tone
+// sat -> 0 = white (other colors increase)
+// val -> 0 = black (primary color decreases)
+// relative brightness: Red: 88, Green: 127, Blue: 40 :: Sum should be == 255
+
+#define BRED 88
+#define BGREEN 127
+#define BBLUE 40
+
+myc mk_color(int color, int br, int reality){
     myc c;
+    int t,sat,val;
     switch(color){
-	case RED:     c.r=br ; c.g=sat; c.b=sat; c.a=0; break;
-	case CYAN:    c.r=sat; c.g=br;  c.b=br ; c.a=0; break;
-	case MAGENTA: c.r=br ; c.g=sat; c.b=br ; c.a=0; break;
-	case GREEN:   c.r=sat; c.g=br;  c.b=sat; c.a=0; break;
-	case BLUE:    c.r=sat; c.g=sat; c.b=br ; c.a=0; break;
-	case YELLOW:  c.r=br ; c.g=br;  c.b=sat; c.a=0; break;
+	case RED:     t=BRED             ;break;
+	case CYAN:    t=     BGREEN+BBLUE;break;
+	case MAGENTA: t=BRED       +BBLUE;break;
+	case GREEN:   t=     BGREEN      ;break;
+	case BLUE:    t=            BBLUE;break;
+	case YELLOW:  t=BRED+BGREEN      ;break;
+	default:      t=BRED+BGREEN+BBLUE;
+    };
+    if(!reality)
+	t=255;
+
+    /* Saturation is actually 255-saturation here */
+    if(br>t){
+	sat=(br-t)*256/(256-t);
+	val=255;
+    }else{
+	sat=0;
+	val=br*255/t;
+    };
+
+//  if(reality&&(color==BLUE)){printf("%d -> col:%d, oth:%d\n",br,val,sat);};
+
+    switch(color){
+	case RED:     c.r=val; c.g=sat; c.b=sat; c.a=0; break;
+	case CYAN:    c.r=sat; c.g=val; c.b=val; c.a=0; break;
+	case MAGENTA: c.r=val; c.g=sat; c.b=val; c.a=0; break;
+	case GREEN:   c.r=sat; c.g=val; c.b=sat; c.a=0; break;
+	case BLUE:    c.r=sat; c.g=sat; c.b=val; c.a=0; break;
+	case YELLOW:  c.r=val; c.g=val; c.b=sat; c.a=0; break;
 	default:      c.r=sat; c.g=sat; c.b=sat; c.a=0; break;
     };
+
     return(c);
 };
 
@@ -58,15 +92,21 @@ SDL_Surface* color_graphic(SDL_Surface* in, int color, int alpha){
 
     /* perhaps We should check the 'pitch' ? */
     for(p4=tmp->pixels;p4<(myc*)tmp->pixels+(tmp->w*tmp->h);p4++){
-	if(p4->r == p4->g){
-	    *p4=mk_color(color,p4->b,p4->r);
+	if(alpha!=3){
+	    if(p4->r == p4->g && p4->r == 0 ){
+		*p4=mk_color(color,p4->b,0);
+	    };
+	}else{
+	    if(p4->r == p4->g && p4->b == p4->g){
+		*p4=mk_color(color,p4->b,1);
+	    };
 	};
     };
 
     out=SDL_ConvertSurface(tmp, g->display->format, SDL_HWSURFACE);
     assert(out!=NULL);
 
-    if(alpha==2)
+    if(alpha)
 	SDL_SetColorKey(out, SDL_SRCCOLORKEY, g->colors[BG]);
 
     return(out);
@@ -89,9 +129,9 @@ void load_graphics(void){
     g->colors[NONE]=    SDL_MapRGBA(g->display->format,0,0,0,0);
 
     /* Load blocks, and create all colors */
-    pad=IMG_Load("ball_blue.gif");
+    pad=IMG_Load("ball_grey.gif");
     for(x=1;x<GAME_COLORS;x++)
-	g->ball[x]=color_graphic(pad,x,2);
+	g->ball[x]=color_graphic(pad,x,3);
     SDL_FreeSurface(pad);
 
     pad=IMG_Load("ballX.gif");
