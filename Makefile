@@ -11,7 +11,8 @@ config:
 
 # It shouldn't be necessary to edit anything below this line.
 PRG=brillion
-OBJ=brillion.o graphics.o level.o physics.o play.o game.o effects.o save.o
+OBJ=brillion.o graphics.o level.o physics.o play.o game.o effects.o \
+	save.o font.o
 
 INC=-IBFontv1.0.4-1
 VPATH=BFontv1.0.4-1

@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.25 2003/03/15 17:14:32 sec Exp $
+ * $Id: brillion.h,v 1.26 2003/03/18 02:50:35 sec Exp $
  */
 
 #include <stdio.h>
@@ -94,6 +94,18 @@ typedef struct {
 	int	    ppb;	/* Points/Block */
 } field;
 
+#define FONTBEG 33
+#define FONTLEN (255-FONTBEG)
+
+typedef struct {
+    int beg[FONTLEN+1];
+    int wid[FONTLEN+1];
+    int h;
+    int len;
+    int space;
+    SDL_Surface *font;
+} a_font;
+
 typedef struct {
 	SDL_Surface *display;
 
@@ -122,7 +134,8 @@ typedef struct {
 	int	    ncolors;
 
 	/* font */
-	SDL_Surface *font;
+	SDL_Surface *font; /* numbers */
+	a_font	    *tfont; /* text */
 } graphic;
 
 #define MAXRECTS 256    /* 164 or so for startup */
@@ -295,3 +308,7 @@ void split (SDL_Surface* s, SDL_Rect* r_in, Uint32 ticks, split_t type);
 a_save* init_save(void);
 signed int handle_save(signed int dir);
 void print_save(a_save *s);
+
+/* font.c */
+a_font* init_font(char *file);
+void render_font(int x, int y,char *txt);
