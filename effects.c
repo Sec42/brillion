@@ -129,6 +129,8 @@ void fade (SDL_Surface* s, Uint32 ticks, int fadein){
   else
     SDL_FillRect(s, NULL, SDL_MapRGB(s->format,0,0,0));
 
+  SDL_Flip (s);
+
   SDL_FreeSurface(black);
   SDL_FreeSurface(copy);
 }
@@ -268,8 +270,7 @@ void split (SDL_Surface* s, SDL_Rect* r_in, Uint32 ticks, split_t type){
     old_time=curr_time;
     curr_time=SDL_GetTicks();
 
-    SDL_Flip (s);
-//    SDL_UpdateRect(s,r->x,r->y,r->w,r->h);
+    SDL_UpdateRect(s,r->x,r->y,r->w,r->h);
 
     delta = target * ((float) (curr_time - old_time) / ticks);
     dist += delta;
@@ -279,10 +280,8 @@ void split (SDL_Surface* s, SDL_Rect* r_in, Uint32 ticks, split_t type){
   if(type==HORIZ_IN||type==VERT_IN)
     SDL_BlitSurface(copy, NULL, s, r);
   else
-    SDL_BlitSurface(black, NULL, s, r);
-//  SDL_FillRect(s, r, SDL_MapRGB(s->format,0,0,0));
+    SDL_FillRect(s, r, SDL_MapRGB(s->format,0,0,0));
 
-//SDL_Flip(s);
   SDL_UpdateRect(s,r->x,r->y,r->w,r->h);
 
   SDL_FreeSurface(black);
