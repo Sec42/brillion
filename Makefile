@@ -16,7 +16,7 @@ CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe
 CFLAGS+=-Wall `${SDL_CONFIG} --cflags` -IBFontv1.0.4-1
 LDFLAGS+=`${SDL_CONFIG} --libs` -lSDL_image
 
-.ifndef NOSOUND
+.ifdef SOUND
 CFLAGS+=-DSOUND
 LDFLAGS+=-lSDL_mixer
 OBJ+=music.o
@@ -30,7 +30,8 @@ LDFLAGS+=-L/usr/local/lib/ -ldmalloc
 .ifdef PROFILE
 CFLAGS+=-pg
 LDFLAGS+=-pg
-LDFLAGS+=-static -L/usr/X11R6/lib -lesd -laa -lncurses -lXext -lvga -lSDL-1.1 -lX11 -lpng -ltiff -lz -ljpeg -lm
+LDFLAGS=-pg -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL-1.1_p -lc_r -lSDL_image
+LDFLAGS+=-static -L/usr/X11R6/lib -lesd -laa -lncurses -lXext -lvga -lSDL-1.1 -lX11 -lpng -ltiff -lz -ljpeg -lm -lvgl -lusbhid
 .endif
 
 .if ${USER} == "sec"
