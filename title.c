@@ -1,6 +1,6 @@
 /* Display the title screen, and handle the main menu...
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: title.c,v 1.2 2003/03/25 17:54:15 sec Exp $
+ * $Id: title.c,v 1.3 2003/03/26 17:35:28 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -15,6 +15,7 @@ void title_main(SDL_Surface *title){
     SDL_Event event;
     SDL_Rect r;
     signed int menu=1,omenu=0;
+    graphic * g=play->g;
 
     r.x=0;r.y=0;r.w=16;r.h=16; /* XXX: QUAD/2? :) */
 
@@ -60,13 +61,38 @@ void title_main(SDL_Surface *title){
 
 	if(omenu!=menu){
 	    SDL_BlitSurface(title,&r,play->g->display,&r);
-	    printf("menu=%d\n",menu);
 	    r.x=menux[menu-1]-20;r.y=menuy[menu-1]+6;
 	    SDL_BlitSurface(play->g->ball[BLUE],NULL,play->g->display,&r);
 	    SDL_Flip(play->g->display);
 	    omenu=menu;
 	}else{
-	    SDL_Delay(1);
+	    SDL_Delay(100);
+	    SDL_BlitSurface(title,&r,play->g->display,&r);
+	    UPDATE(r);
+	    r.x=menux[menu-1]-20;r.y=menuy[menu-1]+6;
+	    switch(rand()&7){
+		case 0:
+		    r.x++;r.y++;break;
+		case 1:
+		    r.x++;      break;
+		case 2:
+		    r.x++;r.y--;break;
+		case 3:
+		          r.y++;break;
+		case 4:
+		          r.y--;break;
+		case 5:
+		    r.x--;r.y++;break;
+		case 6:
+		    r.x--;      break;
+		case 7:
+		    r.x--;r.y--;break;
+	    };
+	    SDL_BlitSurface(play->g->ball[BLUE],NULL,play->g->display,&r);
+	    UPDATE(r);
+	    DISPLAY;
+
+
 	};
 
     }; /* while(1) */
