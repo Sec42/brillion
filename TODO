@@ -1,6 +1,7 @@
 + Add better(complete) sound FX
-+ Add mini-animation engine
+. Add mini-animation engine
   (moving: ball, disk; stationary: stone_explosion, ball_explosion, "twinkle")
+  [all done except stone_explosion. "twinkle" is too expensive for now]
 + Add music (ingame, title, credits) (cecile?)
 + Add better stone models (rotfl?)
   + Round ball: use either png:transparent or
@@ -27,9 +28,10 @@
 ? should sound effects be all played, or cut themselfs off like in the
   original
 
-? heroes is quite fast but yet doesn't use ANYFORMAT, but palette instead.
+. heroes is quite fast but yet doesn't use ANYFORMAT, but palette instead.
   perhaps their way of managing the screen themselves and just telling SDL 
   to update the entire screen at once is a performance gain?
+. We use UpdateRect now, and it seems this is fast enough...
 
 bug: If you keep an arrow key pressed during a level change/restart that
      direction gets cleared.
@@ -38,4 +40,9 @@ bug: hit two "stars" or "disks" at the same time (in a corner). In the original
 diff: original game contains different 'Wall' blocks. No difference in
       gameplay, just for visual effect.
 
-? timing on linux seems off. The game feels too fast.
+. timing on linux seems off. The game feels too fast.
+  [have improved Delay handling with busy waiting]
+
+? steal some graphic effects from heroes?
+? should the ball deform itself on impact?
+  (original does that on top and bottom)
