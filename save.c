@@ -1,6 +1,6 @@
 /* Save and load user actions
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: save.c,v 1.5 2003/03/26 18:17:48 sec Exp $
+ * $Id: save.c,v 1.6 2003/03/26 18:20:55 sec Exp $
  */
 #include "brillion.h"
 
@@ -62,6 +62,9 @@ signed int handle_save(signed int dir){
 void print_save(a_save *s){
     int a;
     FILE *f;
+
+    if(s->what!=R_RECORD)
+	return;
 
     f=fopen(".save","a");
     fprintf(f,"%d:",play->level);
