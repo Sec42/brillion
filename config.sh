@@ -1,6 +1,6 @@
 #!/bin/sh
 
-id='$Id: config.sh,v 1.7 2004/06/14 22:43:31 sec Exp $'
+id='$Id: config.sh,v 1.8 2004/06/15 10:40:38 sec Exp $'
 
 echo '*** Welcome to the configuration checker for brillion (V0.1)'
 echo ''
@@ -41,6 +41,20 @@ while [ $# -gt 0 ] ; do
 	shift
 done
 
+### Check for windows
+
+echo -n "checking for windows extras ... "
+
+case `uname` in 
+CYGWIN*) WINDOWS=YES;;
+esac
+
+if [ -z "$WINDOWS" ] ; then
+	echo No
+else
+	echo Yes - poor boy.
+fi
+
 ### Check for sdl-config
 
 echo -n "looking for sdl-config ... "
@@ -60,7 +74,7 @@ fi
 ### End of checks, write .config
 
 :>.config
-for a in SDL_CONFIG PROFILE SOUND OPTIMIZE PEDANTIC; do
+for a in SDL_CONFIG PROFILE SOUND OPTIMIZE PEDANTIC WINDOWS; do
 	eval "[ -z "\$$a" ] || echo \"$a=\$$a\"" >>.config
 done
 

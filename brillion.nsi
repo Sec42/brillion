@@ -5,7 +5,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Brillion"
-!define PRODUCT_VERSION "2004-02-23"
+!define PRODUCT_VERSION "%VER%"
 !define PRODUCT_PUBLISHER "Sec"
 !define PRODUCT_WEB_SITE "http://brillion.sourceforge.net"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\brillion.exe"
@@ -39,7 +39,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "Brillion-Setup.exe"
+OutFile "Brillion-Setup-%VER%.exe"
 InstallDir "$PROGRAMFILES\Brillion"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -105,6 +105,13 @@ Section "Hauptgruppe" SEC01
   File "Original\ballX.gif"
   File "Original\ball_grey.gif"
   File "Original\wall.gif"
+
+  File "Original\block.wav"
+  File "Original\death.wav"
+  File "Original\level.wav"
+  File "Original\star.wav"
+  File "Original\wall.wav"
+
 SectionEnd
 
 Section -AdditionalIcons
@@ -127,11 +134,11 @@ SectionEnd
 
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) wurde erfolgreich deinstalliert."
+  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) has been removed."
 FunctionEnd
 
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Möchten Sie $(^Name) und alle seinen Komponenten deinstallieren?" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Do you want to remove $(^Name)?" IDYES +2
   Abort
 FunctionEnd
 
@@ -181,6 +188,11 @@ Section Uninstall
   Delete "$INSTDIR\Original\ballX.gif"
   Delete "$INSTDIR\Original\ball_grey.gif"
   Delete "$INSTDIR\Original\wall.gif"
+  Delete "$INSTDIR\Original\block.wav"
+  Delete "$INSTDIR\Original\death.wav"
+  Delete "$INSTDIR\Original\level.wav"
+  Delete "$INSTDIR\Original\star.wav"
+  Delete "$INSTDIR\Original\wall.wav"
 
   Delete "$SMPROGRAMS\Brillion\Uninstall.lnk"
   Delete "$SMPROGRAMS\Brillion\Website.lnk"
