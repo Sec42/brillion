@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.4 2002/10/15 11:39:24 sec Exp $
+ * $Id: brillion.h,v 1.5 2002/10/15 12:04:34 sec Exp $
  */
 
 #include <stdio.h>
@@ -56,8 +56,8 @@ typedef struct {
 
 	int *pieces;	/* The physical level */
 	int *colors;    /* The colors of different pieces */
-#define COLOR(x,y) lvl->colors[(x)*lvl->w+(y)]
-#define PIECE(x,y) lvl->pieces[(x)*lvl->w+(y)]
+#define COLOR(x,y) lvl->colors[(x)*lvl->h+(y)]
+#define PIECE(x,y) lvl->pieces[(x)*lvl->h+(y)]
 
 	int blocks;	/* Blocks remaining */
 	int time; 	/* Time remaining */
