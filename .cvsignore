@@ -6,3 +6,10 @@ brillion
 brillion.exe
 SDL.dll
 SDL_image.dll
+jpeg.dll
+zlib.dll
+libpng1.dll
+stdout.txt
+stderr.txt
+
+WinBrillion
