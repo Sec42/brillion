@@ -12,11 +12,12 @@ echo "#"
 echo
 ) >$target
 
-perl -ple <$source >>$target
+perl -ple <$source >>$target '
 /^\.[^:]*$/ && s/^\.//;		# Strip leading . from non-targets
 
 s/^if (.*) == (.*)/ifeq "$1" $2/;
 s/^if exists\(([^)]+)\)/ifneq "" "\$(wildcard $1)"/;
+/^include/ && s/"//g;
 
 '
 
