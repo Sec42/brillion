@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.24 2003/03/14 11:08:16 sec Exp $
+ * $Id: play.c,v 1.25 2003/03/14 11:14:51 sec Exp $
  */
 #include "brillion.h"
 
@@ -173,12 +173,17 @@ int play_level(){
 
 	for(z=1;z<=AFRAMES;z++){
 
+	    t_end+=(SPEED/AFRAMES)-1;
+	    if(SDL_GetTicks()>t_end && z<AFRAMES){
+		printf("Skip anim_step %d\n",z);
+		continue;
+	    };
+
 	    animate(z); // Move what is to move.
 //	    printf("%d rects\n",g->numrects);
 	    DISPLAY;
 
 	    if(z < AFRAMES){
-		t_end+=(SPEED/AFRAMES)-1;
 		t_now=SDL_GetTicks();
 		t_gone=t_now-t_start;
 		t_left=t_end-t_now;
