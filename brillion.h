@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.43 2004/08/08 01:07:24 sec Exp $
+ * $Id: brillion.h,v 1.44 2004/08/11 08:51:23 sec Exp $
  */
 
 #include <stdio.h>
@@ -14,10 +14,10 @@
 #include <assert.h>
 #include <math.h>
 #include <float.h>
-#include <SDL.h>
+#include "SDL.h"
 
 #ifdef SOUND
-#include <SDL_mixer.h>
+#include "SDL_mixer.h"
 #endif
 
 #ifdef DMALLOC
