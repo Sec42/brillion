@@ -61,11 +61,11 @@ void load_graphics(graphic * gp){
   int x;
 
   gp->colors[RED]=     SDL_MapRGB(gp->display->format, 0xff, 0x00, 0x00);
+  gp->colors[CYAN]=    SDL_MapRGB(gp->display->format, 0x00, 0xff, 0xff);
+  gp->colors[MAGENTA]= SDL_MapRGB(gp->display->format, 0xff, 0x00, 0xff);
   gp->colors[GREEN]=   SDL_MapRGB(gp->display->format, 0x00, 0xff, 0x00);
   gp->colors[BLUE]=    SDL_MapRGB(gp->display->format, 0x00, 0x00, 0xff);
   gp->colors[YELLOW]=  SDL_MapRGB(gp->display->format, 0xff, 0xff, 0x00);
-  gp->colors[CYAN]=    SDL_MapRGB(gp->display->format, 0x00, 0xff, 0xff);
-  gp->colors[MAGENTA]= SDL_MapRGB(gp->display->format, 0xff, 0x00, 0xff);
   gp->colors[WHITE]=   SDL_MapRGB(gp->display->format, 0xff, 0xff, 0xff);
   gp->colors[NONE]=    SDL_MapRGBA(gp->display->format,0,0,0,0);
 

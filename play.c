@@ -54,6 +54,7 @@ void play_game(a_game* game){
 				play->lives--;
 				break;
 			case 1:
+				play->points+=10*(play->f->time+1);
 				cur_lvl++;
 				break;
 			case 2: /* Aborted */
