@@ -1,6 +1,6 @@
 /* Do all the audible stuff
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: music.c,v 1.8 2003/03/21 18:35:27 sec Exp $
+ * $Id: music.c,v 1.9 2004/06/14 22:18:00 sec Exp $
  */
 #include "brillion.h"
 
@@ -20,9 +20,11 @@ music* init_music(){
   */
 
   m->wall=Mix_LoadWAV("wall.wav");
-  m->star=Mix_LoadWAV("star.wav");
-  m->block=Mix_LoadWAV("block.wav");
   m->death=Mix_LoadWAV("death.wav");
+  m->disk=Mix_LoadWAV("disk.wav");
+  m->block=Mix_LoadWAV("block.wav");
+  m->star=Mix_LoadWAV("star.wav");
+  m->level=Mix_LoadWAV("level.wav");
 
   return m;
 }
@@ -32,6 +34,7 @@ void play_touch(int piece){
 
 /*  printf("Playing snd %d\n",piece); */
   switch(piece){
+    case OUTER_WALL:
     case WALL:
       if(m->wall)
 	Mix_PlayChannel(1,m->wall, 0);
@@ -50,7 +53,11 @@ void play_touch(int piece){
       break;
     case BLOCK:
       if(m->block)
-	Mix_PlayChannel(1,m->block, 0);
+	Mix_PlayChannel(0,m->block, 0);
+      break;
+    case LEVEL:
+      if(m->level)
+	Mix_PlayChannel(0,m->level, 0);
       break;
     default:
       /*printf("Whoops, unknown sound %d?\n",piece); */

@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.37 2004/06/13 21:12:01 sec Exp $
+ * $Id: brillion.h,v 1.38 2004/06/14 22:18:00 sec Exp $
  */
 
 #include <stdio.h>
@@ -51,6 +51,7 @@
 #define DEATH	     5
 #define OUTER_WALL   6
 #define MAX_PIECE    7
+#define LEVEL	     8 /* Level change (sound only) */
 
 typedef enum {
 	A_NONE,
@@ -164,6 +165,7 @@ typedef struct {
 	Mix_Chunk   *disk;
 	Mix_Chunk   *block;
 	Mix_Chunk    *star;
+	Mix_Chunk    *level;
 #else
 	int	    nothing;	/* To silence compiler warning */
 #endif

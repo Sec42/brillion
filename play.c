@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.40 2004/06/13 21:31:35 sec Exp $
+ * $Id: play.c,v 1.41 2004/06/14 22:18:00 sec Exp $
  */
 #include "brillion.h"
 
@@ -80,6 +80,7 @@ void play_game(a_game* game){
 		split(play->g->display,&play->g->level,300,VERT_OUT);
 		break;
 	    case S_FINISH:
+		play_touch(LEVEL);
 		play->points+=10*(play->f->time+1);
 		play->level++;
 		fade (play->g->display, 1000, 0); /* Fade out... */
