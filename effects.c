@@ -1,6 +1,6 @@
 /* timed graphic effects
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: effects.c,v 1.3 2003/03/14 11:08:16 sec Exp $
+ * $Id: effects.c,v 1.4 2003/03/15 17:14:32 sec Exp $
  */
 #include "brillion.h"
 
@@ -31,7 +31,7 @@ void split_simple (SDL_Surface* s, Uint32 ticks, int splitvert, int splitin){
     copy= SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
 
     if(!black || !copy){
-	fprintf (stderr, "fade: failure creating surface\n");
+	fprintf (stderr, "split_simple: failure creating surface\n");
 	return;
     }
 
@@ -87,16 +87,56 @@ void split_simple (SDL_Surface* s, Uint32 ticks, int splitvert, int splitin){
     SDL_FreeSurface(copy);
 }
 
+void fade_p (SDL_Surface* s, Uint32 ticks, int fadein){
+    SDL_Color *colors;
+    Uint32 old_time, curr_time;
+    float alpha=0;
+    graphic *g=play->g;
+    int q;
+
+    colors=calloc(g->ncolors,sizeof(SDL_Color));
+
+    if(!fadein)
+	bcopy(g->palette,colors,256*sizeof(SDL_Color));
+
+    SDL_SetPalette(s,SDL_PHYSPAL, colors, 0, g->ncolors); 
+
+    if(fadein)
+	SDL_Flip(s);
+
+    curr_time=SDL_GetTicks();
+    while (alpha < 255.0){
+	for(q=0;q<g->ncolors;q++){
+	    colors[q].r=g->palette[q].r*((fadein?alpha:255-alpha)/255);
+	    colors[q].g=g->palette[q].g*((fadein?alpha:255-alpha)/255);
+	    colors[q].b=g->palette[q].b*((fadein?alpha:255-alpha)/255);
+	};
+
+	old_time=curr_time;
+	curr_time=SDL_GetTicks();
+
+	SDL_SetPalette(s,SDL_PHYSPAL,colors, 0,g->ncolors); 
+
+	alpha += 255 * ((float) (curr_time - old_time) / ticks);
+    };
+
+    if(!fadein){
+	SDL_FillRect(s, NULL, SDL_MapRGB(s->format,0,0,0));
+	SDL_Flip(s);
+    };
+
+//    SDL_SetPalette(s,SDL_PHYSPAL,g->palette, 0,g->ncolors);
+    free(colors);
+}
+
 void fade (SDL_Surface* s, Uint32 ticks, int fadein){
     SDL_Surface* black, *copy;
     Uint32 old_time, curr_time;
     float alpha=0;
 
     if(s->format->BitsPerPixel == 8){
-	fprintf(stderr,"Fading currently not supported for palette displays\n");
-	if(!fadein)
-	    SDL_FillRect(s, NULL, SDL_MapRGB(s->format,0,0,0));
-	SDL_Flip(s);
+	fprintf(stderr,"experimental Fading for palette displays\n");
+	fade_p(s,ticks,fadein);
 	return;
     };
 
@@ -159,7 +199,6 @@ void split (SDL_Surface* s, SDL_Rect* r_in, Uint32 ticks, split_t type){
     }else{
 	r=r_in;
     };
-
 
     switch(type){
 	case HORIZ_IN:
@@ -232,6 +271,10 @@ void split (SDL_Surface* s, SDL_Rect* r_in, Uint32 ticks, split_t type){
     }
 
     SDL_FillRect(black, NULL, SDL_MapRGB(s->format,0,0,0));
+
+    /* for palette displays... */
+    SDL_SetPalette(copy,SDL_LOGPAL,s->format->palette->colors,
+	    0,s->format->palette->ncolors);
     SDL_BlitSurface(s, r, copy, NULL);
 
     curr_time=SDL_GetTicks();
@@ -282,6 +325,7 @@ void split (SDL_Surface* s, SDL_Rect* r_in, Uint32 ticks, split_t type){
 	SDL_UpdateRect(s,r->x,r->y,r->w,r->h);
 
 	delta = target * ((float) (curr_time - old_time) / ticks);
+	if(delta>target/4){delta=target/4;} /* At least 4 updates */
 	dist += delta;
 
     };

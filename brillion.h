@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.24 2003/03/15 02:10:25 sec Exp $
+ * $Id: brillion.h,v 1.25 2003/03/15 17:14:32 sec Exp $
  */
 
 #include <stdio.h>
@@ -118,6 +118,8 @@ typedef struct {
 	SDL_Surface *block[GAME_COLORS];
 	SDL_Surface *blockx[GAME_COLORS];
 	SDL_Surface *star[GAME_COLORS];
+	SDL_Color   *palette;
+	int	    ncolors;
 
 	/* font */
 	SDL_Surface *font;

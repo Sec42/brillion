@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.27 2003/03/15 02:10:25 sec Exp $
+ * $Id: graphics.c,v 1.28 2003/03/15 17:14:32 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -143,17 +143,32 @@ graphic* init_graphic(void){
 	fprintf(stderr,"Could not initialize SDL: %s.\n", SDL_GetError());
 	exit(-1);
     };
-    if(!(disp=SDL_SetVideoMode(MX, MY, 24, SDL_ANYFORMAT))){
+
+    // HWPALETTE, optional FULLSCREEN? check before ANYFORMAT?
+    if(!(disp=SDL_SetVideoMode(MX, MY, 32, SDL_ANYFORMAT|SDL_HWPALETTE))){
 	printf("Could not set videomode: %s.\n", SDL_GetError());
 	exit(-1);
     };
     assert(SDL_MUSTLOCK(disp)==0);
     printf("SDL uses %d bytes/pixel Display format\n",disp->format->BytesPerPixel);
-
     SDL_WM_SetCaption(b->prog, b->prog);
 
     g=calloc(1,sizeof(graphic));
     g->display=disp;
+
+    if(disp->format->BytesPerPixel == 1){
+	int q;
+	printf("*UGH* this is an Palette display\n");
+	printf("X11 uses %d colors\n",disp->format->palette->ncolors);
+
+	g->ncolors=disp->format->palette->ncolors;
+	g->palette=calloc(g->ncolors,sizeof(SDL_Color));
+	for(q=0;q<g->ncolors;q++){
+	    g->palette[q].r=disp->format->palette->colors[q].r;
+	    g->palette[q].g=disp->format->palette->colors[q].g;
+	    g->palette[q].b=disp->format->palette->colors[q].b;
+	};
+    };
 
     g->rects=calloc(MAXRECTS,sizeof(SDL_Rect));
     g->numrects=0;
