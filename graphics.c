@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.31 2003/03/18 02:51:18 sec Exp $
+ * $Id: graphics.c,v 1.32 2003/03/19 14:33:15 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -103,7 +103,7 @@ SDL_Surface* color_graphic(SDL_Surface* in, int color, int alpha){
 	};
     };
 
-    out=SDL_ConvertSurface(tmp, g->display->format, SDL_HWSURFACE);
+    out=SDL_DisplayFormat(tmp);
     assert(out!=NULL);
 
     if(alpha)
