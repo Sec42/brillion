@@ -46,7 +46,7 @@ void play_game(a_game* game){
 		if(cur_lvl!=old_lvl) // Fade in...
 		  fade (play->g->display, 1000, 1);
 		else
-		  split(play->g->display,200, 1, 1);
+		  split(play->g->display,&play->g->level,300,HORIZ_IN);
 
 		old_lvl=cur_lvl;
 		SDL_Flip(play->g->display);
@@ -57,7 +57,7 @@ void play_game(a_game* game){
 		switch (play_level(play)){
 			case 0:
 				play->lives--;
-				split(play->g->display,200,0,0);
+				split(play->g->display,&play->g->level,300,VERT_OUT);
 				break;
 			case 1:
 				play->points+=10*(play->f->time+1);

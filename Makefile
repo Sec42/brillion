@@ -4,7 +4,7 @@ CFLAGS=-g -O -pipe
 
 # It shouldn't be necessary to edit anything below this line.
 PRG=brillion
-OBJ=brillion.o graphics.o level.o physics.o play.o game.o
+OBJ=brillion.o graphics.o level.o physics.o play.o game.o effects.o
 
 INC=-IBFontv1.0.4-1
 VPATH=BFontv1.0.4-1

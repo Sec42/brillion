@@ -118,7 +118,9 @@ void load_graphics(graphic * gp){
   // XXX: do that somewhere else...
   gp->border=IMG_Load("bkg.png");
   assert(gp->border!=NULL);
-  gp->xoff=20;gp->yoff=(gp->display->h - (QUAD*11))/2; // XXX read from somewhere...
+  gp->level.x=20;gp->level.y=(gp->display->h - (QUAD*11))/2; // XXX read from somewhere...
+//  play->g->level.w=(play->f->w-1)*QUAD; play->g->level.h=(play->f->h-1)*QUAD;
+  gp->level.w=(15)*QUAD; gp->level.h=(11)*QUAD; // XXX^2
 
   gp->font=IMG_Load("numbers.png");
 
@@ -154,6 +156,13 @@ graphic* init_graphic(){
 }
 
 /* -------------------------------------------------------------------- */
+// Where is a Block
+#define POSX(z) (QUAD*(z-1)+g->level.x)
+#define POSY(z) (QUAD*(z-1)+g->level.y)
+// Where is the Ball
+#define POS2X(z) (QUAD/2*(z-2)+g->level.x)
+#define POS2Y(z) (QUAD/2*(z-2)+g->level.y)
+
 
 void paint_level(graphic* g, field* lvl){
   int x,y;
@@ -168,8 +177,8 @@ void paint_ball(graphic* g, field* lvl){
   SDL_Rect rect;
 
   rect.w=rect.h=QUAD/2;
-  rect.x=QUAD/2*(lvl->x-2)+g->xoff;
-  rect.y=QUAD/2*(lvl->y-2)+g->yoff;
+  rect.x=POS2X(lvl->x);
+  rect.y=POS2Y(lvl->y);
   SDL_BlitSurface(g->ball[lvl->color], NULL, g->display, &rect);
   UPDATE(rect);
 
@@ -180,8 +189,8 @@ void blank_block(graphic* g, int x, int y){
   SDL_Rect rect;
 
   rect.w=rect.h=QUAD;
-  rect.x=QUAD*(x-1)+g->xoff;
-  rect.y=QUAD*(y-1)+g->yoff;
+  rect.x=POSX(x);
+  rect.y=POSY(y);
 
   SDL_BlitSurface(g->back, NULL, g->display, &rect);
   UPDATE(rect);
@@ -191,8 +200,8 @@ void paint_block(graphic* g, field* lvl, int x, int y){
   SDL_Rect rect;
 
   rect.w=rect.h=QUAD;
-  rect.x=QUAD*(x-1)+g->xoff;
-  rect.y=QUAD*(y-1)+g->yoff;
+  rect.x=POSX(x);
+  rect.y=POSY(y);
 
   switch(PIECE(x,y)){
     case BLOCK:
@@ -239,137 +248,6 @@ void snapshot(graphic* g){
       x+=g->display->format->BytesPerPixel)
     fprintf(pic,"%c%c%c",*(x+2),*(x+1),*(x+0));
   fclose(pic);
-}
-
-void split (SDL_Surface* s, Uint32 ticks, int splitvert, int splitin){
-  SDL_Surface* black, *copy;
-  Uint32 old_time, curr_time;
-  int dist=0;
-  int target;
-  SDL_Rect rectl,rectr,drectl,drectr;
-
-  if(splitvert){
-    target=s->h/2;
-
-    rectl.w=rectr.w=s->w;
-    rectl.x=rectr.x=0;
-    drectl.x=drectr.x=0;
-    drectl.y=0; rectr.y=target;
-  }else{
-    target=s->w/2;
-
-    rectl.h=rectr.h=s->h;
-    rectl.y=rectr.y=0;
-    drectl.y=drectr.y=0;
-    drectl.x=0; rectr.x=target;
-  };
-
-  black=SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
-  copy= SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
-
-  if(!black || !copy){
-      fprintf (stderr, "fade: failure creating surface\n");
-      return;
-  }
-
-  SDL_FillRect(black, NULL, SDL_MapRGB(s->format,0,0,0));
-  SDL_BlitSurface(s, NULL, copy, NULL);
-
-  curr_time=SDL_GetTicks();
-
-  while (dist < target){
-    if(splitin){
-      if(splitvert){
-	rectl.h=rectr.h=dist;
-	rectl.y=target-dist;
-	drectr.y=2*target-dist;
-      }else{
-	rectl.w=rectr.w=dist;
-	rectl.x=target-dist;
-	drectr.x=2*target-dist;
-      }
-    }else{
-      if(splitvert){
-	rectl.h=rectr.h=target-dist;
-	rectl.y=dist;
-	drectr.y=target+dist;
-      }else{
-	rectl.w=rectr.w=target-dist;
-	rectl.x=dist;
-	drectr.x=target+dist;
-      }
-    };
-
-    SDL_BlitSurface(black, NULL, s, NULL);
-    SDL_BlitSurface(copy, &rectl, s, &drectl);
-    SDL_BlitSurface(copy, &rectr, s, &drectr);
-
-    old_time=curr_time;
-    curr_time=SDL_GetTicks();
-
-    SDL_Flip (s);
-
-    dist += s->w/2 * ((float) (curr_time - old_time) / ticks);
-
-  };
-
-  if(splitin)
-    SDL_BlitSurface(copy, NULL, s, NULL);
-  else
-    SDL_FillRect(s, NULL, SDL_MapRGB(s->format,0,0,0));
-
-  SDL_Flip(s);
-
-  SDL_FreeSurface(black);
-  SDL_FreeSurface(copy);
-}
-
-void fade (SDL_Surface* s, Uint32 ticks, int fadein){
-  SDL_Surface* black, *copy;
-  Uint32 old_time, curr_time;
-  float alpha=0;
-
-  if(s->format->BitsPerPixel == 8){
-    fprintf(stderr,"Fading currently not supported for palette displays\n");
-    if(!fadein)
-      SDL_FillRect(s, NULL, SDL_MapRGB(s->format,0,0,0));
-    SDL_Flip(s);
-    return;
-  };
-
-  black=SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
-  copy= SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
-
-  if(!black || !copy){
-      fprintf (stderr, "fade: failure creating surface\n");
-      return;
-  }
-
-  SDL_FillRect(black, NULL, SDL_MapRGB(s->format,0,0,0));
-  SDL_BlitSurface(s, NULL, copy, NULL);
-
-  curr_time=SDL_GetTicks();
-
-  while (alpha < 255.0){
-    SDL_BlitSurface(copy, NULL, s, NULL);
-    SDL_SetAlpha(black, SDL_SRCALPHA, (Uint8)(fadein?255-alpha:alpha));
-    SDL_BlitSurface(black, NULL, s, NULL);
-
-    old_time=curr_time;
-    curr_time=SDL_GetTicks();
-
-    SDL_Flip (s);
-
-    alpha += 255 * ((float) (curr_time - old_time) / ticks);
-  };
-
-  if(fadein)
-    SDL_BlitSurface(copy, NULL, s, NULL);
-  else
-    SDL_FillRect(s, NULL, SDL_MapRGB(s->format,0,0,0));
-
-  SDL_FreeSurface(black);
-  SDL_FreeSurface(copy);
 }
 
 #define ALIGN_LEFT 0
@@ -457,10 +335,10 @@ void create_moveanim(enum animations type, int color, int ox, int oy, int nx, in
       if(oy>ny) v=1; else v=0;
       a->block[v].y=oy/2;
       a->block[1-v].y=ny/2;
-      a->pixel[0].x=QUAD/2*(ox-2)+g->xoff;
-      a->pixel[0].y=QUAD/2*(oy-2)+g->yoff;
-      a->pixel[1].x=QUAD/2*(nx-2)+g->xoff-a->pixel[0].x;
-      a->pixel[1].y=QUAD/2*(ny-2)+g->yoff-a->pixel[0].y;
+      a->pixel[0].x=POS2X(ox);
+      a->pixel[0].y=POS2Y(oy);
+      a->pixel[1].x=POS2X(nx)-a->pixel[0].x;
+      a->pixel[1].y=POS2Y(ny)-a->pixel[0].y;
       break;
 
     case A_DISK:
@@ -471,10 +349,10 @@ void create_moveanim(enum animations type, int color, int ox, int oy, int nx, in
       a->block[v].y=oy;
       a->block[1-v].y=ny;
 
-      a->pixel[0].x=QUAD*(ox-1)+g->xoff;
-      a->pixel[1].x=QUAD*(nx-1)+g->xoff-a->pixel[0].x;
-      a->pixel[0].y=QUAD*(oy-1)+g->yoff;
-      a->pixel[1].y=QUAD*(ny-1)+g->yoff-a->pixel[0].y;
+      a->pixel[0].x=POSX(ox);
+      a->pixel[1].x=POSX(nx)-a->pixel[0].x;
+      a->pixel[0].y=POSY(oy);
+      a->pixel[1].y=POSY(ny)-a->pixel[0].y;
       break;
 
     default:
@@ -498,14 +376,14 @@ void create_staticanim(enum animations type, int color, int x, int y){
     case A_DIE:
       a->block[0].x=x/2;
       a->block[0].y=y/2;
-      a->pixel[0].x=QUAD/2*(x-2)+g->xoff;
-      a->pixel[0].y=QUAD/2*(y-2)+g->yoff;
+      a->pixel[0].x=POS2X(x);
+      a->pixel[0].y=POS2Y(y);
       break;
     case A_EXPLODE:
       a->block[0].x=x;
       a->block[0].y=y;
-      a->pixel[0].x=QUAD*(x-1)+g->xoff;
-      a->pixel[0].y=QUAD*(y-1)+g->yoff;
+      a->pixel[0].x=POSX(x);
+      a->pixel[0].y=POSY(y);
       break;
 
     default:
