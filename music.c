@@ -1,6 +1,6 @@
 /* Do all the audible stuff
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: music.c,v 1.10 2004/06/16 23:08:17 sec Exp $
+ * $Id: music.c,v 1.11 2004/06/20 18:35:48 sec Exp $
  */
 #include "brillion.h"
 
@@ -12,7 +12,8 @@ music* init_music(){
     fprintf(stderr,"Could not initialize SDL/Audio: %s.\n", SDL_GetError());
     exit(-1);
   };
-  Mix_AllocateChannels(4);
+  Mix_AllocateChannels(16);
+  Mix_ReserveChannels(3);
 
   /*
   bg=Mix_LoadMUS("Cymbals.mp3");
@@ -40,15 +41,15 @@ void play_touch(int piece){
     case OUTER_WALL:
     case WALL:
       if(m->wall)
-	Mix_PlayChannel(1,m->wall, 0);
+	Mix_PlayChannel(-1,m->wall, 0);
       break;
     case DEATH:
       if(m->death)
-	Mix_PlayChannel(1,m->death, 0);
+	Mix_PlayChannel(-1,m->death, 0);
       break;
     case DISK:
       if(m->disk)
-	Mix_PlayChannel(1,m->disk, 0);
+	Mix_PlayChannel(2,m->disk, 0);
       break;
     case STAR:
       if(m->star)
@@ -60,7 +61,7 @@ void play_touch(int piece){
       break;
     case LEVEL:
       if(m->level)
-	Mix_PlayChannel(0,m->level, 0);
+	Mix_PlayChannel(-1,m->level, 0);
       break;
     default:
       /*printf("Whoops, unknown sound %d?\n",piece); */
