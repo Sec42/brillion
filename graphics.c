@@ -84,24 +84,38 @@ void load_graphics(graphic * gp){
   SDL_FreeSurface(pad);
 };
 
+/* Seems like an ugly hack, but I know no sane way */
 SDL_Surface* color_graphic(graphic* g, SDL_Surface* in, int color, int alpha){
   SDL_Surface* out;
-  Uint32* pixel;
+  Uint32* p4;
+  Uint16* p2;
+  Uint16* p1;
 
   out=SDL_ConvertSurface(in, g->display->format, SDL_HWSURFACE);
   assert(out!=NULL);
 
-  if(out->format->BytesPerPixel!=4){
-    fprintf(stderr,"This currently only works for 4 byte/pixel displays\n");
-    exit(-1);
-  };
-
-  for(pixel=out->pixels;pixel<(Uint32*)out->pixels+(out->w*out->h);pixel++){
-    if(*pixel == g->colors[BLUE])
-      *pixel=g->colors[color];
-    if(alpha)
-      if(*pixel == g->colors[WHITE])
-	*pixel=g->colors[NONE];
+  switch(out->format->BytesPerPixel){
+    case 4:
+      for(p4=out->pixels;p4<(Uint32*)out->pixels+(out->w*out->h);p4++){
+	if(*p4 == g->colors[BLUE])
+	  *p4=g->colors[color];
+	if(alpha)
+	  if(*p4 == g->colors[WHITE])
+	    *p4=g->colors[NONE];
+      };
+      break;
+    case 2:
+      for(p2=out->pixels;p2<(Uint16*)out->pixels+(out->w*out->h);p2++){
+	if(*p2 == g->colors[BLUE])
+	  *p2=g->colors[color];
+	if(alpha)
+	  if(*p2 == g->colors[WHITE])
+	    *p2=g->colors[NONE];
+      };
+      break;
+    default:
+      fprintf(stderr,"This is a %d byte/pixel display, which is not supported\n",out->format->BytesPerPixel);
+      exit(-1);
   };
 
   return(out);
