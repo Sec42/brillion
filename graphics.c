@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.32 2003/03/19 14:33:15 sec Exp $
+ * $Id: graphics.c,v 1.33 2003/03/19 14:52:53 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -376,21 +376,37 @@ void print_number(char *str, coord co, int alignment){
 void update_scoreboard(void){
     char t[10];
     a_layout *l=play->layout;
+    static int level=1,points=1,blocks=0,time=0,lives=0;
 
-    sprintf(t,"%1d",play->level+1);
-    print_number(t,l->level, ALIGN_RIGHT);
+    if(play->level != level){
+	level=play->level;
+	sprintf(t,"%1d",play->level+1);
+	print_number(t,l->level, ALIGN_RIGHT);
+    };
 
-    sprintf(t,"%5d",play->points);
-    print_number(t,l->pts, ALIGN_RIGHT);
+    if(play->points != points){
+	points=play->points;
+	sprintf(t,"%5d",play->points);
+	print_number(t,l->pts, ALIGN_RIGHT);
+    };
 
-    sprintf(t,"%3d",play->f->blocks);
-    print_number(t,l->blocks, ALIGN_RIGHT);
+    if(play->f->blocks != blocks){
+	blocks=play->f->blocks;
+	sprintf(t,"%3d",play->f->blocks);
+	print_number(t,l->blocks, ALIGN_RIGHT);
+    };
 
-    sprintf(t,"%3d",play->f->time);
-    print_number(t,l->time, ALIGN_RIGHT);
+    if(play->f->time != time){
+	time=play->f->time;
+	sprintf(t,"%3d",play->f->time);
+	print_number(t,l->time, ALIGN_RIGHT);
+    };
 
-    sprintf(t,"%3d",play->lives);
-    print_number(t,l->lives, ALIGN_RIGHT);
+    if(play->lives != lives){
+	lives=play->lives;
+	sprintf(t,"%3d",play->lives);
+	print_number(t,l->lives, ALIGN_RIGHT);
+    };
 };
 
 a_anim* init_anim(void){
