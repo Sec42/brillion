@@ -23,6 +23,7 @@ void play_game(a_game* game){
 	play->g=init_graphic();
 	play->m=init_music();
 	play->a=init_anim();
+	play->s=init_save();
 	play->points=0;
 
 	play->lives=game->lives;
@@ -67,6 +68,7 @@ void play_game(a_game* game){
 				play->lives=0;
 				break;
 		};
+		print_save(play->s);
 
 		if(cur_lvl!=old_lvl){
 			fade (play->g->display, 1000, 0); // Fade out...
@@ -163,7 +165,7 @@ int play_level(a_play* play){
     if(userl==2) userl=1;
 
     if(!dead)
-      move_step(g, m, lvl, userr-userl);
+      move_step(g, m, lvl, handle_save(play->s,userr-userl));
 
     if(userrr==1) userr=0;
     if(userlr==1) userl=0;
