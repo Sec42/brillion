@@ -1,12 +1,12 @@
 /* Simple Timer helper function, only ONE timer at a time
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: timer.c,v 1.4 2003/12/12 02:30:44 sec Exp $
+ * $Id: timer.c,v 1.5 2004/06/21 12:29:57 sec Exp $
  */
 #include "brillion.h"
 
 void init_timer(void){
     int x;
-    x=SDL_Init(SDL_INIT_TIMER);
+    x=SDL_InitSubSystem(SDL_INIT_TIMER);
     if(x){
 	fprintf(stderr,"WARNING: Initialising the SDL_TIMER subsystem failed\n");
 	fprintf(stderr,"WARNING: Some automatic actions may fail\n");

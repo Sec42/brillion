@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.39 2003/12/11 01:21:27 sec Exp $
+ * $Id: graphics.c,v 1.40 2004/06/21 12:29:57 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -188,7 +188,7 @@ graphic* init_graphic(void){
     SDL_Surface* disp;
     graphic* g;
 
-    if(SDL_Init(SDL_INIT_VIDEO)){
+    if(SDL_InitSubSystem(SDL_INIT_VIDEO)){
 	fprintf(stderr,"Could not initialize SDL: %s.\n", SDL_GetError());
 	exit(-1);
     };
