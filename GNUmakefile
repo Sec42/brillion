@@ -15,13 +15,18 @@ endif
 
 # It shouldn't be necessary to edit anything below this line.
 PRG=brillion
-OBJ=brillion.o graphics.o level.o physics.o play.o game.o effects.o save.o
+OBJ=brillion.o graphics.o level.o physics.o play.o game.o effects.o \
+	save.o font.o
 
 INC=-IBFontv1.0.4-1
 VPATH=BFontv1.0.4-1
 
 ifdef OPTIMIZE
 CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe -DNDEBUG
+endif
+
+ifdef DEVEL
+CFLAGS+= -DDEVEL
 endif
 
 # misses -pedantic (warns too much about system headers)
