@@ -14,9 +14,6 @@ PRG=brillion
 OBJ=brillion.o graphics.o level.o physics.o play.o game.o effects.o \
 	save.o font.o
 
-INC=-IBFontv1.0.4-1
-VPATH=BFontv1.0.4-1
-
 .ifdef OPTIMIZE
 CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe -DNDEBUG
 .endif
@@ -34,7 +31,7 @@ CFLAGS+= -D_POSIX_C_SOURCE=2  -W -Wall -Wbad-function-cast -Wcast-align \
 	-Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings
 .endif
 
-CFLAGS+=-Wall `${SDL_CONFIG} --cflags` -IBFontv1.0.4-1
+CFLAGS+=-Wall `${SDL_CONFIG} --cflags`
 LDFLAGS+=`${SDL_CONFIG} --libs` -lSDL_image
 
 .ifdef SOUND
