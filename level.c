@@ -35,7 +35,7 @@ field * read_level(char * file){
   };
 
   fscanf(level,"%10s %d ",word,&num);
-  if(strncmp(word,"Clvl",4) || (num != 42)){
+  if(strncmp(word,"Blvl",4) || (num != 42)){
     fprintf(stderr,"Level '%s': Corrupt level format\n",file);
     return(NULL);
   };
@@ -56,11 +56,17 @@ field * read_level(char * file){
 	while(num-->0 && (lvl->desc[num] == '\r' || lvl->desc[num] == '\n'))
 	  lvl->desc[num]=0;
       };
+    }else if(!strncmp(word,"points",6)){
+      if(fscanf(level,"%d",&lvl->ppb)<1)
+	error++;
     }else if(!strncmp(word,"time",4)){
       if(fscanf(level,"%d",&lvl->time)<1)
 	error++;
+    }else if(!strncmp(word,"color",5)){
+      if(fscanf(level,"%d",&lvl->color)<1)
+	error++;
     }else if(!strncmp(word,"start",5)){
-      if(fscanf(level,"%d %d %d %d",&lvl->x,&lvl->y,&lvl->dir,&lvl->color)<4)
+      if(fscanf(level,"%d %d %d",&lvl->x,&lvl->y,&lvl->dir)<3)
 	error++;
       lvl->x++;lvl->y++;
     }else if(!strncmp(word,"level",5)){
@@ -161,7 +167,12 @@ field * read_level(char * file){
     return(NULL);
   };
 
-  lvl->ppb=1600/lvl->blocks; //XXX: Check with original
+  if(!lvl->ppb){
+    lvl->ppb=1+2500.0/lvl->blocks; //XXX: Crude approx for original game
+    if(lvl->ppb>255)
+      lvl->ppb=255;
+  };
+
   return lvl;
 };
 
