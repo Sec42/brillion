@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.39 2004/06/13 21:12:01 sec Exp $
+ * $Id: play.c,v 1.40 2004/06/13 21:31:35 sec Exp $
  */
 #include "brillion.h"
 
@@ -97,7 +97,7 @@ void play_game(a_game* game){
 
     add_score(b->game->scores,play->points);
     display_scores();
-//    write_scores(b->game->scores);
+    write_scores(b->game->scores);
 
     if(play->lives>0)
 	printf("Congrats, you made it through all levels alive!\n");
@@ -106,8 +106,8 @@ void play_game(a_game* game){
 
     /* XXX: uninit_graphic/_music ? */
 
-    free(play);
-    SDL_Quit();
+//    free(play);
+//    SDL_Quit();
 }
 
 int play_level(void){
