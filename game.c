@@ -1,6 +1,6 @@
 /* The game settings file parser
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: game.c,v 1.7 2003/03/21 01:03:19 sec Exp $
+ * $Id: game.c,v 1.8 2003/12/08 16:36:30 sec Exp $
  */
 #include "brillion.h"
 
@@ -142,5 +142,6 @@ a_game* read_game(const char * file){
 	return(NULL);
     };
     free(word[0]);
+    game->scores=read_scores();
     return game;
 }

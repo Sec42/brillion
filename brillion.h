@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.30 2003/12/05 00:58:03 sec Exp $
+ * $Id: brillion.h,v 1.31 2003/12/08 16:36:30 sec Exp $
  */
 
 #include <stdio.h>
@@ -103,6 +103,7 @@ typedef struct {
     int h;
     int len;
     int space;
+    int lineh;
     SDL_Surface *font;
 } a_font;
 
@@ -218,11 +219,30 @@ typedef struct {
 	a_layout    *layout;
 } a_play;
 
+#define MAX_SCORES 10
+#define SCORENAMELEN 8
+
+typedef struct {
+	char    name[SCORENAMELEN];
+	int     score;
+	time_t  when;
+	int     howlong;
+/*	char    flags[8];  */
+/*	int     csum;      */
+} a_score;
+
+typedef struct {
+	a_score scores[MAX_SCORES];
+	int     maxscore;
+} the_scores;
+
+
 typedef struct {
 	a_level	    **levels;
 	int	    maxlevel;
 	int	    lives;
 	a_layout    *layout;
+	the_scores  *scores;
 } a_game;
 
 typedef struct {
@@ -313,7 +333,14 @@ void print_save(a_save *s);
 
 /* font.c */
 a_font* init_font(const char *file);
-void render_font(int x, int y,char *txt);
+void render_font(int x, int y,const char *txt);
+SDL_Rect *render_text(int x, int y,const char *txt,a_font *f,int maxw);
+
+/* score.c */
+the_scores* read_scores(void);
+void write_scores(void);
+void display_scores(void);
+void add_score(void);
 
 /* title.c */
 void display_title(int oldscore);

@@ -1,3 +1,10 @@
+7.12.:
++ cheat -> no highscore
++ scores: flags (cheat, startinglvl?), howlong. sane printing of times.
++ font: right-justfied printing for numbers. perhaps fixed.witdhprinting?
++ end of levels -> random levels
++ saner handling of Scorefile brokenness/nonexistence.
+
 + Add better(complete) sound FX
 . Add mini-animation engine
   (moving: ball, disk; stationary: stone_explosion, ball_explosion, "twinkle")
