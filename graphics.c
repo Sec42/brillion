@@ -221,6 +221,13 @@ void fade (SDL_Surface* s, Uint32 ticks, int fadein){
   Uint32 old_time, curr_time;
   float alpha=0;
 
+  if(s->format->BitsPerPixel == 8){
+    fprintf(stderr,"Fading currently not supported for palette displays\n");
+    if(!fadein)
+      SDL_FillRect(s, NULL, SDL_MapRGB(s->format,0,0,0));
+    return;
+  };
+
   black=SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
   copy= SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
 
@@ -246,6 +253,11 @@ void fade (SDL_Surface* s, Uint32 ticks, int fadein){
 
     alpha += 255 * ((float) (curr_time - old_time) / ticks);
   };
+
+  if(fadein)
+    SDL_BlitSurface(copy, NULL, s, NULL);
+  else
+    SDL_FillRect(s, NULL, SDL_MapRGB(s->format,0,0,0));
 
   SDL_FreeSurface(black);
   SDL_FreeSurface(copy);
