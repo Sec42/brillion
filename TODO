@@ -37,3 +37,5 @@ bug: hit two "stars" or "disks" at the same time (in a corner). In the original
      only one disk moves. (not 100% sure about stars)
 diff: original game contains different 'Wall' blocks. No difference in
       gameplay, just for visual effect.
+
+? timing on linux seems off. The game feels too fast.
