@@ -1,6 +1,6 @@
 /* Game physics/mechanics - i.e. How do things move inside the game
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: physics.c,v 1.14 2003/03/21 01:03:19 sec Exp $
+ * $Id: physics.c,v 1.15 2004/06/22 21:57:45 sec Exp $
  */
 #include "brillion.h"
 
@@ -110,7 +110,7 @@ int move_touch(int x, int y,signed int dx,signed int dy){
 	play_touch(BLOCK);
 	PIECE(x,y)=SPACE;
 	create_staticanim(A_EXPLODE,COLOR(x,y),x,y);
-	if(--lvl->blocks ==0)
+	if(--lvl->blocks ==0 && play->status!=S_DIE)
 	  play->status=S_FINISH;
 
 	play->points+=lvl->ppb;
