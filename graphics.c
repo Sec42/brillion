@@ -262,7 +262,10 @@ void fade (SDL_Surface* s, Uint32 ticks, int fadein){
   SDL_FreeSurface(copy);
 }
 
-void print_number(graphic *g, char *str, int x, int y){
+#define ALIGN_LEFT 0
+#define ALIGN_RIGHT 1
+
+void print_number(graphic *g, char *str, int x, int y, int alignment){
   char *c;
   SDL_Rect dst,r;
 
@@ -271,11 +274,21 @@ void print_number(graphic *g, char *str, int x, int y){
   char wid=25;
   char hei=31;
 
-  dst.x=x;dst.y=y;
-
   r.w=dst.w=wid-fudge*2;
   r.h=dst.h=hei;
   r.y=0;
+
+  dst.y=y;
+  switch (alignment) {
+  case ALIGN_RIGHT:
+    dst.x=x-(strlen(str)*dst.w);
+    break;
+
+
+  default:
+  case ALIGN_LEFT:
+    dst.x=x;
+  }
 
   for(c=str;*c!=0;c++){
     if(*c!=' '){
@@ -294,16 +307,16 @@ void update_scoreboard(a_play *p){
   char t[10];
 
   sprintf(t,"%5d",p->points);
-  print_number(p->g,t,500,150);
+  print_number(p->g,t,600,150, ALIGN_RIGHT);
 
   sprintf(t,"%3d",p->f->blocks);
-  print_number(p->g,t,550,200);
+  print_number(p->g,t,600,200, ALIGN_RIGHT);
 
   sprintf(t,"%3d",p->f->time);
-  print_number(p->g,t,550,250);
+  print_number(p->g,t,600,250, ALIGN_RIGHT);
 
   sprintf(t,"%3d",p->lives);
-  print_number(p->g,t,550,300);
+  print_number(p->g,t,600,300, ALIGN_RIGHT);
 };
 
 anim* init_anim(){
