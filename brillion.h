@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.39 2004/06/16 23:08:17 sec Exp $
+ * $Id: brillion.h,v 1.40 2004/06/21 12:30:38 sec Exp $
  */
 
 #include <stdio.h>
@@ -216,7 +216,6 @@ typedef struct {
 	int	    lives;
 	int	    points;
 	int	    level;
-	int	    sound;
 	status_t    status;
 	a_save	    *s;
 	a_layout    *layout;
@@ -292,9 +291,11 @@ void run_game(a_game* game);
 #ifdef SOUND
 /* music.c */
 music* init_music(void);
+void uninit_music(void);
 void play_touch(int piece);
 #else
 #define init_music() NULL
+#define uninit_music() NULL
 #define play_touch(a)
 #endif
 
@@ -363,3 +364,6 @@ SDL_Surface* create_title(int oldscore);
 #define SDL_USER_BLINK       2
 void init_timer(void);
 void time_event(unsigned int centiseconds,int eventtype);
+
+/* portab.c */
+char * getuser(void);
