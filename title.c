@@ -1,21 +1,23 @@
 /* Display the title screen, and handle the main menu...
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: title.c,v 1.4 2003/03/26 17:45:59 sec Exp $
+ * $Id: title.c,v 1.5 2003/12/05 00:58:03 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
 
-#define MENU_ENTRIES 2
+#define MENU_ENTRIES 3
 
-char menus[][80] = { "PLAY", "QUIT" };
-int  menux[]     = {100,100};
-int  menuy[]     = {400,440};
+char menus[][80] = { "PLAY", "LEVEL", "QUIT" };
+int  menux[]     = {100,100,100};
+int  menuy[]     = {360,400,440};
 
 void title_main(SDL_Surface *title){
     SDL_Event event;
     SDL_Rect r;
     signed int menu=1,omenu=0;
     graphic * g=play->g;
+    int lvl=1;
+char lvlnum[50];
 
     r.x=0;r.y=0;r.w=16;r.h=16; /* XXX: QUAD/2? :) */
 
@@ -37,7 +39,21 @@ void title_main(SDL_Surface *title){
 			    break;
 			case SDLK_RETURN:
 			case SDLK_SPACE:
-			    if(menu==2)exit(0);
+			    if(menu==3)exit(0);
+			    if(menu==2){
+				SDL_Rect rr;
+				rr.x=220;rr.w=100;
+				rr.y=400;rr.h=50;
+				lvl+=4;
+				if(lvl>21)lvl=1;
+				sprintf(lvlnum,"%2d",lvl);
+
+	    SDL_BlitSurface(title,&rr,play->g->display,&rr);
+				render_font(220,400,lvlnum);
+				SDL_Flip(g->display);
+				break;
+			    };
+			    play->level=lvl-1;
 			    return;
 			default:		/* perhaps beep? */
 			    break;
@@ -97,7 +113,7 @@ void title_main(SDL_Surface *title){
     }; /* while(1) */
 }
 
-void display_title(void){
+void display_title(int oldscore){
     SDL_Surface *title,*black,*s,*bkg;
     int x;
 
@@ -125,6 +141,12 @@ void display_title(void){
     SDL_FreeSurface(title);
     for(x=0;x<MENU_ENTRIES;x++){
 	render_font(menux[x],menuy[x],menus[x]);
+    };
+
+    if(oldscore >0){
+	char s[100];
+	sprintf(s,"Your Score: %6d",oldscore);
+	render_font(300,10,s);
     };
     SDL_Flip(s);
     title_main(bkg);

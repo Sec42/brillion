@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.29 2003/03/26 18:01:14 sec Exp $
+ * $Id: brillion.h,v 1.30 2003/12/05 00:58:03 sec Exp $
  */
 
 #include <stdio.h>
@@ -316,4 +316,4 @@ a_font* init_font(const char *file);
 void render_font(int x, int y,char *txt);
 
 /* title.c */
-void display_title(void);
+void display_title(int oldscore);
