@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.26 2003/12/08 16:36:30 sec Exp $
+# $Id: Makefile,v 1.27 2003/12/11 00:27:20 sec Exp $
 #Config this:
 CFLAGS?=-O -pipe
 CFLAGS+=-g
@@ -13,7 +13,7 @@ config:
 # It shouldn't be necessary to edit anything below this line.
 PRG=brillion
 OBJ=brillion.o graphics.o level.o physics.o play.o game.o effects.o \
-	save.o font.o title.o score.o
+	save.o font.o title.o score.o timer.o
 
 .ifdef OPTIMIZE
 CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe -DNDEBUG
