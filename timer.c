@@ -1,6 +1,6 @@
 /* Simple Timer helper function, only ONE timer at a time
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: timer.c,v 1.2 2003/12/11 01:21:27 sec Exp $
+ * $Id: timer.c,v 1.3 2003/12/11 02:46:47 sec Exp $
  */
 #include "brillion.h"
 
@@ -18,8 +18,6 @@ Uint32 MyTimerCallback(Uint32 interval, void *param){
 
     event.type = SDL_USEREVENT;
     event.user.code = *(int*)param;
-
-    printf("Timer fired\n");
 
     SDL_PushEvent(&event);
 
