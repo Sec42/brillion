@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.3 2002/10/15 00:16:30 sec Exp $
+ * $Id: brillion.h,v 1.4 2002/10/15 11:39:24 sec Exp $
  */
 
 #include <stdio.h>
@@ -43,6 +43,11 @@ EXTERN char verbose;  // Debugging-Level
 #define	STAR	3
 #define WALL	4
 #define DEATH	5
+
+typedef struct {
+	char level[100];
+	int onelevel;
+} config;
 
 typedef struct {
 	int version;    /* Version number. Always 42 */
@@ -93,4 +98,4 @@ void snapshot(graphic* g);
 void fade (SDL_Surface* s, Uint32 ticks, int fadein);
 
 /* play.c */
-void game();
+void game(config* cfg);

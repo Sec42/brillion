@@ -1,6 +1,6 @@
 /* Written by Sec <sec@42.org>
  * vim:set cin sm ts=4 sw=4:
- * $Id: brillion.c,v 1.1 2002/10/14 17:59:09 sec Exp $
+ * $Id: brillion.c,v 1.2 2002/10/15 11:39:24 sec Exp $
  */
 
 #define EXTERN /**/
@@ -8,6 +8,7 @@
 
 int main(int argc,char **argv){
 	/* Deklarationen */
+	config* cfg;
 	char c;
 
 #ifdef __FreeBSD__
@@ -24,13 +25,18 @@ int main(int argc,char **argv){
 		prog++;
 	}
 	verbose=0;
+	cfg=calloc(1,sizeof(config));
 
 	/* The getopt loop */
-	while ((c = getopt(argc, argv, "z:vmh")) != EOF)
+	while ((c = getopt(argc, argv, "l:vh")) != EOF)
 		switch (c)
 		{
 			case 'v':
 				verbose++;
+				break;
+			case 'l':
+				cfg->onelevel++;
+				strncpy(cfg->level,optarg,80);cfg->level[79]=0;
 				break;
 			case 'h':
 			default:
@@ -46,7 +52,7 @@ int main(int argc,char **argv){
 //		exit(-1);
 //	}
 
-	game();
+	game(cfg);
 
 	fprintf(stderr,"%s: finished\n",prog);
 	exit(0); // Juhuu!

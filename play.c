@@ -10,7 +10,7 @@
 #define MY 480
 #define MZ 4
 
-void game(){
+void game(config* c){
   SDL_Event event;
   signed int userx=0;
   char quit=0;
@@ -23,7 +23,10 @@ void game(){
   graphic * g;
   field * lvl;
 
-  lvl=read_level("levels/o-02.lvl");
+  if(c->onelevel)
+	  lvl=read_level(c->level);
+  else
+	  lvl=read_level("levels/o-02.lvl");
   if(!lvl){
     fprintf(stderr, "Whoops, kein level?\n");
     exit(1);
