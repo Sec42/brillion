@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.46 2004/08/06 10:23:01 sec Exp $
+ * $Id: play.c,v 1.47 2004/08/08 01:09:27 sec Exp $
  */
 
 #include <time.h>
@@ -23,8 +23,8 @@ Uint32 sleep_gran=50; /* granularity of the sleep time in msec */
 
 int play_level(void);
 void play_game(a_game* game);
-void init_delay();
-void inline  DELAY(Uint32,Uint32);
+void init_delay(void);
+void DELAY(Uint32,Uint32);
 
 void run_game(a_game * game){
     play=calloc(1,sizeof(a_play));
@@ -49,21 +49,18 @@ void run_game(a_game * game){
 
     while(1){
 	switch(title_main()){
-	    case 1:
+	    case 0:
 		play_game(game);
+		play->level=0;
 		break;
-	    case 2:
-		if(play->m){
-		    uninit_music();
-		}else{
-		    play->m=init_music();
-		};
-		break;
-	    case 4:
+	    case 3:
 		display_scores();
 		break;
-	    case 5:
+	    case -1: /* User pressed exit */
+	    case 4:
 		exit(0); /* XXX ? */
+	    default:
+		assert("Menu returned illegal point"&&NULL);
 	};
     };
 }
@@ -95,7 +92,7 @@ void play_game(a_game* game){
 	SDL_Flip(play->g->display);
 
 	/* Clear Animation list */
-//	bzero(play->a,sizeof(play->a));
+/*	bzero(play->a,sizeof(play->a)); */
 	memset(play->a,0,sizeof(play->a));
 
 	play->status=S_PLAY;
@@ -327,10 +324,10 @@ void init_delay(void){
     };
     printf("Sleep_gran=%d\n", sleep_gran);
     printf(" avg. = %f\n", (float)(t_end-ticks)/TEST_TIMES - sleep_min);
-};
+}
 
 void DELAY(Uint32 left,Uint32 end){
     if(left>sleep_min) 
 	SDL_Delay(left-sleep_gran); 
     while(SDL_GetTicks()<end){ ; }; 
-};
+}
