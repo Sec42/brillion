@@ -1,6 +1,6 @@
 /* Display the title screen, and handle the main menu...
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: title.c,v 1.9 2004/06/16 23:08:17 sec Exp $
+ * $Id: title.c,v 1.10 2004/06/21 12:28:49 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -17,7 +17,6 @@ int title_main(){
     signed int menu=1,omenu=0,done=0;
     graphic * g=play->g;
     int lvl=1, olvl=0;
-    int snd=play->sound, osnd=2;
     char lvlnum[50];
     SDL_Surface *title;
 
@@ -47,13 +46,12 @@ int title_main(){
 			    switch(menu){
 				case 1:            /* Play */
 				    play->level=lvl-1;
-				    play->sound=snd;
 				case 4:            /* scores */
 				case MENU_ENTRIES: /* Quit */
 				    done=1;
 				    break;
 				case 2:	           /* snd */
-				    snd=1-snd;
+				    done=1;
 				    break;
 				case 3:            /* lvl */
 				    lvl+=4;
@@ -91,20 +89,17 @@ int title_main(){
 	    UPDATE(r);
 	    omenu=menu;
 	};
-	if(osnd!=snd){
-	    osnd=snd;
-	    SDL_BlitSurface(title,&sndr,play->g->display,&sndr);
+
 #ifdef SOUND
-	    if(snd){
-		render_font(sndr.x,sndr.y,"On");
-	    }else{
-		render_font(sndr.x,sndr.y,"Off");
-	    };
-#else
-	    render_font(sndr.x,sndr.y,"n/a");
-#endif
-	    UPDATE(sndr);
+	if(play->m){
+	    render_font(sndr.x,sndr.y,"On");
+	}else{
+	    render_font(sndr.x,sndr.y,"Off");
 	};
+#else
+	render_font(sndr.x,sndr.y,"n/a");
+#endif
+	UPDATE(sndr);
 
 	if(olvl!=lvl){
 	    olvl=lvl;

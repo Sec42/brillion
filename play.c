@@ -1,7 +1,8 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.43 2004/06/16 23:08:17 sec Exp $
+ * $Id: play.c,v 1.44 2004/06/21 12:28:49 sec Exp $
  */
+
 #include <string.h>
 #include "brillion.h"
 
@@ -18,6 +19,11 @@ void run_game(a_game * game){
     play=calloc(1,sizeof(a_play));
 
     /* Graphic, Music&Sound static per game for now */
+    if(SDL_Init(0)){
+	fprintf(stderr,"Could not initialize SDL at all: %s.\n", SDL_GetError());
+	exit(1);
+    };
+
     play->g=init_graphic();
     play->layout=game->layout;
     play->m=init_music();
@@ -27,12 +33,18 @@ void run_game(a_game * game){
     init_timer();
 
     play->level=0; /* XXX */
-    play->sound=1; /* XXX */
 
     while(1){
 	switch(title_main()){
 	    case 1:
 		play_game(game);
+		break;
+	    case 2:
+		if(play->m){
+		    uninit_music();
+		}else{
+		    play->m=init_music();
+		};
 		break;
 	    case 4:
 		display_scores();
@@ -70,7 +82,8 @@ void play_game(a_game* game){
 	SDL_Flip(play->g->display);
 
 	/* Clear Animation list */
-	bzero(play->a,sizeof(play->a));
+//	bzero(play->a,sizeof(play->a));
+	memset(play->a,0,sizeof(play->a));
 
 	play->status=S_PLAY;
 	clear_number_cache();
