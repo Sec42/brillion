@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.36 2003/03/21 01:03:19 sec Exp $
+ * $Id: graphics.c,v 1.37 2003/03/25 15:52:45 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -31,11 +31,11 @@ myc mk_color(int color, int br, int reality){
     myc c;
     int t,sat,val;
     switch(color){
-	case RED:     t=BRED             ;break;
-	case CYAN:    t=     BGREEN+BBLUE;break;
-	case MAGENTA: t=BRED       +BBLUE;break;
-	case GREEN:   t=     BGREEN      ;break;
-	case BLUE:    t=            BBLUE;break;
+	case RED:     t=BRED             +20;break;
+	case CYAN:    t=     BGREEN+BBLUE+ 5;break;
+	case MAGENTA: t=BRED       +BBLUE+10;break;
+	case GREEN:   t=     BGREEN      - 5;break;
+	case BLUE:    t=            BBLUE+10;break;
 	case YELLOW:  t=BRED+BGREEN      ;break;
 	default:      t=BRED+BGREEN+BBLUE;
     };
