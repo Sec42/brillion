@@ -97,7 +97,10 @@ int move_touch(graphic* gp, music* m, field* lvl, int x, int y,signed int dx,sig
       if(lvl->color==COLOR(x,y)){
 	play_touch(m, BLOCK);
 	PIECE(x,y)=SPACE;
-	paint_block(gp,lvl,x,y);
+//	paint_block(gp,lvl,x,y);
+
+	create_staticanim(A_EXPLODE,COLOR(x,y),x,y);
+
 	lvl->blocks--;
 	b->p->points+=lvl->ppb; // XXX: Layering
       };

@@ -95,6 +95,7 @@ int play_level(a_play* play){
   int frames; // Number of frames displayed
   int z; // Animation counter...
   int dead=0; // Player dead? (ignore input)
+  int keepalive;
 
   Uint32 t_start,t_end,t_gone,t_now;
   Sint32 t_left;
@@ -208,25 +209,28 @@ int play_level(a_play* play){
       printf("CPU to slow by %d ticks/round\n",-t_left);
     };
 
-    if(quit || lvl->blocks<=0){
+    if(quit || lvl->blocks<=0){ // Basically, time to exit.
 
-      if(lvl->blocks==-1){
-	if(!dead)
-	  create_staticanim(A_DIE,lvl->color,lvl->x,lvl->y);
-
+      if(lvl->blocks==-1 && !dead){
+	create_staticanim(A_DIE,lvl->color,lvl->x,lvl->y);
 	dead=1;
-	for (z=0;z < MAX_ANIM; z++){
-	  if(a[z].type!=A_NONE)
-	    dead=2;
-	};
-	if(dead==1)
-	  return(0);
-      }else{
+      };
+
+      keepalive=0;
+      for (z=0;z < MAX_ANIM; z++){
+	if(a[z].type!=A_NONE && a[z].type!=A_BALL)
+	  keepalive=1;
+      };
+
+      if(!keepalive){
 	fprintf(stderr,"%f Ticks/frame\n",(float)ticks/frames);
-	if(quit)
+	if(quit) // Abort
 	  return(2);
 
-	return(1);
+	if(lvl->blocks==0) // Sucess
+	  return(1);
+
+	return(0); // Die
       };
     };
 

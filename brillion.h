@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.17 2003/03/02 23:00:14 sec Exp $
+ * $Id: brillion.h,v 1.18 2003/03/03 14:46:56 sec Exp $
  */
 
 #include <stdio.h>
@@ -61,7 +61,7 @@ typedef struct {
 	int x, y;
 } coord;
 
-#define MAX_ANIM 5
+#define MAX_ANIM 9
 
 typedef struct {
 	enum animations	type;
@@ -117,6 +117,7 @@ typedef struct {
 	SDL_Surface * ballx[GAME_COLORS];
 	SDL_Surface * disk[GAME_COLORS];
 	SDL_Surface * block[GAME_COLORS];
+	SDL_Surface * blockx[GAME_COLORS];
 	SDL_Surface * star[GAME_COLORS];
 
 	/* font */

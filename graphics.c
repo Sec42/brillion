@@ -85,6 +85,11 @@ void load_graphics(graphic * gp){
     gp->block[x]=color_graphic(gp,pad,x,0);
   SDL_FreeSurface(pad);
 
+  pad=IMG_Load("blockX.gif");
+  for(x=1;x<GAME_COLORS;x++)
+    gp->blockx[x]=color_graphic(gp,pad,x,1);
+  SDL_FreeSurface(pad);
+
   pad=IMG_Load("star_blue.gif");
   for(x=1;x<GAME_COLORS;x++)
     gp->star[x]=color_graphic(gp,pad,x,0);
@@ -442,8 +447,6 @@ void create_moveanim(enum animations type, int color, int ox, int oy, int nx, in
   a->color=color;
   switch(a->type=type){
     case A_BALL:
-      a->type=A_BALL;
-
       if(ox>nx) v=1; else v=0;
       a->block[v].x=ox/2;
       a->block[1-v].x=nx/2;
@@ -491,7 +494,12 @@ void create_staticanim(enum animations type, int color, int x, int y){
       a->block[0].y=y/2;
       a->pixel[0].x=QUAD/2*(x-2)+g->xoff;
       a->pixel[0].y=QUAD/2*(y-2)+g->yoff;
-      a->duration=0;
+      break;
+    case A_EXPLODE:
+      a->block[0].x=x;
+      a->block[0].y=y;
+      a->pixel[0].x=QUAD*(x-1)+g->xoff;
+      a->pixel[0].y=QUAD*(y-1)+g->yoff;
       break;
 
     default:
@@ -556,6 +564,26 @@ void animate(graphic*g, a_anim*a, int step){
 	  a[aidx].type=A_NONE;
 	}else{
 	  SDL_BlitSurface(g->ballx[a[aidx].color], &srect, g->display, &rect);
+	};
+
+	if(step == AFRAMES)
+	  a[aidx].duration++;
+
+	break;
+
+      case A_EXPLODE:
+	blank_block(g,a[aidx].block[0].x,a[aidx].block[0].y);
+
+	rect.x=a[aidx].pixel[0].x;
+	rect.y=a[aidx].pixel[0].y;
+
+	srect.y=0;srect.x=(QUAD)*((a[aidx].duration*AFRAMES+step-1)>>1);
+	srect.w=srect.h=QUAD;
+
+	if(srect.x>g->blockx[a[aidx].color]->w){
+	  a[aidx].type=A_NONE;
+	}else{
+	  SDL_BlitSurface(g->blockx[a[aidx].color], &srect, g->display, &rect);
 	};
 
 	if(step == AFRAMES)
