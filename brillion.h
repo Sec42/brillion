@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.15 2003/03/02 18:36:16 sec Exp $
+ * $Id: brillion.h,v 1.16 2003/03/02 22:15:30 sec Exp $
  */
 
 #include <stdio.h>
@@ -200,6 +200,7 @@ void paint_block(graphic* g, field* lvl, int x, int y);
 void paint_ball(graphic* g, field* lvl);
 void snapshot(graphic* g);
 void fade (SDL_Surface* s, Uint32 ticks, int fadein);
+void split (SDL_Surface* s, Uint32 ticks, int splitvert, int splitin);
 void update_scoreboard(a_play* p);
 
 /* play.c */

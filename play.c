@@ -44,8 +44,12 @@ void play_game(a_game* game){
 		SDL_BlitSurface(play->g->border, NULL, play->g->display, NULL);
 		paint_level(play->g, play->f);
 		if(cur_lvl!=old_lvl) // Fade in...
-			fade (play->g->display, 1000, 1);
+		  fade (play->g->display, 1000, 1);
+		else
+		  split(play->g->display,1000, 1, 1);
+
 		old_lvl=cur_lvl;
+		SDL_Flip(play->g->display);
 
 		// Clear Animation list
 		bzero(play->a,sizeof(play->a));
@@ -53,6 +57,7 @@ void play_game(a_game* game){
 		switch (play_level(play)){
 			case 0:
 				play->lives--;
+				split(play->g->display,1000,0,0);
 				break;
 			case 1:
 				play->points+=10*(play->f->time+1);

@@ -231,6 +231,89 @@ void snapshot(graphic* g){
   fclose(pic);
 }
 
+void split (SDL_Surface* s, Uint32 ticks, int splitvert, int splitin){
+  SDL_Surface* black, *copy;
+  Uint32 old_time, curr_time;
+  int dist=0;
+  int target;
+  SDL_Rect rectl,rectr,drectl,drectr;
+
+  if(splitvert){
+    target=s->h/2;
+
+    rectl.w=rectr.w=s->w;
+    rectl.x=rectr.x=0;
+    drectl.x=drectr.x=0;
+    drectl.y=0; rectr.y=target;
+  }else{
+    target=s->w/2;
+
+    rectl.h=rectr.h=s->h;
+    rectl.y=rectr.y=0;
+    drectl.y=drectr.y=0;
+    drectl.x=0; rectr.x=target;
+  };
+
+  black=SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
+  copy= SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
+
+  if(!black || !copy){
+      fprintf (stderr, "fade: failure creating surface\n");
+      return;
+  }
+
+  SDL_FillRect(black, NULL, SDL_MapRGB(s->format,0,0,0));
+  SDL_BlitSurface(s, NULL, copy, NULL);
+
+  curr_time=SDL_GetTicks();
+
+  while (dist < target){
+    if(splitin){
+      if(splitvert){
+	rectl.h=rectr.h=dist;
+	rectl.y=target-dist;
+	drectr.y=2*target-dist;
+      }else{
+	rectl.w=rectr.w=dist;
+	rectl.x=target-dist;
+	drectr.x=2*target-dist;
+      }
+    }else{
+      if(splitvert){
+	rectl.h=rectr.h=target-dist;
+	rectl.y=dist;
+	drectr.y=target+dist;
+      }else{
+	rectl.w=rectr.w=target-dist;
+	rectl.x=dist;
+	drectr.x=target+dist;
+      }
+    };
+
+    SDL_BlitSurface(black, NULL, s, NULL);
+    SDL_BlitSurface(copy, &rectl, s, &drectl);
+    SDL_BlitSurface(copy, &rectr, s, &drectr);
+
+    old_time=curr_time;
+    curr_time=SDL_GetTicks();
+
+    SDL_Flip (s);
+
+    dist += s->w/2 * ((float) (curr_time - old_time) / ticks);
+
+  };
+
+  if(splitin)
+    SDL_BlitSurface(copy, NULL, s, NULL);
+  else
+    SDL_FillRect(s, NULL, SDL_MapRGB(s->format,0,0,0));
+
+  SDL_Flip(s);
+
+  SDL_FreeSurface(black);
+  SDL_FreeSurface(copy);
+}
+
 void fade (SDL_Surface* s, Uint32 ticks, int fadein){
   SDL_Surface* black, *copy;
   Uint32 old_time, curr_time;
