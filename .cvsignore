@@ -3,6 +3,8 @@ brillion
 .depend
 .config
 
+*.swp
+
 brillion.exe
 SDL.dll
 SDL_image.dll
