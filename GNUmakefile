@@ -16,10 +16,7 @@ endif
 # It shouldn't be necessary to edit anything below this line.
 PRG=brillion
 OBJ=brillion.o graphics.o level.o physics.o play.o game.o effects.o \
-	save.o font.o
-
-INC=-IBFontv1.0.4-1
-VPATH=BFontv1.0.4-1
+	save.o font.o title.o
 
 ifdef OPTIMIZE
 CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe -DNDEBUG
@@ -30,21 +27,25 @@ CFLAGS+= -DDEVEL
 endif
 
 # misses -pedantic (warns too much about system headers)
-# and -ansi (errors out on C++-style comments)
 ifdef PEDANTIC
-CFLAGS+= -D_POSIX_C_SOURCE=2  -W -Wall -Wbad-function-cast -Wcast-align \
-	-Wcast-qual -Wchar-subscripts -Winline \
+CFLAGS+= -ansi -D_POSIX_SOURCE -D_POSIX_C_SOURCE=2 -W -Wall -Wcast-align \
+	-Wbad-function-cast -Wcast-qual -Wchar-subscripts -Winline \
 	-Wmissing-prototypes -Wnested-externs -Wpointer-arith \
 	-Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings
+.SILENT:
 endif
 
-CFLAGS+=-Wall `${SDL_CONFIG} --cflags` -IBFontv1.0.4-1
+CFLAGS+=-Wall `${SDL_CONFIG} --cflags`
 LDFLAGS+=`${SDL_CONFIG} --libs` -lSDL_image
 
 ifdef SOUND
 CFLAGS+=-DSOUND
 LDFLAGS+=-lSDL_mixer
 OBJ+=music.o
+endif
+
+ifdef WINDOWS
+OBJ+=res.o
 endif
 
 ifdef DMALLOC_OPTIONS
@@ -78,6 +79,9 @@ install: $(PRG)
 	cp $(PRG) /usr/X11R6/bin
 	-mkdir /usr/X11R6/share/brillion
 	cp -r Original /usr/X11R6/share/brillion
+
+res.o: res.rc
+	windres -i $< -o $@
 
 .depend: brillion.c brillion.h graphics.c level.c physics.c play.c game.c
 	-$(CC) $(CFLAGS) -MM *.c>.depend
