@@ -1,6 +1,6 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.15 2004/06/21 12:53:29 sec Exp $
+ * $Id: score.c,v 1.16 2004/06/22 21:45:31 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -107,7 +107,10 @@ void write_scores(the_scores* scores){
     int x;
     FILE	*f;
 
-    assert(scores!=NULL);
+    if(scores==NULL){
+	fprintf(stderr,"Error: no scores\n"); /* XXX: fixme; */
+	return;
+    };
 
     rename("Scores","Scores.bak");
     f=fopen("Scores","w");
@@ -138,26 +141,27 @@ void add_score(the_scores* scores, int points){
     if(scores==NULL){
 	fprintf(stderr,"Error: no scores\n"); /* XXX: fixme; */
 	return;
-    }else{
-	if(scores->maxscore == (MAX_SCORES-1))
-	    scores->maxscore--;
-
-	for(x=0;x<=scores->maxscore;x++){
-	    if(scores->scores[x].score<points)
-		break;
-	};
-	printf("New score is No. %d of %d\n",x,scores->maxscore);
-	for(y=scores->maxscore;y>=x;y--){
-	    memcpy(&scores->scores[y+1],&scores->scores[y],sizeof(a_score));
-	};
-	scores->maxscore++;
     };
 
-    scores->scores[x].name[0]=1;
-    scores->scores[x].name[1]=0;
-    scores->scores[x].score=points;
-    scores->scores[x].when=time(NULL);
-    scores->scores[x].howlong=0;
+    for(x=0;x<=scores->maxscore;x++){
+	if(scores->scores[x].score<points)
+	    break;
+    };
+    if(x<=scores->maxscore){ /* respectable rank */
+	printf("New score is No. %d of %d\n",x,scores->maxscore);
+	for(y=scores->maxscore;y>=x;y--){
+	    if(y<scores->maxscore)
+		memcpy(&scores->scores[y+1],&scores->scores[y],sizeof(a_score));
+	};
+	if(scores->maxscore < MAX_SCORES-1)
+	    scores->maxscore++;
+
+	scores->scores[x].name[0]=1;
+	scores->scores[x].name[1]=0;
+	scores->scores[x].score=points;
+	scores->scores[x].when=time(NULL);
+	scores->scores[x].howlong=0;
+    };
 }
 
 #ifndef TESTME
