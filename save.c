@@ -1,18 +1,22 @@
 /* Save and load user actions
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: save.c,v 1.4 2003/03/21 01:03:19 sec Exp $
+ * $Id: save.c,v 1.5 2003/03/26 18:17:48 sec Exp $
  */
 #include "brillion.h"
 
 a_save* init_save(){
     a_save*s;
-    const char *g=".........>>>>>>>>>>>>>>>>>>>>>>>>>>>..........................<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<..>>>>>>>>>>>>>>>>>>>>>>>>>...<<<........................<<<<<<....>>>..................<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<.>>>>>>>>>>>>>>>>>>>>>>>>>>>...>>>>>>......................<............<<<<<<<<<<<<<<<<<<<<<<<<<<<<.."; /* Example for o-02.lvl */
+    const char *g;
     int a;
 
     s=calloc(1,sizeof(a_save));
     s->len=1000;
     s->game=malloc(1001);
+#ifdef SAVE
     s->what=R_RECORD;
+#else
+    s->what=R_NONE;
+#endif
     if(0){
 	s->len=strlen(g);
 	s->what=R_PLAY;
@@ -57,14 +61,14 @@ signed int handle_save(signed int dir){
 
 void print_save(a_save *s){
     int a;
+    FILE *f;
 
-    return;
-
+    f=fopen(".save","a");
+    fprintf(f,"%d:",play->level);
     for(a=0;a<s->pos;a++){
-	putchar("<.>"[(int)s->game[a]]);
-	if(a%70==69)
-	    putchar('\n');
+	putc("<.>"[(int)s->game[a]],f);
     };
-    putchar('\n');
+    putc('\n',f);
     s->pos=0; /* XXX */
+    fclose(f);
 }
