@@ -68,7 +68,12 @@ void move_step(graphic* gp,music* m,field* lvl, signed int input){
     };
   };
 
-  create_moveanim(A_BALL,lvl->color,ballx,bally,lvl->x,lvl->y);
+  if(lvl->blocks==-1){ // Don't move if you die
+    lvl->x=ballx;
+    lvl->y=bally;
+  }else{
+    create_moveanim(A_BALL,lvl->color,ballx,bally,lvl->x,lvl->y);
+  };
   return;
 };
 

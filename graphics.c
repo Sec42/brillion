@@ -546,11 +546,12 @@ void animate(graphic*g, a_anim*a, int step){
       case A_DIE:
 	blank_block(g,a[aidx].block[0].x,a[aidx].block[0].y);
 
-	rect.w=rect.h=QUAD/2;
 	rect.x=a[aidx].pixel[0].x;
 	rect.y=a[aidx].pixel[0].y;
 
 	srect.y=0;srect.x=(QUAD/2)*((a[aidx].duration*AFRAMES+step-1)>>1);
+	srect.w=srect.h=QUAD/2;
+
 	if(srect.x>g->ballx[a[aidx].color]->w){
 	  a[aidx].type=A_NONE;
 	}else{
