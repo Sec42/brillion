@@ -87,11 +87,12 @@ int play_level(a_play* play){
   int userr=0;  /* user moves right */
   int userrr=0; /* user released right */
   char quit=0;
-  int q; // Number of frames displayed
-  Uint32 now;
-  Uint32 round;
-  Sint32 round_d;
-  Uint32 speed=0;
+  int frames; // Number of frames displayed
+  int z; // Animation counter...
+
+  Uint32 t_start,t_end,t_gone,t_now;
+  Uint32 a_start,a_end,a_gone,a_now;
+  Sint32 t_left,a_left;
   Uint32 ticks;
 
   graphic* g=play->g;
@@ -99,11 +100,12 @@ int play_level(a_play* play){
   field* lvl=play->f;
   a_anim*  a=play->a;
 
-  now = SDL_GetTicks();
-  q=0;
+  frames=0; ticks=0;
+
   while(1){
-    q++;
-    round=SDL_GetTicks();
+    frames++;
+    t_start=SDL_GetTicks();
+    t_end=t_start+SPEED;
 
     while( SDL_PollEvent( &event ) ){
       /* We are only worried about SDL_KEYDOWN and SDL_KEYUP events */
@@ -159,34 +161,50 @@ int play_level(a_play* play){
     if(userrr==1) userr=0;
     if(userlr==1) userl=0;
 
-    if(q%2==0 && lvl->time>0)
+    if(frames%2==0 && lvl->time>0)
       lvl->time--;
     update_scoreboard(play);
 
-    animate(g,a,0); // Move what is to move.
+#define DELAY(left,end) left-=10;if(left>0) SDL_Delay(left); while(SDL_GetTicks()<end){;};
 
-    ticks=SDL_GetTicks()-round; 
-    speed+=ticks;
-    round_d=SPEED-(SDL_GetTicks()-round);
-    if(round_d<0){
-      printf("CPU to slow by %d ticks/round\n",-round_d);
+//    printf("Already lost %d ticks\n",t_start-SDL_GetTicks());
+    for(z=1;z<=AFRAMES;z++){
+      a_start=SDL_GetTicks();
+      a_end=a_start+(SPEED/(AFRAMES+1));
+
+      animate(g,a,z); // Move what is to move.
+//      printf("%d rects\n",g->numrects);
+      DISPLAY;
+
+      if(z < AFRAMES){
+	a_now=SDL_GetTicks();
+	a_gone=a_now-a_start;
+	a_left=a_end-a_now;
+
+//	printf("anim_sleep: %d\n",a_left);
+	if(a_left>0){
+	  ticks-=a_left;
+	  DELAY(a_left,a_end);
+	};
+//	printf("actually slept %d => %d\n",a_left,SDL_GetTicks()-a_now);
+      };
+    };
+
+    t_now=SDL_GetTicks();
+    t_gone=t_now-t_start;
+    t_left=t_end-t_now;
+
+//    printf("Speed: ran for %d ticks at %d/anim\n",t_gone,SPEED/(AFRAMES+1));
+
+    ticks+=t_gone;
+    if(t_left>0){
+      DELAY(t_left,t_end);
     }else{
-#ifdef SCHEDULING_OK
-      SDL_Delay(round_d);
-#else
-      round_d-=10;
-      if(round_d>0)
-	SDL_Delay(round_d);
-      ticks=0;
-      while(SDL_GetTicks()<SPEED+round){ticks++;};
-//      printf("Busy-loop: %d\n",ticks);
-#endif
-//      printf("De facto: %d ticks\n",SDL_GetTicks()-round);
-    }
-    DISPLAY;
+      printf("CPU to slow by %d ticks/round\n",-t_left);
+    };
 
     if(quit || lvl->blocks<=0){
-      fprintf(stderr,"%f Ticks/frame\n",(float)speed/q);
+      fprintf(stderr,"%f Ticks/frame\n",(float)ticks/frames);
 	  if(quit)
 		  return(2);
 	  if(lvl->blocks==0)

@@ -343,27 +343,68 @@ a_anim* init_anim(){
   return a;
 };
 
+void create_moveanim(enum animations type, int ox, int oy, int nx, int ny){
+  a_anim*  a=b->p->a;
+  graphic* g=b->p->g;
+
+  switch(type){
+    case A_BALL:
+      a->type=A_BALL;
+      a->block[0].x=ox/2;
+      a->block[0].y=oy/2;
+      a->block[1].x=nx/2;
+      a->block[1].y=ny/2;
+
+//    if((a->block[0].x==a->block[1].x)&&(a->block[0].y==a->block[1].y)) a->block[1].x=0;
+
+      a->pixel[0].x=QUAD/2*(ox-2)+g->xoff;
+      a->pixel[0].y=QUAD/2*(oy-2)+g->yoff;
+      a->pixel[1].x=QUAD/2*(nx-2)+g->xoff-a->pixel[0].x;
+      a->pixel[1].y=QUAD/2*(ny-2)+g->yoff-a->pixel[0].y;
+
+      break;
+    default:
+      printf("Unknown type %d in create_moveanim\n",type);
+      break;
+    };
+};
+
+
 void animate(graphic*g, a_anim*a, int step){
+  SDL_Rect rect;
   int aidx=0;
+
   for (aidx=0;aidx < MAX_ANIM; aidx++){
     switch(a[aidx].type){
       case A_NONE:
 //	printf("No animation here\n");
 	break;
       case A_BALL:
-//	blank_block(g,a[aidx].from.x/2,a[aidx].from.y/2);
-	paint_block(g,b->p->f,a[aidx].from.x/2,a[aidx].from.y/2);
-	paint_ball(g,b->p->f);
+	blank_block(g,a[aidx].block[0].x,a[aidx].block[0].y);
+	blank_block(g,a[aidx].block[1].x,a[aidx].block[1].y);
+//	paint_block(g,b->p->f,a[aidx].from.x/2,a[aidx].from.y/2);
+
+
+  rect.w=rect.h=QUAD/2;
+  rect.x=a[aidx].pixel[0].x+(a[aidx].pixel[1].x*step/AFRAMES);
+  rect.y=a[aidx].pixel[0].y+(a[aidx].pixel[1].y*step/AFRAMES);
+//  printf("Ball: step=%d, %d/%d\n",step,rect.x,rect.y);
+  SDL_BlitSurface(g->ball[b->p->f->color], NULL, g->display, &rect);
+	if(step == AFRAMES)
+	  a[aidx].type=A_NONE;
+
 	break;
       case A_DISK:
-	paint_block(g,b->p->f,a[aidx].from.x,a[aidx].from.y);
-	paint_block(g,b->p->f,a[aidx].to.x,a[aidx].to.y);
+	if(step == AFRAMES){
+	  paint_block(g,b->p->f,a[aidx].from.x,a[aidx].from.y);
+	  paint_block(g,b->p->f,a[aidx].to.x,a[aidx].to.y);
+	  a[aidx].type=A_NONE;
+	};
 	break;
       default:
 	printf("Step: %d, idx: %d, ",step,aidx);
 	printf("Unknown animate %d\n",a[aidx].type);
 	break;
     };
-    a[aidx].type=A_NONE;
   };
 };

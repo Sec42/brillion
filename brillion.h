@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.12 2003/03/02 15:08:57 sec Exp $
+ * $Id: brillion.h,v 1.13 2003/03/02 16:45:41 sec Exp $
  */
 
 #include <stdio.h>
@@ -65,6 +65,10 @@ typedef struct {
 
 typedef struct {
 	enum animations	type;
+
+	coord	block[2];
+	coord	pixel[2];
+
 	coord		from;
 	coord		to;
 } a_anim;
@@ -212,6 +216,7 @@ void play_touch(music* m,int piece);
 a_game* read_game(char* file);
 
 /* graphics.c (should be anim.c?) */
+#define AFRAMES 4
 a_anim* init_anim();
 void animate(graphic*g, a_anim*a, int step);
-
+void create_moveanim(enum animations type, int ox, int oy, int nx, int ny);

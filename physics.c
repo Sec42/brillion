@@ -6,6 +6,9 @@
 void move_step(graphic* gp,music* m,field* lvl, signed int input){
   int x,y;
   int xn,yn;
+  int ballx,bally;
+
+  ballx=lvl->x;bally=lvl->y;
 
   x=lvl->x/2; y=lvl->y/2; 
 
@@ -67,10 +70,7 @@ void move_step(graphic* gp,music* m,field* lvl, signed int input){
     };
   };
 
-  b->p->a[0].type=A_BALL;
-  b->p->a[0].to.x=lvl->x;
-  b->p->a[0].to.y=lvl->y;
-
+  create_moveanim(A_BALL,ballx,bally,lvl->x,lvl->y);
   return;
 };
 
