@@ -1,6 +1,6 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.10 2004/06/13 21:12:01 sec Exp $
+ * $Id: score.c,v 1.11 2004/06/14 22:17:08 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -127,7 +127,7 @@ void write_scores(the_scores* scores){
     fprintf(f,"Bscores 42\n");
 
     printf("Writing %d scores\n",scores->maxscore);
-    for(x=0;x<=10&&x<=scores->maxscore;x++){ /* XXX: Real BUG here */
+    for(x=0;x<=scores->maxscore;x++){
 	fprintf(f,"score %s %d %d %d\n",
 		scores->scores[x].name,
 		scores->scores[x].score,
