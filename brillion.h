@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.9 2003/02/25 14:26:03 sec Exp $
+ * $Id: brillion.h,v 1.10 2003/02/26 03:48:17 sec Exp $
  */
 
 #include <stdio.h>
@@ -28,12 +28,12 @@
 #define GAME_COLORS    7
 
 #define BLACK          0
-#define BLUE           1
-#define MAGENTA        2
-#define RED            3
+#define RED            1
+#define CYAN           2
+#define MAGENTA        3
 #define GREEN          4
-#define YELLOW         5
-#define CYAN           6
+#define BLUE           5
+#define YELLOW         6
 #define WHITE          7
 #define NONE           8
 #define MAX_COLORS     9
