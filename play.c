@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.32 2003/03/26 18:01:12 sec Exp $
+ * $Id: play.c,v 1.33 2003/03/26 18:26:36 sec Exp $
  */
 #include "brillion.h"
 
@@ -55,6 +55,7 @@ void play_game(a_game* game){
 	play->status=S_PLAY;
 	clear_number_cache();
 	play_level();
+	print_save(play->s);
 
 	switch (play->status){
 	    case S_DIE:
@@ -73,7 +74,6 @@ void play_game(a_game* game){
 		die("Exited level with S_PLAY");
 	};
 
-	print_save(play->s);
 	free_level(play->f);
 
     }while(play->lives>0 && play->level < game->maxlevel);

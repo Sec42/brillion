@@ -1,6 +1,6 @@
 /* Save and load user actions
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: save.c,v 1.6 2003/03/26 18:20:55 sec Exp $
+ * $Id: save.c,v 1.7 2003/03/26 18:26:39 sec Exp $
  */
 #include "brillion.h"
 
@@ -67,7 +67,7 @@ void print_save(a_save *s){
 	return;
 
     f=fopen(".save","a");
-    fprintf(f,"%d:",play->level);
+    fprintf(f,"%d:",play->level+1);
     for(a=0;a<s->pos;a++){
 	putc("<.>"[(int)s->game[a]],f);
     };
