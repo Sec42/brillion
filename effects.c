@@ -1,6 +1,6 @@
 /* timed graphic effects
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: effects.c,v 1.7 2003/03/21 01:03:19 sec Exp $
+ * $Id: effects.c,v 1.8 2003/03/26 17:16:13 sec Exp $
  */
 #include "brillion.h"
 
@@ -87,6 +87,7 @@ void split_simple (SDL_Surface* s, Uint32 ticks, int splitvert, int splitin){
     SDL_FreeSurface(copy);
 }
 
+/* Fading by palette modification */
 void fade_p (SDL_Surface* s, Uint32 ticks, int fadein){
     SDL_Color *colors;
     Uint32 old_time, curr_time;
@@ -129,13 +130,14 @@ void fade_p (SDL_Surface* s, Uint32 ticks, int fadein){
     free(colors);
 }
 
+/* fading by alpha blending */
 void fade (SDL_Surface* s, Uint32 ticks, int fadein){
     SDL_Surface* black, *copy;
     Uint32 old_time, curr_time;
     float alpha=0;
 
     if(s->format->BitsPerPixel == 8){
-	fprintf(stderr,"experimental Fading for palette displays\n");
+	/* Palette fading */
 	fade_p(s,ticks,fadein);
 	return;
     };
