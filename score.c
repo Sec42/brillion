@@ -1,6 +1,6 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.14 2004/06/21 10:39:35 sec Exp $
+ * $Id: score.c,v 1.15 2004/06/21 12:53:29 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -171,7 +171,7 @@ void add_score(the_scores* scores, int points){
 void display_scores(void){
     SDL_Surface *img,*bkg,*s;
     SDL_Rect r,inp;
-    int do_inp=0;
+    int do_inp=-1;
     the_scores *scores;
     a_font *font;
     int start=0;
@@ -226,7 +226,7 @@ void display_scores(void){
 	r.y+=font->lineh;
     }
     SDL_Flip(s);
-    if(do_inp){
+    if(do_inp>-1){
 	/* XXX: Windows doesn't do strlcpy alert
 	strlcpy(scores->scores[do_inp].name,input_text(&inp,font),8); */
 	strncpy(scores->scores[do_inp].name,input_text(&inp,font),SCORENAMELEN);
