@@ -1,6 +1,6 @@
 /* A very simple font blitter - uses SFont/BFont style proportional fonts.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: font.c,v 1.3 2003/03/21 01:03:19 sec Exp $
+ * $Id: font.c,v 1.4 2003/03/26 17:21:02 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -45,6 +45,7 @@ a_font* init_font(const char *file){
     f->len=y;
     f->space=f->wid['-'-FONTBEG]; /* What is typographically correct here? */
 
+    SDL_SetColorKey(tmp, SDL_SRCCOLORKEY, p[1]);
     f->font=SDL_DisplayFormat(tmp);
     assert(f->font!=NULL);
     free(tmp);
