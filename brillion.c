@@ -1,13 +1,15 @@
 /* main(). Paramter parsing and other setup.Written by Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: brillion.c,v 1.13 2004/02/20 21:15:34 sec Exp $
+ * $Id: brillion.c,v 1.14 2004/06/29 08:42:52 sec Exp $
  */
 
 #define EXTERN /* Global variable(s) here... */
 #include "brillion.h"
 
 int main(int argc,char **argv){
+#ifndef __WIN32__
     signed char c;
+#endif
 
     /* die loudly if malloc runs out of ram */
 #ifndef _POSIX_C_SOURCE
