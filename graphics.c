@@ -1,0 +1,161 @@
+#define EXTERN extern
+#include "SDL_image.h"
+#include "brillion.h"
+/* vim:set cin sw=2 ts=8 sm: */
+
+#define QUAD  32 /* Size of Standard Block, must be divisible by 2 */
+
+#define MX 640
+#define MY 480
+
+void load_graphics(graphic * gp);
+SDL_Surface* color_graphic(graphic* g, SDL_Surface* in, int color, int alpha);
+
+graphic* init_graphic(){
+  SDL_Surface* disp;
+  graphic* g;
+
+  if(SDL_Init(SDL_INIT_VIDEO)){
+    fprintf(stderr,"Could not initialize SDL: %s.\n", SDL_GetError());
+    exit(-1);
+  };
+  if(!(disp=SDL_SetVideoMode(MX, MY, 24, SDL_ANYFORMAT|SDL_DOUBLEBUF))){
+    printf("Could not set videomode: %s.\n", SDL_GetError());
+    exit(-1);
+  };
+  assert(SDL_MUSTLOCK(disp)==0);
+
+  SDL_WM_SetCaption(prog, prog);
+
+  g=calloc(1,sizeof(graphic));
+  g->display=disp;
+
+  load_graphics(g);
+  return g;
+}
+
+void load_graphics(graphic * gp){
+  SDL_Surface* pad;
+  int x;
+
+  gp->colors[RED]=     SDL_MapRGB(gp->display->format, 0xff, 0x00, 0x00);
+  gp->colors[GREEN]=   SDL_MapRGB(gp->display->format, 0x00, 0xff, 0x00);
+  gp->colors[BLUE]=    SDL_MapRGB(gp->display->format, 0x00, 0x00, 0xff);
+  gp->colors[YELLOW]=  SDL_MapRGB(gp->display->format, 0xff, 0xff, 0x00);
+  gp->colors[CYAN]=    SDL_MapRGB(gp->display->format, 0x00, 0xff, 0xff);
+  gp->colors[MAGENTA]= SDL_MapRGB(gp->display->format, 0xff, 0x00, 0xff);
+  gp->colors[WHITE]=   SDL_MapRGB(gp->display->format, 0xff, 0xff, 0xff);
+  gp->colors[NONE]=    SDL_MapRGBA(gp->display->format,0,0,0,0);
+
+  /* Load blocks, and create all colors */
+  pad=IMG_Load("graphics/ball_blue.gif");
+  for(x=1;x<GAME_COLORS;x++)
+    gp->ball[x]=color_graphic(gp,pad,x,1);
+  SDL_FreeSurface(pad);
+
+  pad=IMG_Load("graphics/block_blue.gif");
+  for(x=1;x<GAME_COLORS;x++)
+    gp->block[x]=color_graphic(gp,pad,x,0);
+  SDL_FreeSurface(pad);
+
+  pad=IMG_Load("graphics/star_blue.gif");
+  for(x=1;x<GAME_COLORS;x++)
+    gp->star[x]=color_graphic(gp,pad,x,0);
+  SDL_FreeSurface(pad);
+
+  pad=IMG_Load("graphics/disk_blue.gif");
+  for(x=1;x<GAME_COLORS;x++)
+    gp->disk[x]=color_graphic(gp,pad,x,0);
+  SDL_FreeSurface(pad);
+
+  pad=IMG_Load("graphics/space.gif");
+  gp->back=SDL_ConvertSurface(pad, gp->display->format, SDL_HWSURFACE);
+  assert(gp->back!=NULL);
+  SDL_FreeSurface(pad);
+
+  pad=IMG_Load("graphics/wall.gif");
+  gp->wall=SDL_ConvertSurface(pad, gp->display->format, SDL_HWSURFACE);
+  assert(gp->wall!=NULL);
+  SDL_FreeSurface(pad);
+
+  pad=IMG_Load("graphics/death.gif");
+  gp->death=SDL_ConvertSurface(pad, gp->display->format, SDL_HWSURFACE);
+  assert(gp->death!=NULL);
+  SDL_FreeSurface(pad);
+};
+
+SDL_Surface* color_graphic(graphic* g, SDL_Surface* in, int color, int alpha){
+  SDL_Surface* out;
+  Uint32* pixel;
+
+  out=SDL_ConvertSurface(in, g->display->format, SDL_HWSURFACE);
+  assert(out!=NULL);
+
+  if(out->format->BytesPerPixel!=4){
+    fprintf(stderr,"This currently only works for 4 byte/pixel displays\n");
+    exit(-1);
+  };
+
+  for(pixel=out->pixels;pixel<(Uint32*)out->pixels+(out->w*out->h);pixel++){
+    if(*pixel == g->colors[BLUE])
+      *pixel=g->colors[color];
+    if(alpha)
+      if(*pixel == g->colors[WHITE])
+	*pixel=g->colors[NONE];
+  };
+
+  return(out);
+};
+
+/* -------------------------------------------------------------------- */
+
+void paint_level(graphic* g, field* lvl){
+  int x,y;
+
+  for(y=1;y<lvl->h;y++)
+    for(x=1;x<lvl->w;x++)
+      paint_block(g,lvl,x,y);
+};
+
+void paint_ball(graphic* g, field* lvl){
+  /* Paint new Ball */
+  SDL_Rect rect;
+
+  rect.w=rect.h=QUAD/2;
+  rect.x=QUAD/2*(lvl->x-2);
+  rect.y=QUAD/2*(lvl->y-2);
+  SDL_BlitSurface(g->ball[lvl->color], NULL, g->display, &rect);
+
+  return;
+};
+
+void paint_block(graphic* g, field* lvl, int x, int y){
+  SDL_Rect rect;
+
+  rect.w=rect.h=QUAD;
+  rect.y=QUAD*(y-1);
+  rect.x=QUAD*(x-1);
+
+  switch(PIECE(x,y)){
+    case BLOCK:
+      SDL_BlitSurface(g->block[COLOR(x,y)], NULL, g->display, &rect);
+      break;
+    case DISK:
+      SDL_BlitSurface(g->disk[COLOR(x,y)], NULL, g->display, &rect);
+      break;
+    case STAR:
+      SDL_BlitSurface(g->star[COLOR(x,y)], NULL, g->display, &rect);
+      break;
+    case WALL:
+      SDL_BlitSurface(g->wall, NULL, g->display, &rect);
+      break;
+    case DEATH:
+      SDL_BlitSurface(g->death, NULL, g->display, &rect);
+      break;
+    case SPACE:
+      SDL_BlitSurface(g->back, NULL, g->display, &rect);
+      break;
+    default:
+      fprintf(stderr,"Cannot draw %d at %d/%d\n",PIECE(x,y),x,y);
+  };
+};

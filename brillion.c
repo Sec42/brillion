@@ -1,10 +1,10 @@
-/* fem by Sec <sec@42.org>
+/* Written by Sec <sec@42.org>
  * vim:set cin sm ts=4 sw=4:
- * $Id: crillion.c,v 1.1 2002/10/14 13:51:36 sec Exp $
+ * $Id: brillion.c,v 1.1 2002/10/14 17:59:09 sec Exp $
  */
 
 #define EXTERN /**/
-#include "crillion.h"
+#include "brillion.h"
 
 int main(int argc,char **argv){
 	/* Deklarationen */
@@ -18,7 +18,7 @@ int main(int argc,char **argv){
 
 	/* init section */
 	prog=argv[0];
-	if(!prog)prog="crillion";
+	if(!prog)prog="brillion";
 	if(strrchr(prog,'/')){
 		prog=strrchr(argv[0],'/');
 		prog++;
@@ -46,7 +46,7 @@ int main(int argc,char **argv){
 //		exit(-1);
 //	}
 
-	dwim();
+	game();
 
 	fprintf(stderr,"%s: finished\n",prog);
 	exit(0); // Juhuu!

@@ -1,9 +1,9 @@
-PRG=crillion
-OBJ=crillion.o board.o
+PRG=brillion
+OBJ=brillion.o graphics.o level.o physics.o play.o
 
 #Config this:
 SDL_CONFIG?=sdl-config
-CFLAGS=-g -pipe
+CFLAGS=-g -O -pipe
 #CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe
 
 # Don't touch this.
@@ -32,9 +32,3 @@ clean:
 tags:
 	ctags *.[ch]
 
-#LDFLAGS=-L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL-1.1 -pthread -lm -L/usr/local/lib -lesd -laudiofile -lm -L/usr/X11R6/lib -lX11 -lXext -lXxf86vm -lXxf86dga -lXv -lXinerama -lvga -laa
-# DO NOT DELETE
-
-board.o: crillion.h
-crillion.o: crillion.h
-crillion: Makefile
