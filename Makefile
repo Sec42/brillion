@@ -12,7 +12,7 @@ config:
 # It shouldn't be necessary to edit anything below this line.
 PRG=brillion
 OBJ=brillion.o graphics.o level.o physics.o play.o game.o effects.o \
-	save.o font.o
+	save.o font.o title.o
 
 .ifdef OPTIMIZE
 CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe -DNDEBUG
