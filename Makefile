@@ -49,8 +49,10 @@ clean:
 tags: brillion.c brillion.h graphics.c level.c physics.c play.c
 	-ctags *.[ch]
 
-install:
-	@echo You wish.
+install: $(PRG)
+	cp $(PRG) /usr/X11R6/bin
+	-mkdir /usr/X11R6/share/brillion
+	cp -r Original /usr/X11R6/share/brillion
 
 .depend: brillion.c brillion.h graphics.c level.c physics.c play.c game.c
 	-$(CC) $(CFLAGS) -MM *.c>.depend
