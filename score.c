@@ -1,6 +1,6 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.6 2003/12/11 02:46:47 sec Exp $
+ * $Id: score.c,v 1.7 2003/12/12 02:32:12 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -113,7 +113,8 @@ void write_scores(void){
 
     fprintf(f,"Bscores 42\n");
 
-    for(x=0;x<=scores->maxscore;x++){
+    printf("Writing %d scores\n",scores->maxscore);
+    for(x=0;x<=10&&x<=scores->maxscore;x++){ /* XXX: Real BUG here */
 	fprintf(f,"score %s %d %d %d\n",
 		scores->scores[x].name,
 		scores->scores[x].score,
@@ -153,6 +154,7 @@ void add_score(void){
 
     pw=getpwuid(getuid());
     strlcpy(scores->scores[x].name,pw->pw_name,SCORENAMELEN);
+    scores->scores[x].name[0]=1;
     scores->scores[x].score=play->points;
     scores->scores[x].when=time(NULL);
     scores->scores[x].howlong=0;
@@ -167,12 +169,20 @@ void add_score(void){
  */
 void display_scores(void){
     SDL_Surface *img,*bkg,*s;
+    SDL_Rect r,inp;
+    int do_inp=0;
     the_scores *scores;
     a_font *font;
     int start=0;
     int x;
+    int w;
 
     scores=b->game->scores;
+
+    if(scores==NULL){
+	printf("WARNING: No scores to display\n");
+	return;
+    };
 
     s=play->g->display;
     font=play->g->tfont;
@@ -185,30 +195,43 @@ void display_scores(void){
     SDL_FreeSurface(img);
 
     SDL_BlitSurface(bkg,NULL,s,NULL);
-    render_font(100,10,"High Scores");
+    size_text(&r,"High Scores",font);
+    render_font((640-r.w)/2,10,"High Scores");
     SDL_Flip(s);
-    if(scores==NULL){
-	printf("WARNING: No scores to display\n");
-	return;
-    };
 
-#define SSZ 10 /* Wieviele Eintraege/Bildschirm (640-border)/(font.lineh) */
+#define BORDER 50
+#define SSZ ((480-BORDER)/(font->lineh)) /* Wieviele Eintraege/Bildschirm */
+
+    r.y=BORDER;
+    w=numwidth(font);
     for(x=0;x<SSZ;x++){
 	char buf[50];
-	SDL_Rect r;
 	if(x+start>scores->maxscore)
 	    break;
-	render_text(10,50+x*font->lineh,scores->scores[x+start].name,font,0);
-	sprintf(buf,"%6d",scores->scores[x+start].score);
-	size_text(&r,buf,font);
-	render_text(250-r.w,50+x*font->lineh,buf,font,0);
+
+	r.x=10;r.w=0;
+	if(scores->scores[x+start].name[0]==1){
+	    /* Add Name here? */
+	    inp.x=r.x;inp.y=r.y;inp.w=100;do_inp=x+start;
+	}else{
+	    nice_render_text(&r,scores->scores[x+start].name,font,0); 
+	};
+
+	render_num(250,r.y,w-2,scores->scores[x+start].score,font);
 /*	render_text(250,50+x*font->lineh,"4h30m",font,0); */
 	strftime(buf,49,"%d.%m. %H:%M",localtime(&scores->scores[x+start].when));
-	render_text(400,50+x*font->lineh,buf,font,0);
+	render_fix(400,r.y,w-2,buf,font); 
+
+	r.y+=font->lineh;
     }
     SDL_Flip(s);
+    if(do_inp){
+	strlcpy(scores->scores[do_inp].name,input_text(&inp,font),8);
+	write_scores();
+    };
 
-    time_event(5,SDL_USER_ENDOFSCORES);
+
+    time_event(100,SDL_USER_ENDOFSCORES);
 
     while(1){
 	SDL_Event event;
