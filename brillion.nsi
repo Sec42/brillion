@@ -112,6 +112,7 @@ Section "Hauptgruppe" SEC01
   File "Original\level.wav"
   File "Original\star.wav"
   File "Original\wall.wav"
+  File "Original\disk.wav"
 
 SectionEnd
 
@@ -205,6 +206,7 @@ Section Uninstall
   Delete "$INSTDIR\Original\level.wav"
   Delete "$INSTDIR\Original\star.wav"
   Delete "$INSTDIR\Original\wall.wav"
+  Delete "$INSTDIR\Original\disk.wav"
 
   Delete "$SMPROGRAMS\Brillion\Uninstall.lnk"
   Delete "$SMPROGRAMS\Brillion\Website.lnk"
