@@ -4,14 +4,14 @@ brillion
 .config
 
 *.swp
+*.org
 
 brillion.exe
 SDL.dll
 SDL_image.dll
+SDL_mixer.dll
 jpeg.dll
 zlib.dll
 libpng1.dll
 stdout.txt
 stderr.txt
-
-WinBrillion
