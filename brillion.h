@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.34 2003/12/11 02:46:15 sec Exp $
+ * $Id: brillion.h,v 1.35 2003/12/12 02:29:42 sec Exp $
  */
 
 #include <stdio.h>
@@ -336,13 +336,18 @@ a_font* init_font(const char *file);
 void render_font(int x, int y,const char *txt);
 SDL_Rect *render_text(int x, int y,const char *txt,a_font *f,int maxw);
 void size_text(SDL_Rect *sr,const char *txt,a_font *f);
+char *input_text(SDL_Rect *in, a_font *f);
+
+int numwidth(a_font *f);
+void render_num(int x, int y, int w,int num,a_font *f);
+void render_fix(int x, int y, int w,const char *txt,a_font *f);
+void nice_render_text(SDL_Rect *rv,const char *txt,a_font *f,int flags);
 
 /* score.c */
 the_scores* read_scores(void);
 void write_scores(void);
 void display_scores(void);
 void add_score(void);
-void input_text(SDL_Rect *in, a_font *f);
 
 /* title.c */
 void display_title(int oldscore);
@@ -352,4 +357,4 @@ void display_title(int oldscore);
 #define SDL_USER_ENDOFSCORES 1
 #define SDL_USER_BLINK       2
 void init_timer(void);
-void time_event(unsigned int ticks,int eventtype);
+void time_event(unsigned int centiseconds,int eventtype);
