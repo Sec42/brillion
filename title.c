@@ -1,6 +1,6 @@
 /* Display the title screen, and handle the main menu...
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: title.c,v 1.7 2003/12/11 01:21:27 sec Exp $
+ * $Id: title.c,v 1.8 2004/02/20 21:15:34 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -11,18 +11,21 @@ char menus[][80] = { "PLAY", "LEVEL", "SCORES", "QUIT" };
 int  menux[]     = {100,100,100,100};
 int  menuy[]     = {320,360,400,440};
 
-void title_main(SDL_Surface *title){
+int title_main(){
     SDL_Event event;
-    SDL_Rect r;
-    signed int menu=1,omenu=0;
+    SDL_Rect r,lvlr;
+    signed int menu=1,omenu=0,done=0;
     graphic * g=play->g;
-    int lvl=1;
-char lvlnum[50];
+    int lvl=1, olvl=0;
+    char lvlnum[50];
+    SDL_Surface *title;
 
+    title=create_title(0);
     r.x=0;r.y=0;r.w=16;r.h=16; /* XXX: QUAD/2? :) */
+    lvlr.x=220;lvlr.w=100; lvlr.y=360;lvlr.h=50; /* XXX: Why there? */
 
-    while(1){
-	while( SDL_PollEvent( &event ) ){
+    while(!done){
+	while( !done && SDL_PollEvent( &event ) ){
 	    /* We are only interested in SDL_KEYDOWN and SDL_KEYUP events */
 	    switch( event.type ){
 		case SDL_KEYDOWN:
@@ -39,28 +42,22 @@ char lvlnum[50];
 			    break;
 			case SDLK_RETURN:
 			case SDLK_SPACE:
-			    if(menu==MENU_ENTRIES)exit(0);
-			    if(menu==3){
-				display_scores();
-				SDL_BlitSurface(title,NULL,play->g->display,NULL);
-				SDL_Flip(g->display);
-				break; /* XXX: sane repaint */
-			    }
-			    if(menu==2){
-				SDL_Rect rr;
-				rr.x=220;rr.w=100;
-				rr.y=360;rr.h=50;
-				lvl+=4;
-				if(lvl>21)lvl=1;
-				sprintf(lvlnum,"%2d",lvl);
+			    switch(menu){
+				case 1:            /* Play */
+				    play->level=lvl-1;
+				case 3:            /* scores */
+				case MENU_ENTRIES: /* Quit */
+				    done=1;
+				    break;
 
-	    SDL_BlitSurface(title,&rr,play->g->display,&rr);
-				render_font(220,360,lvlnum);
-				SDL_Flip(g->display);
-				break;
+				case 2:            /* lvl */
+				    lvl+=4;
+				    if(lvl>21)lvl=1;
+				    break;
+				default:
+				    assert("unhandled menu item"&&NULL);
 			    };
-			    play->level=lvl-1;
-			    return;
+			    break;
 			default:		/* perhaps beep? */
 			    break;
 		    };
@@ -76,10 +73,10 @@ char lvlnum[50];
 		default:
 		    break;
 	    };
-	}
 
-	while (menu<1) menu+=MENU_ENTRIES;
-	while (menu>MENU_ENTRIES) menu-=MENU_ENTRIES;
+	    while (menu<1) menu+=MENU_ENTRIES;
+	    while (menu>MENU_ENTRIES) menu-=MENU_ENTRIES;
+	};
 
 	if(omenu!=menu){
 	    SDL_BlitSurface(title,&r,play->g->display,&r);
@@ -88,7 +85,19 @@ char lvlnum[50];
 	    SDL_BlitSurface(play->g->ball[BLUE],NULL,play->g->display,&r);
 	    UPDATE(r);
 	    omenu=menu;
-	}else{
+	};
+	if(olvl!=lvl){
+	    olvl=lvl;
+	    sprintf(lvlnum,"%2d",lvl);
+
+	    SDL_BlitSurface(title,&lvlr,play->g->display,&lvlr);
+	    render_font(lvlr.x,lvlr.y,lvlnum);
+	    UPDATE(lvlr);
+	};
+
+
+	if(!done){
+	    /* While No events are pending, we can do funky idle things */
 	    SDL_Delay(100);
 	    SDL_BlitSurface(title,&r,play->g->display,&r);
 	    UPDATE(r);
@@ -101,9 +110,9 @@ char lvlnum[50];
 		case 2:
 		    r.x++;r.y--;break;
 		case 3:
-		          r.y++;break;
+		    r.y++;break;
 		case 4:
-		          r.y--;break;
+		    r.y--;break;
 		case 5:
 		    r.x--;r.y++;break;
 		case 6:
@@ -116,10 +125,12 @@ char lvlnum[50];
 	};
 	DISPLAY;
 
-    }; /* while(1) */
+    }; /* while(!done) */
+    SDL_FreeSurface(title);
+    return(menu);
 }
 
-void display_title(int oldscore){
+SDL_Surface * create_title(int oldscore){
     SDL_Surface *title,*black,*s,*bkg;
     int x;
 
@@ -127,9 +138,6 @@ void display_title(int oldscore){
 
     title=IMG_Load("title.png");
     assert(title!=NULL);
-
-    SDL_BlitSurface(title,NULL,s,NULL);
-    SDL_Flip(s);
 
     /* sleep(1); */ /* I'd like to have a cool intro here ;-) */
 
@@ -146,15 +154,18 @@ void display_title(int oldscore){
     bkg=SDL_ConvertSurface(title, s->format, SDL_SWSURFACE);
     SDL_FreeSurface(title);
     for(x=0;x<MENU_ENTRIES;x++){
-	render_font(menux[x],menuy[x],menus[x]);
+	render_font_to(menux[x],menuy[x],menus[x],bkg);
     };
 
     if(oldscore >0){
 	char sc[100];
 	sprintf(sc,"Your Score: %6d",oldscore);
-	render_font(300,10,sc);
+	render_font_to(300,10,sc,bkg);
     };
+
+    /* Display it, for good measure */
+    SDL_BlitSurface(bkg,NULL,s,NULL);
     SDL_Flip(s);
-    title_main(bkg);
-    SDL_FreeSurface(bkg);
+
+    return bkg; /* Caller must SDL_FreeSurface(bkg) eventually. */
 }

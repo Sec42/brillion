@@ -1,6 +1,6 @@
 /* main(). Paramter parsing and other setup.Written by Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: brillion.c,v 1.12 2003/12/11 01:21:27 sec Exp $
+ * $Id: brillion.c,v 1.13 2004/02/20 21:15:34 sec Exp $
  */
 
 #define EXTERN /* Global variable(s) here... */
@@ -77,7 +77,7 @@ int main(int argc,char **argv){
 	exit(-1);
     } */
 
-    play_game(b->game);
+    run_game(b->game);
 
     fprintf(stderr,"%s: finished\n",b->prog);
     exit(0); /* Juhuu! */

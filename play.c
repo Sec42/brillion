@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.37 2003/12/11 00:28:22 sec Exp $
+ * $Id: play.c,v 1.38 2004/02/20 21:15:34 sec Exp $
  */
 #include "brillion.h"
 
@@ -11,10 +11,9 @@
 #define MY 480
 
 int play_level(void);
+void play_game(a_game* game);
 
-void play_game(a_game* game){
-    int	    old_lvl;
-
+void run_game(a_game * game){
     play=calloc(1,sizeof(a_play));
 
     /* Graphic, Music&Sound static per game for now */
@@ -27,11 +26,24 @@ void play_game(a_game* game){
     init_timer();
 
     while(1){
+	switch(title_main()){
+	    case 1:
+		play_game(game);
+		break;
+	    case 3:
+		display_scores();
+		break;
+	    case 4:
+		exit(0); /* XXX ? */
+	};
+    };
+}
+
+void play_game(a_game* game){
+    int	    old_lvl;
 
     play->level=0; /* XXX */
     old_lvl=999; /* Just != cur_lvl */
-    display_title(play->points);
-
     play->points=0;
     play->lives=game->lives;
 
@@ -93,7 +105,6 @@ void play_game(a_game* game){
     printf("You accumulated %d points\n",play->points);
 
     /* XXX: uninit_graphic/_music ? */
-    };
 
     free(play);
     SDL_Quit();

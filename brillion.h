@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.35 2003/12/12 02:29:42 sec Exp $
+ * $Id: brillion.h,v 1.36 2004/02/20 21:15:34 sec Exp $
  */
 
 #include <stdio.h>
@@ -284,7 +284,7 @@ void update_scoreboard(void);
 void clear_number_cache(void);
 
 /* play.c */
-void play_game(a_game* game);
+void run_game(a_game* game);
 
 #ifdef SOUND
 /* music.c */
@@ -334,6 +334,7 @@ void print_save(a_save *s);
 /* font.c */
 a_font* init_font(const char *file);
 void render_font(int x, int y,const char *txt);
+void render_font_to(int x, int y,const char *txt,SDL_Surface *disp);
 SDL_Rect *render_text(int x, int y,const char *txt,a_font *f,int maxw);
 void size_text(SDL_Rect *sr,const char *txt,a_font *f);
 char *input_text(SDL_Rect *in, a_font *f);
@@ -350,7 +351,8 @@ void display_scores(void);
 void add_score(void);
 
 /* title.c */
-void display_title(int oldscore);
+int title_main(void);
+SDL_Surface* create_title(int oldscore);
 
 /* timer.c */
 #define SDL_USER_NOTHING     0
