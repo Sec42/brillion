@@ -1,20 +1,10 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.13 2004/06/20 22:09:43 sec Exp $
+ * $Id: score.c,v 1.14 2004/06/21 10:39:35 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
 #include <time.h>
-
-#ifndef __WIN32__
-#include <pwd.h>
-#else
-
-struct passwd {
-    char    *pw_name;       /* user name */
-};
-
-#endif
 
 the_scores* read_scores(void){
     FILE	*f;
@@ -144,7 +134,6 @@ void write_scores(the_scores* scores){
 
 void add_score(the_scores* scores, int points){
     int x,y;
-    struct passwd* pw;
 
     if(scores==NULL){
 	fprintf(stderr,"Error: no scores\n"); /* XXX: fixme; */
@@ -164,15 +153,8 @@ void add_score(the_scores* scores, int points){
 	scores->maxscore++;
     };
 
-    /* XXX: Windows is stupid */
-#ifndef __WIN32__
-    pw=getpwuid(getuid());
-    strlcpy(scores->scores[x].name,pw->pw_name,SCORENAMELEN);
-#else
-    assert(strlen("(me)")<SCORENAMELEN);
-    strcpy(scores->scores[x].name,"(me)");
-#endif
     scores->scores[x].name[0]=1;
+    scores->scores[x].name[1]=0;
     scores->scores[x].score=points;
     scores->scores[x].when=time(NULL);
     scores->scores[x].howlong=0;
@@ -248,9 +230,9 @@ void display_scores(void){
 	/* XXX: Windows doesn't do strlcpy alert
 	strlcpy(scores->scores[do_inp].name,input_text(&inp,font),8); */
 	strncpy(scores->scores[do_inp].name,input_text(&inp,font),SCORENAMELEN);
-	scores->scores[do_inp].name[SCORENAMELEN-1]=0;
 	if(scores->scores[do_inp].name[0]==0)
-	    strncpy(scores->scores[do_inp].name,"?",SCORENAMELEN);
+	    strncpy(scores->scores[do_inp].name,getuser(),SCORENAMELEN);
+	scores->scores[do_inp].name[SCORENAMELEN-1]=0;
 	write_scores(scores);
     };
 
