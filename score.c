@@ -1,6 +1,6 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.16 2004/06/22 21:45:31 sec Exp $
+ * $Id: score.c,v 1.17 2004/06/22 22:29:49 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -147,10 +147,10 @@ void add_score(the_scores* scores, int points){
 	if(scores->scores[x].score<points)
 	    break;
     };
-    if(x<=scores->maxscore){ /* respectable rank */
+    if(x<MAX_SCORES){ /* respectable rank */
 	printf("New score is No. %d of %d\n",x,scores->maxscore);
 	for(y=scores->maxscore;y>=x;y--){
-	    if(y<scores->maxscore)
+	    if(y<MAX_SCORES-1)
 		memcpy(&scores->scores[y+1],&scores->scores[y],sizeof(a_score));
 	};
 	if(scores->maxscore < MAX_SCORES-1)
@@ -160,7 +160,7 @@ void add_score(the_scores* scores, int points){
 	scores->scores[x].name[1]=0;
 	scores->scores[x].score=points;
 	scores->scores[x].when=time(NULL);
-	scores->scores[x].howlong=0;
+	scores->scores[x].howlong=difftime(time(NULL),play->starttime);
     };
 }
 
