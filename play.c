@@ -91,8 +91,7 @@ int play_level(a_play* play){
   int z; // Animation counter...
 
   Uint32 t_start,t_end,t_gone,t_now;
-  Uint32 a_start,a_end,a_gone,a_now;
-  Sint32 t_left,a_left;
+  Sint32 t_left;
   Uint32 ticks;
   Uint32 q;
 
@@ -105,8 +104,7 @@ int play_level(a_play* play){
 
   while(1){
     frames++;
-    t_start=SDL_GetTicks();
-    t_end=t_start+SPEED;
+    t_end=t_start=SDL_GetTicks();
 
     while( SDL_PollEvent( &event ) ){
       /* We are only worried about SDL_KEYDOWN and SDL_KEYUP events */
@@ -168,33 +166,33 @@ int play_level(a_play* play){
 
 //    printf("Already lost %d ticks\n",t_start-SDL_GetTicks());
     for(z=1;z<=AFRAMES;z++){
-      a_start=SDL_GetTicks();
-      a_end=a_start+(SPEED/(AFRAMES));
 
       animate(g,a,z); // Move what is to move.
-//      printf("%d rects\n",g->numrects);
+//    printf("%d rects\n",g->numrects);
       DISPLAY;
 
       if(z < AFRAMES){
-	a_now=SDL_GetTicks();
-	a_gone=a_now-a_start;
-	a_left=a_end-a_now;
+	t_end+=(SPEED/AFRAMES)-1;
+	t_now=SDL_GetTicks();
+	t_gone=t_now-t_start;
+	t_left=t_end-t_now;
 
-//	printf("anim_sleep: %d\n",a_left);
+//	printf("anim_sleep: %d\n",t_left);
 	q=0;
-	if(a_left>0){
-	  ticks-=a_left;
-	  DELAY(a_left,a_end);
+	if(t_left>0){
+	  ticks-=t_left;
+	  DELAY(t_left,t_end);
 	};
 //	printf("sleep: wanted:%d actually:%d bsy=%d\n",a_left,SDL_GetTicks()-a_now,q);
       };
     };
 
+//    printf("Speed: ran for %d ticks at %d/anim\n",t_gone,SPEED/AFRAMES);
+
+    t_end=t_start+SPEED;
     t_now=SDL_GetTicks();
     t_gone=t_now-t_start;
     t_left=t_end-t_now;
-
-//    printf("Speed: ran for %d ticks at %d/anim\n",t_gone,SPEED/AFRAMES);
 
     ticks+=t_gone;
     if(t_left>0){
