@@ -87,10 +87,10 @@ void play_game(a_game* game){
 
 int play_level(a_play* play){
   SDL_Event event;
-  int userl=0;  /* user moves left */
-  int userlr=0; /* user released left */
-  int userr=0;  /* user moves right */
-  int userrr=0; /* user released right */
+  static int userl=0;  /* user moves left */
+  static int userlr=0; /* user released left */
+  static int userr=0;  /* user moves right */
+  static int userrr=0; /* user released right */
   char quit=0;
   int frames; // Number of frames displayed
   int z; // Animation counter...
