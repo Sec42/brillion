@@ -1,6 +1,6 @@
 /* Do all the audible stuff
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: music.c,v 1.6 2003/03/14 13:09:30 sec Exp $
+ * $Id: music.c,v 1.7 2003/03/17 10:56:25 sec Exp $
  */
 #include "brillion.h"
 
@@ -20,6 +20,7 @@ music* init_music(){
   m->wall=Mix_LoadWAV("wall.wav");
   m->star=Mix_LoadWAV("star.wav");
   m->block=Mix_LoadWAV("block.wav");
+  m->death=Mix_LoadWAV("death.wav");
 
   return m;
 }
