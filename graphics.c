@@ -70,49 +70,47 @@ void load_graphics(graphic * gp){
   gp->colors[NONE]=    SDL_MapRGBA(gp->display->format,0,0,0,0);
 
   /* Load blocks, and create all colors */
-  pad=IMG_Load("graphics/ball_blue.gif");
+  pad=IMG_Load("ball_blue.gif");
   for(x=1;x<GAME_COLORS;x++)
     gp->ball[x]=color_graphic(gp,pad,x,1);
   SDL_FreeSurface(pad);
 
-  pad=IMG_Load("graphics/block_blue.gif");
+  pad=IMG_Load("block_blue.gif");
   for(x=1;x<GAME_COLORS;x++)
     gp->block[x]=color_graphic(gp,pad,x,0);
   SDL_FreeSurface(pad);
 
-  pad=IMG_Load("graphics/star_blue.gif");
+  pad=IMG_Load("star_blue.gif");
   for(x=1;x<GAME_COLORS;x++)
     gp->star[x]=color_graphic(gp,pad,x,0);
   SDL_FreeSurface(pad);
 
-  pad=IMG_Load("graphics/disk_blue.gif");
+  pad=IMG_Load("disk_blue.gif");
   for(x=1;x<GAME_COLORS;x++)
     gp->disk[x]=color_graphic(gp,pad,x,0);
   SDL_FreeSurface(pad);
 
-  pad=IMG_Load("graphics/space.gif");
+  pad=IMG_Load("space.gif");
   gp->back=SDL_ConvertSurface(pad, gp->display->format, SDL_HWSURFACE);
   assert(gp->back!=NULL);
   SDL_FreeSurface(pad);
 
-  pad=IMG_Load("graphics/wall.gif");
+  pad=IMG_Load("wall.gif");
   gp->wall=SDL_ConvertSurface(pad, gp->display->format, SDL_HWSURFACE);
   assert(gp->wall!=NULL);
   SDL_FreeSurface(pad);
 
-  pad=IMG_Load("graphics/death.gif");
+  pad=IMG_Load("death.gif");
   gp->death=SDL_ConvertSurface(pad, gp->display->format, SDL_HWSURFACE);
   assert(gp->death!=NULL);
   SDL_FreeSurface(pad);
 
-  pad=IMG_Load("graphics/bkg.png");
-  if(pad){
-    gp->xoff=20;gp->yoff=(gp->display->h - (QUAD*11))/2;
-    SDL_BlitSurface(pad, NULL, gp->display, NULL);
-    SDL_FreeSurface(pad);
-  };
+  // XXX: do that somewhere else...
+  gp->border=IMG_Load("bkg.png");
+  assert(gp->border!=NULL);
+  gp->xoff=20;gp->yoff=(gp->display->h - (QUAD*11))/2; // XXX read from somewhere...
 
-  gp->font=IMG_Load("graphics/numbers.png");
+  gp->font=IMG_Load("numbers.png");
 
   //SDL_FillRect(gp->display,NULL,gp->colors[WHITE]);
 };
@@ -125,13 +123,14 @@ graphic* init_graphic(){
     fprintf(stderr,"Could not initialize SDL: %s.\n", SDL_GetError());
     exit(-1);
   };
-  if(!(disp=SDL_SetVideoMode(MX, MY, 32, SDL_ANYFORMAT|SDL_DOUBLEBUF))){
+  if(!(disp=SDL_SetVideoMode(MX, MY, 24, SDL_ANYFORMAT|SDL_DOUBLEBUF))){
     printf("Could not set videomode: %s.\n", SDL_GetError());
     exit(-1);
   };
   assert(SDL_MUSTLOCK(disp)==0);
+  printf("SDL uses %d bytes/pixel Display format\n",disp->format->BytesPerPixel);
 
-  SDL_WM_SetCaption(prog, prog);
+  SDL_WM_SetCaption(b->prog, b->prog);
 
   g=calloc(1,sizeof(graphic));
   g->display=disp;
@@ -291,14 +290,20 @@ void print_number(graphic *g, char *str, int x, int y){
 };
 
 
-void update_scoreboard(graphic* g, field* lvl){
+void update_scoreboard(a_play *p){
   char t[10];
 
-  sprintf(t,"%3d",lvl->blocks);
-  print_number(g,t,550,200);
+  sprintf(t,"%5d",p->points);
+  print_number(p->g,t,500,150);
 
-  sprintf(t,"%3d",lvl->time);
-  print_number(g,t,550,250);
+  sprintf(t,"%3d",p->f->blocks);
+  print_number(p->g,t,550,200);
+
+  sprintf(t,"%3d",p->f->time);
+  print_number(p->g,t,550,250);
+
+  sprintf(t,"%3d",p->lives);
+  print_number(p->g,t,550,300);
 };
 
 anim* init_anim(){

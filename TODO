@@ -11,12 +11,12 @@
 + Add level switching
 + Add title screen, credits
 + Add game rules description (perhaps in-game?)
-+ Fix corner-case in physics.c (Two-stars hit at the same time)
++ Fix corner-case in physics.c (Two "stars" hit at the same time)
 
 + How to print level names? Use BFont? Use monospaced? Use COLOR_KEYING?
 + Decide: color stones in-program or externally?
 + In printing routine, maybe add caching?
-  How to decide when to use alpha? ot is probably to slow to do that everywhere.
+  How to decide when to use alpha? it is probably to slow to do that everywhere.
 + Is it actually okay to use DBLBUF? or better single, and update_Rect?
   if really necessary, updated could be combined off-screen and copied.
 + Should all graphic/sound things be changeable by level, or by 'Collection'?
@@ -24,3 +24,7 @@
   pieces itself?
 + should sound effects be all played, or cut themselfs off like in the
   original
+
++ heroes is quite fast but yet doesn't use ANYFORMAT, but palette instead.
+  perhaps their way of managing the screen themselves and just telling SDL 
+  to update the entire screen at once is a performance gain?

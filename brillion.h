@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.8 2002/11/04 10:23:09 sec Exp $
+ * $Id: brillion.h,v 1.9 2003/02/25 14:26:03 sec Exp $
  */
 
 #include <stdio.h>
@@ -23,9 +23,7 @@
 #include <dmalloc.h>
 #endif
 
-/* zwei kleine globals */
-EXTERN char *prog;    // Programmname
-EXTERN char verbose;  // Debugging-Level
+#define die(x) do{fprintf(stderr,"DIEd: \"%s\" in %s line %d\n",x,__FILE__,__LINE__);exit(-1);}while(0)
 
 #define GAME_COLORS    7
 
@@ -72,11 +70,6 @@ typedef struct {
 } anim;
 
 typedef struct {
-	char level[100];
-	int onelevel;
-} config;
-
-typedef struct {
 	int version;    /* Version number. Always 42 */
 	int w,h;        /* Width and height of the level */
 	char desc[100]; /* Level name and author */
@@ -86,17 +79,21 @@ typedef struct {
 #define COLOR(x,y) lvl->colors[(x)*lvl->h+(y)]
 #define PIECE(x,y) lvl->pieces[(x)*lvl->h+(y)]
 
-	int blocks;	/* Blocks remaining */
+	signed int blocks;	/* Blocks remaining */
 	int time; 	/* Time remaining */
 	int x,y;	/* Ball position */
 	signed int dir; /* Ball direction */
 	int color;	/* Ball color */
+	int ppb;	/* Points/Block */
 } field;
 
 typedef struct {
 	SDL_Surface * display;
 	Uint32 colors[MAX_COLORS];
+
+	/* For background */
 	int xoff, yoff;	/* Offset of the level area in main window */
+	SDL_Surface * border;
 
 	/* block graphics */
 	SDL_Surface * wall;
@@ -126,35 +123,53 @@ typedef struct {
 } music;
 
 typedef struct {
-	char*  gfx[MAX_PIECE]; /* Block Graphics */
-	char*  sfx[MAX_PIECE]; /* Soundbites */
-	char*  bg;             /* Background graphic */
-	char*  txtfont;        /* Font for level name */
-	char*  numfont;        /* Font for digits */
-	char*  bgsound;        /* Music during title */
-	char*  level;          /* Filename of the level file */
+	char*  name;             /* Background graphic */
 	coord  pts;            
 	coord  bonus;
 	coord  blocks;
 	coord  lives;
-	coord  name;
+	coord  lname;
 	coord  field;
 //	coord  fieldsz; // Just assume it matches :)
-} desc;
+} a_layout;
+
+typedef struct {
+	a_layout* layout;	/* Background graphic */
+	char*  	  name;		/* Filename of the level file */
+	// block, sound, music currently fixed per game.
+} a_level;
 
 typedef struct {
 	graphic* g;
 	music*   m;
 	field*   f;
 	anim	 a[MAX_ANIM];
-} play;
+	int	 lives;
+	int	 points;
+} a_play;
 
 typedef struct {
-	desc** levels;
-	int    maxlevel;
-} gameing;
+	a_level** levels;
+	int       maxlevel;
+	int	  lives;
+} a_game;
 
+typedef struct {
+	int	verbose;	// Debugging level
+	char*	prog;		// Binary name
+	char*	dir;		// Data directory
 
+	// We can argue if they should be here...
+	a_game*	game;		// Selected Game
+	a_play*	p;		// Things needed for play
+} the_status;
+
+#ifndef EXTERN
+#define EXTERN extern
+#endif
+
+/* ein (kleines) global */
+EXTERN the_status* b;  // Das Spiel
 
 /* physics.c */
 void move_step(graphic* g, music* m,field* lvl, signed int input);
@@ -171,10 +186,10 @@ void paint_block(graphic* g, field* lvl, int x, int y);
 void paint_ball(graphic* g, field* lvl);
 void snapshot(graphic* g);
 void fade (SDL_Surface* s, Uint32 ticks, int fadein);
-void update_scoreboard(graphic* g, field* lvl);
+void update_scoreboard(a_play* p);
 
 /* play.c */
-void game(config* cfg);
+void play_game(a_game* game);
 
 #ifdef SOUND
 /* music.c */
@@ -184,3 +199,6 @@ void play_touch(music* m,int piece);
 #define init_music() NULL
 #define play_touch(a,b)
 #endif
+
+/* game.c */
+a_game* read_game(char* file);

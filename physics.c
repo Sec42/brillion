@@ -83,7 +83,7 @@ int move_touch(graphic* gp, music* m, field* lvl, int x, int y,signed int dx,sig
     case DEATH:
       play_touch(m, DEATH);
       printf("You die, how embarrassing!\n");
-      lvl->blocks=0; // XXX
+      lvl->blocks=-1; // XXX
       break;
     case BLOCK:
       if(lvl->color==COLOR(x,y)){
@@ -91,6 +91,7 @@ int move_touch(graphic* gp, music* m, field* lvl, int x, int y,signed int dx,sig
 	PIECE(x,y)=SPACE;
 	paint_block(gp,lvl,x,y);
 	lvl->blocks--;
+	b->p->points+=lvl->ppb; // XXX: Layering
       };
       break;
     case DISK:

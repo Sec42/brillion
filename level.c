@@ -28,8 +28,9 @@ field * read_level(char * file){
 
   assert(file);
   level=fopen(file,"r");
+
   if(!level){
-    fprintf(stderr,"Level '%s':",file);perror("Open");
+    fprintf(stderr,"Level '%s': ",file);perror("");
     return(NULL);
   };
 
@@ -160,6 +161,7 @@ field * read_level(char * file){
     return(NULL);
   };
 
+  lvl->ppb=1600/lvl->blocks; //XXX: Check with original
   return lvl;
 };
 

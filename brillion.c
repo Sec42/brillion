@@ -1,6 +1,6 @@
 /* Written by Sec <sec@42.org>
  * vim:set cin sm ts=4 sw=4:
- * $Id: brillion.c,v 1.2 2002/10/15 11:39:24 sec Exp $
+ * $Id: brillion.c,v 1.3 2003/02/25 14:26:03 sec Exp $
  */
 
 #define EXTERN /**/
@@ -8,8 +8,9 @@
 
 int main(int argc,char **argv){
 	/* Deklarationen */
-	config* cfg;
+//	config* cfg;
 	char c;
+	struct stat sb;
 
 #ifdef __FreeBSD__
 	/* die loudly if malloc runs out of ram */
@@ -18,31 +19,49 @@ int main(int argc,char **argv){
 #endif
 
 	/* init section */
-	prog=argv[0];
-	if(!prog)prog="brillion";
-	if(strrchr(prog,'/')){
-		prog=strrchr(argv[0],'/');
-		prog++;
+	b=calloc(1,sizeof(the_status)); 	// This is global
+
+	b->prog=argv[0];
+	if(!b->prog)b->prog="brillion";
+	if(strrchr(b->prog,'/')){
+		b->prog=strrchr(argv[0],'/');
+		b->prog++;
 	}
-	verbose=0;
-	cfg=calloc(1,sizeof(config));
+
+	// XXX more sane checks please :)
+	if(stat("/usr/X11R6/share/brillion",&sb))
+		chdir("/usr/X11R6/share/brillion");
+
+	b->verbose=0;
 
 	/* The getopt loop */
-	while ((c = getopt(argc, argv, "l:vh")) != EOF)
+	while ((c = getopt(argc, argv, "g:l:vh")) != EOF)
 		switch (c)
 		{
 			case 'v':
-				verbose++;
+				b->verbose++;
 				break;
-			case 'l':
-				cfg->onelevel++;
-				strncpy(cfg->level,optarg,80);cfg->level[79]=0;
+			case 'g':
+				b->game=read_game(optarg);
+				if(!b->game)
+					die("Broken -g switch");
+				break;
+			case 'l': // Ugly^99
+				b->game=read_game("Original");
+				b->game->maxlevel=1;
+				b->game->levels[0]->name=optarg;
 				break;
 			case 'h':
 			default:
-				fprintf(stderr, "%s: Eine Crillion-Implementierung von Sec <sec@42.org> 10/2002\n\n", prog);
+				fprintf(stderr, "%s: Eine Crillion-Implementierung von Sec <sec@42.org> 10/2002\n\n", b->prog);
 				exit(255);
 		}
+
+		if(!b->game)
+			b->game=read_game("Original");
+
+		if(!b->game)
+			die("no game");
 
 //	argc -= optind; argv += optind; /* we want more args */
 //
@@ -52,8 +71,8 @@ int main(int argc,char **argv){
 //		exit(-1);
 //	}
 
-	game(cfg);
+	play_game(b->game);
 
-	fprintf(stderr,"%s: finished\n",prog);
+	fprintf(stderr,"%s: finished\n",b->prog);
 	exit(0); // Juhuu!
 }

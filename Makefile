@@ -1,10 +1,10 @@
 #Config this:
 SDL_CONFIG?=sdl-config
-CFLAGS?=-g -O -pipe
+CFLAGS=-g -O -pipe
 
 # It shouldn't be necessary to edit anything below this line.
 PRG=brillion
-OBJ=brillion.o graphics.o level.o physics.o play.o
+OBJ=brillion.o graphics.o level.o physics.o play.o game.o
 
 INC=-IBFontv1.0.4-1
 VPATH=BFontv1.0.4-1
@@ -34,7 +34,7 @@ LDFLAGS+=-static -L/usr/X11R6/lib -lesd -laa -lncurses -lXext -lvga -lSDL-1.1 -l
 .endif
 
 .if ${USER} == "sec"
-all: devel
+all: tags
 .endif
 
 all: $(PRG)
@@ -46,13 +46,13 @@ clean:
 	rm -f $(PRG) $(OBJ) *core
 
 tags: brillion.c brillion.h graphics.c level.c physics.c play.c
-	ctags *.[ch]
+	-ctags *.[ch]
 
 install:
 	@echo You wish.
 
-.depend: brillion.c brillion.h graphics.c level.c physics.c play.c
-	$(CC) $(CFLAGS) -MM *.c>.depend
+.depend: brillion.c brillion.h graphics.c level.c physics.c play.c game.c
+	-$(CC) $(CFLAGS) -MM *.c>.depend
 
 devel:	gnu tags .depend
 depend: .depend
