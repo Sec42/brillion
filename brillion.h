@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.41 2004/06/22 22:30:12 sec Exp $
+ * $Id: brillion.h,v 1.42 2004/08/06 10:23:01 sec Exp $
  */
 
 #include <stdio.h>
@@ -309,16 +309,6 @@ a_anim* init_anim(void);
 void animate(int step);
 void create_moveanim(anim_t type, int color, int ox, int oy, int nx, int ny);
 void create_staticanim(anim_t type, int color, int x, int y);
-
-/* These depend on you scheduler 20/10 (msec) seems a sane default */
-#define SLEEP_MIN 20
-#define SLEEP_GRAN 10
-
-#define DELAY(left,end) do{ \
-	if(left>SLEEP_MIN) \
-		SDL_Delay(left-SLEEP_GRAN); \
-		while(SDL_GetTicks()<end){ q++; }; \
-}while(0)
 
 /* effects.c */
 typedef enum {
