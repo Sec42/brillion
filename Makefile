@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.32 2004/06/21 10:39:34 sec Exp $
+# $Id: Makefile,v 1.33 2004/06/21 12:26:14 sec Exp $
 #Config this:
 CFLAGS?=-O -pipe
 CFLAGS+=-g
@@ -103,3 +103,8 @@ config: .config
 gnu: GNUmakefile
 GNUmakefile: Makefile GNUify
 	./GNUify
+
+.if exists(.depend)
+.include ".depend"
+.endif
+
