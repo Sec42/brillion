@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.38 2003/03/26 18:01:13 sec Exp $
+ * $Id: graphics.c,v 1.39 2003/12/11 01:21:27 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -334,7 +334,7 @@ char number_cache[100];
 void clear_number_cache(void){
     memset(number_cache,' ',99);
     number_cache[99]=0;
-};
+}
 
 
 void print_number(int cacheno, int num, coord co){

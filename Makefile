@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.27 2003/12/11 00:27:20 sec Exp $
+# $Id: Makefile,v 1.28 2003/12/11 01:21:27 sec Exp $
 #Config this:
 CFLAGS?=-O -pipe
 CFLAGS+=-g
@@ -21,11 +21,12 @@ CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe -DNDEBUG
 
 # misses -pedantic (warns too much about system headers)
 .ifdef PEDANTIC
-CFLAGS+= -ansi -D_POSIX_SOURCE -D_POSIX_C_SOURCE=2 -W -Wall -Wcast-align \
+#CFLAGS+= -D_POSIX_SOURCE -D_POSIX_C_SOURCE=2
+CFLAGS+= -D_POSIX_C_SOURCE=199506L -pedantic
+CFLAGS+= -ansi -W -Wall -Wcast-align \
 	-Wbad-function-cast -Wcast-qual -Wchar-subscripts -Winline \
 	-Wmissing-prototypes -Wnested-externs -Wpointer-arith \
 	-Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings
-.SILENT:
 .endif
 
 CFLAGS+=-Wall `${SDL_CONFIG} --cflags`

@@ -1,6 +1,6 @@
 /* main(). Paramter parsing and other setup.Written by Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: brillion.c,v 1.11 2003/04/18 15:52:51 sec Exp $
+ * $Id: brillion.c,v 1.12 2003/12/11 01:21:27 sec Exp $
  */
 
 #define EXTERN /* Global variable(s) here... */
@@ -10,7 +10,7 @@ int main(int argc,char **argv){
     signed char c;
 
     /* die loudly if malloc runs out of ram */
-#ifndef _POSIX_SOURCE
+#ifndef _POSIX_C_SOURCE
 #ifdef __FreeBSD__
 #if __FreeBSD__ > 4
     _malloc_options = "X";

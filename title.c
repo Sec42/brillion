@@ -1,6 +1,6 @@
 /* Display the title screen, and handle the main menu...
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: title.c,v 1.6 2003/12/10 22:08:38 sec Exp $
+ * $Id: title.c,v 1.7 2003/12/11 01:21:27 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -150,9 +150,9 @@ void display_title(int oldscore){
     };
 
     if(oldscore >0){
-	char s[100];
-	sprintf(s,"Your Score: %6d",oldscore);
-	render_font(300,10,s);
+	char sc[100];
+	sprintf(sc,"Your Score: %6d",oldscore);
+	render_font(300,10,sc);
     };
     SDL_Flip(s);
     title_main(bkg);

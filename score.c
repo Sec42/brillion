@@ -1,10 +1,11 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.4 2003/12/11 00:28:22 sec Exp $
+ * $Id: score.c,v 1.5 2003/12/11 01:21:27 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
 #include <pwd.h>
+#include <time.h>
 
 the_scores* read_scores(void){
     FILE	*f;
@@ -97,7 +98,7 @@ the_scores* read_scores(void){
     };
     free(word[0]);
     return scores;
-};
+}
 
 void write_scores(void){
     int x;
@@ -124,7 +125,7 @@ void write_scores(void){
     fclose(f);
     unlink("Scores.bak");
     return;
-};
+}
 
 void add_score(void){
     the_scores * scores;
@@ -155,7 +156,7 @@ void add_score(void){
     scores->scores[x].score=play->points;
     scores->scores[x].when=time(NULL);
     scores->scores[x].howlong=0;
-};
+}
 
 
 /* Plan:
@@ -199,7 +200,7 @@ void display_scores(void){
 	sprintf(buf,"%6d",scores->scores[x+start].score);
 	size_text(&r,buf,font);
 	render_text(250-r.w,50+x*font->lineh,buf,font,0);
-//	render_text(250,50+x*font->lineh,"4h30m",font,0);
+/*	render_text(250,50+x*font->lineh,"4h30m",font,0); */
 	strftime(buf,49,"%d.%m. %H:%M",localtime(&scores->scores[x+start].when));
 	render_text(400,50+x*font->lineh,buf,font,0);
     }
@@ -237,5 +238,5 @@ void display_scores(void){
 	}
     }
 
-};
+}
 
