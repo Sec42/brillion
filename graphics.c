@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.28 2003/03/15 17:14:32 sec Exp $
+ * $Id: graphics.c,v 1.29 2003/03/17 10:53:58 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -10,51 +10,62 @@
 #define MX 640
 #define MY 480
 
+typedef struct {
+    Uint8 r;
+    Uint8 g;
+    Uint8 b;
+    Uint8 a;
+} myc;
+
+myc mk_color(int color, int br, int sat){
+    myc c;
+    switch(color){
+	case RED:     c.r=br ; c.g=sat; c.b=sat; c.a=0; break;
+	case CYAN:    c.r=sat; c.g=br;  c.b=br ; c.a=0; break;
+	case MAGENTA: c.r=br ; c.g=sat; c.b=br ; c.a=0; break;
+	case GREEN:   c.r=sat; c.g=br;  c.b=sat; c.a=0; break;
+	case BLUE:    c.r=sat; c.g=sat; c.b=br ; c.a=0; break;
+	case YELLOW:  c.r=br ; c.g=br;  c.b=sat; c.a=0; break;
+	default:      c.r=sat; c.g=sat; c.b=sat; c.a=0; break;
+    };
+    return(c);
+};
+
 /* Seems like an ugly hack, but I know no sane way */
 SDL_Surface* color_graphic(SDL_Surface* in, int color, int alpha){
     graphic   *g=play->g;
     SDL_Surface* out;
-    Uint32* p4;
-    Uint16* p2;
-    Uint8* p1;
+    SDL_Surface* tmp;
+    SDL_PixelFormat f;
+    myc* p4;
 
-    out=SDL_ConvertSurface(in, g->display->format, SDL_HWSURFACE);
+    f.palette=NULL;
+    f.BitsPerPixel=32;
+#if SDL_BYTEORDER == 1234
+    f.Rmask=0x000000ff;
+    f.Gmask=0x0000ff00;
+    f.Bmask=0x00ff0000;
+    f.Amask=0xff000000;
+#else
+    f.Rmask=0xff000000;
+    f.Gmask=0x00ff0000;
+    f.Bmask=0x0000ff00;
+    f.Amask=0x000000ff;
+#endif
+
+    tmp=SDL_ConvertSurface(in, &f, SDL_SWSURFACE);
+    assert(tmp!=NULL);
+
+    /* perhaps We should check the 'pitch' ? */
+    for(p4=tmp->pixels;p4<(myc*)tmp->pixels+(tmp->w*tmp->h);p4++){
+	if(p4->r == p4->g){
+	    *p4=mk_color(color,p4->b,p4->r);
+	};
+    };
+
+    out=SDL_ConvertSurface(tmp, g->display->format, SDL_HWSURFACE);
     assert(out!=NULL);
 
-    switch(out->format->BytesPerPixel){
-	case 4:
-	    for(p4=out->pixels;p4<(Uint32*)out->pixels+(out->w*out->h);p4++){
-		if(*p4 == g->colors[BLUE])
-		    *p4=g->colors[color];
-		if(alpha==1)
-		    if(*p4 == g->colors[WHITE])
-			*p4=g->colors[NONE];
-	    };
-	    break;
-	case 2:
-	    for(p2=out->pixels;p2<(Uint16*)out->pixels+(out->w*out->h);p2++){
-		if(*p2 == g->colors[BLUE])
-		    *p2=g->colors[color];
-		if(alpha==1)
-		    if(*p2 == g->colors[WHITE])
-			*p2=g->colors[NONE];
-	    };
-	    break;
-	case 1:
-	    for(p1=out->pixels;p1<(Uint8*)out->pixels+(out->w*out->h);p1++){
-		if(*p1 == g->colors[BLUE])
-		    *p1=g->colors[color];
-		if(alpha==1)
-		    if(*p1 == g->colors[WHITE])
-			*p1=g->colors[NONE];
-	    };
-	    break;
-	default:
-	    fprintf(stderr,"This is a %d byte/pixel display, which is not "
-		    "supported\nYou can try removing SDL_ANYFORMAT in "
-		    "graphics.c\n",out->format->BytesPerPixel);
-	    exit(-1);
-    };
     if(alpha==2)
 	SDL_SetColorKey(out, SDL_SRCCOLORKEY, g->colors[BG]);
 
