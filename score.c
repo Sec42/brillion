@@ -1,6 +1,6 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.9 2004/02/20 21:15:34 sec Exp $
+ * $Id: score.c,v 1.10 2004/06/13 21:12:01 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -29,7 +29,8 @@ the_scores* read_scores(void){
 
     /* for parsing */
 #define LINELEN 200
-    char* word[9];
+#define MAXWORDS 8
+    char* word[MAXWORDS+1];
     char*	trgt;
     unsigned int space;
 
@@ -39,7 +40,9 @@ the_scores* read_scores(void){
 
     if(!f){
 	fprintf(stderr,"open Scores:");perror("");
-	return(NULL);
+	scores=calloc(1,sizeof(the_scores));
+	scores->maxscore=-1;
+	return(scores);
     };
 
     fscanf(f,"%10s %d ",word[0],&num);
@@ -50,13 +53,13 @@ the_scores* read_scores(void){
 
     scores=calloc(1,sizeof(the_scores));
 
-    while(!error && (fgets(word[0],LINELEN,f)!=NULL)){
+    while(curscore<MAX_SCORES && !error && (fgets(word[0],LINELEN,f)!=NULL)){
 	if((num=strlen(word[0]))==LINELEN){
 	    fprintf(stderr,"Scores: Line too long\n");
 	    error++;
 	}else{
 	    x=0;space=0;
-	    for(trgt=word[0];x<9 && trgt<word[0]+num;trgt++) {
+	    for(trgt=word[0];x<MAXWORDS && trgt<word[0]+num;trgt++) {
 		if( *trgt == ' ' || *trgt == '\t' || *trgt == '\r' || *trgt == '\n'){
 		    *trgt=0;
 		    space=1;
@@ -83,8 +86,8 @@ the_scores* read_scores(void){
 		/* printf("empty line!\n"); */
 	    }OR_PARSE("score",4){
 		score=&scores->scores[curscore];
-		strncpy(score->name,word[1],8);
-		score->name[7]=0;
+		strncpy(score->name,word[1],SCORENAMELEN);
+		score->name[SCORENAMELEN-1]=0;
 		score->score=  atoi(word[2]);
 		score->when=   atoi(word[3]);
 		score->howlong=atoi(word[4]);
@@ -97,24 +100,25 @@ the_scores* read_scores(void){
 	}; /* end if line !too long */
     }; /* end while */
 
-    scores->maxscore=curscore-1;
-
     if(error){
 	fprintf(stderr,"Scores parse error at '%s'\n",word[0]);
 	free(scores);
 	free(word[0]);
+	rename("Scores","Scores.broken");
 	return(NULL);
     };
+
+    scores->maxscore=curscore-1;
     free(word[0]);
     return scores;
 }
 
-void write_scores(void){
+void write_scores(the_scores* scores){
     int x;
-    the_scores* scores;
+//    the_scores* scores;
     FILE	*f;
 
-    scores=b->game->scores;
+//    scores=b->game->scores;
     assert(scores!=NULL);
 
     rename("Scores","Scores.bak");
@@ -136,27 +140,26 @@ void write_scores(void){
 #endif
     fclose(f);
     unlink("Scores.bak");
+    printf("Done.\n");
     return;
 }
 
-void add_score(void){
-    the_scores * scores;
+void add_score(the_scores* scores, int points){
     int x,y;
     struct passwd* pw;
 
-    scores=b->game->scores;
     if(scores==NULL){
-	scores=calloc(1,sizeof(the_scores));
-	b->game->scores=scores;
-	x=0;
+	fprintf(stderr,"Error: no scores\n"); // XXX: fixme;
+	return;
     }else{
-	if(scores->maxscore ==MAX_SCORES)
+	if(scores->maxscore == (MAX_SCORES-1))
 	    scores->maxscore--;
 
 	for(x=0;x<=scores->maxscore;x++){
-	    if(scores->scores[x].score<play->points)
+	    if(scores->scores[x].score<points)
 		break;
 	};
+	printf("New score is No. %d of %d\n",x,scores->maxscore);
 	for(y=scores->maxscore;y>=x;y--){
 	    memcpy(&scores->scores[y+1],&scores->scores[y],sizeof(a_score));
 	};
@@ -172,11 +175,12 @@ void add_score(void){
     strcpy(scores->scores[x].name,"(me)");
 #endif
     scores->scores[x].name[0]=1;
-    scores->scores[x].score=play->points;
+    scores->scores[x].score=points;
     scores->scores[x].when=time(NULL);
     scores->scores[x].howlong=0;
 }
 
+#ifndef TESTME
 
 /* Plan:
 // Display background
@@ -245,9 +249,9 @@ void display_scores(void){
     if(do_inp){
 	/* XXX: Windows doesn't do strlcpy alert
 	strlcpy(scores->scores[do_inp].name,input_text(&inp,font),8); */
-	strncpy(scores->scores[do_inp].name,input_text(&inp,font),7);
-	scores->scores[do_inp].name[7]=0;
-	write_scores();
+	strncpy(scores->scores[do_inp].name,input_text(&inp,font),SCORENAMELEN);
+	scores->scores[do_inp].name[SCORENAMELEN-1]=0;
+	write_scores(scores);
     };
 
 
@@ -284,4 +288,74 @@ void display_scores(void){
     }
 
 }
+#endif
+
+#ifdef TESTME
+void dump_scores(the_scores* scores){
+    int x;
+    int w;
+    char buf[50];
+
+    if(scores==NULL){
+	printf("WARNING: No scores to display\n");
+	return;
+    };
+
+    printf("High Scores\n");
+
+    for(x=0;x<20;x++){
+	if(x>scores->maxscore)
+	    break;
+
+	if(scores->scores[x].name[0]==1){
+	    /* Huh? */
+	    printf("Noname?\n");
+	}else{
+	    printf("Name: %s, ", scores->scores[x].name);
+	};
+
+	printf("Pts: %d, ", scores->scores[x].score);
+	strftime(buf,49,"%d.%m. %H:%M",localtime(&scores->scores[x].when));
+	printf("@: %s\n",buf);
+    }
+}
+
+int main(int argc,char **argv){
+
+
+    char inp[100];
+    int run=1;
+    the_scores* sc;
+
+    do {
+	printf("0) exit\n");
+	printf("1) read\n");
+	printf("2) write\n");
+	printf("3) display\n");
+	printf("4) add\n");
+	gets(inp);
+	switch(inp[0]){
+	    case '1':
+		sc=read_scores();
+		break;
+	    case '2':
+		write_scores(sc);
+		break;
+	    case '3':
+		dump_scores(sc);
+		break;
+	    case '4':
+		add_score(sc,2222);
+		break;
+	    default: 
+		run=0;
+	};
+    }while(run);
+
+    printf("Danke, sie haben ein einfaches Testscript sehr gluecklich gemacht...\n\n");
+    return(0);
+};
+
+#endif
+
 

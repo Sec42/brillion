@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.36 2004/02/20 21:15:34 sec Exp $
+ * $Id: brillion.h,v 1.37 2004/06/13 21:12:01 sec Exp $
  */
 
 #include <stdio.h>
@@ -346,9 +346,9 @@ void nice_render_text(SDL_Rect *rv,const char *txt,a_font *f,int flags);
 
 /* score.c */
 the_scores* read_scores(void);
-void write_scores(void);
+void write_scores(the_scores* scores);
 void display_scores(void);
-void add_score(void);
+void add_score(the_scores* scores, int points);
 
 /* title.c */
 int title_main(void);
