@@ -19,7 +19,7 @@ graphic* init_graphic(){
     fprintf(stderr,"Could not initialize SDL: %s.\n", SDL_GetError());
     exit(-1);
   };
-  if(!(disp=SDL_SetVideoMode(MX, MY, 24, SDL_ANYFORMAT|SDL_DOUBLEBUF))){
+  if(!(disp=SDL_SetVideoMode(MX, MY, 32, SDL_ANYFORMAT|SDL_DOUBLEBUF))){
     printf("Could not set videomode: %s.\n", SDL_GetError());
     exit(-1);
   };
@@ -89,7 +89,7 @@ SDL_Surface* color_graphic(graphic* g, SDL_Surface* in, int color, int alpha){
   SDL_Surface* out;
   Uint32* p4;
   Uint16* p2;
-  Uint16* p1;
+  Uint8* p1;
 
   out=SDL_ConvertSurface(in, g->display->format, SDL_HWSURFACE);
   assert(out!=NULL);
@@ -113,8 +113,19 @@ SDL_Surface* color_graphic(graphic* g, SDL_Surface* in, int color, int alpha){
 	    *p2=g->colors[NONE];
       };
       break;
+    case 1:
+      for(p1=out->pixels;p1<(Uint8*)out->pixels+(out->w*out->h);p1++){
+	if(*p1 == g->colors[BLUE])
+	  *p1=g->colors[color];
+	if(alpha)
+	  if(*p1 == g->colors[WHITE])
+	    *p1=g->colors[NONE];
+      };
+      break;
     default:
       fprintf(stderr,"This is a %d byte/pixel display, which is not supported\n",out->format->BytesPerPixel);
+      fprintf(stderr,"You can try removing SDL_ANYFORMAT in graphics.c\n");
+
       exit(-1);
   };
 
