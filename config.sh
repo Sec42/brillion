@@ -1,6 +1,6 @@
 #!/bin/sh
 
-id='$Id: config.sh,v 1.6 2003/03/26 18:18:21 sec Exp $'
+id='$Id: config.sh,v 1.7 2004/06/14 22:43:31 sec Exp $'
 
 echo '*** Welcome to the configuration checker for brillion (V0.1)'
 echo ''
@@ -23,6 +23,7 @@ while [ $# -gt 0 ] ; do
 	pedantic)	PEDANTIC=yes;;
 	devel)		DEVEL=yes;;
 	save)		SAVE=yes;;
+	windows)	WINDOWS=yes;;
 	--help|help|-h) 
 		echo "Usage: ./config.sh [options]"
 		echo "	profile		Compiles a binary with profiling support"
@@ -31,6 +32,7 @@ while [ $# -gt 0 ] ; do
 		echo ""
 		echo "	sound		Turns on sound support"
 		echo "	devel		devel support (semi-cheats)"
+		echo "	windows		add windows icon/resources"
 		echo ""
 		exit 1;;
 	*)		echo "Error: Unknown option $1";exit 1;;
