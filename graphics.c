@@ -166,6 +166,17 @@ void paint_ball(graphic* g, field* lvl){
   return;
 };
 
+void blank_block(graphic* g, int x, int y){
+  SDL_Rect rect;
+
+  rect.w=rect.h=QUAD;
+  rect.x=QUAD*(x-1)+g->xoff;
+  rect.y=QUAD*(y-1)+g->yoff;
+
+  SDL_BlitSurface(g->back, NULL, g->display, &rect);
+  UPDATE(rect);
+};
+
 void paint_block(graphic* g, field* lvl, int x, int y){
   SDL_Rect rect;
 
@@ -326,23 +337,33 @@ void update_scoreboard(a_play *p){
   print_number(p->g,t,600,300, ALIGN_RIGHT);
 };
 
-anim* init_anim(){
-  anim *a;
-  a=calloc(MAX_ANIM,sizeof(anim));
+a_anim* init_anim(){
+  a_anim *a;
+  a=calloc(MAX_ANIM,sizeof(a_anim));
   return a;
 };
 
-void animate(graphic*g, anim*a, int step){
+void animate(graphic*g, a_anim*a, int step){
   int aidx=0;
   for (aidx=0;aidx < MAX_ANIM; aidx++){
     switch(a[aidx].type){
       case A_NONE:
-	printf(" No animation here\n");
+//	printf("No animation here\n");
+	break;
+      case A_BALL:
+//	blank_block(g,a[aidx].from.x/2,a[aidx].from.y/2);
+	paint_block(g,b->p->f,a[aidx].from.x/2,a[aidx].from.y/2);
+	paint_ball(g,b->p->f);
+	break;
+      case A_DISK:
+	paint_block(g,b->p->f,a[aidx].from.x,a[aidx].from.y);
+	paint_block(g,b->p->f,a[aidx].to.x,a[aidx].to.y);
 	break;
       default:
-	printf(" Animate %d\n",a[aidx].type);
+	printf("Step: %d, idx: %d, ",step,aidx);
+	printf("Unknown animate %d\n",a[aidx].type);
 	break;
     };
-    aidx++;
+    a[aidx].type=A_NONE;
   };
 };

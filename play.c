@@ -4,7 +4,7 @@
 /* vim:set cin sw=2 ts=8 sm: */
 
 #define QUAD  32 /* Size of Standard Block, must be divisible by 2 */
-#define SPEED 60 /* Ticks per Frame */
+#define SPEED 70 /* Ticks per Frame */
 
 #define MX 640
 #define MY 480
@@ -22,6 +22,7 @@ void play_game(a_game* game){
 	// Graphic, Music&Sound static per game for now
 	play->g=init_graphic();
 	play->m=init_music();
+	play->a=init_anim();
 	play->points=0;
 
 	play->lives=game->lives;
@@ -81,32 +82,28 @@ void play_game(a_game* game){
 
 int play_level(a_play* play){
   SDL_Event event;
-  int userl=0;
-  int userr=0;
+  int userl=0;  /* user moves left */
+  int userlr=0; /* user released left */
+  int userr=0;  /* user moves right */
+  int userrr=0; /* user released right */
   char quit=0;
   int q; // Number of frames displayed
   Uint32 now;
   Uint32 round;
   Sint32 round_d;
   Uint32 speed=0;
+  Uint32 ticks;
 
   graphic* g=play->g;
-  music* m=play->m;
+  music*   m=play->m;
   field* lvl=play->f;
-//  anim*	a=play->a;
+  a_anim*  a=play->a;
 
   now = SDL_GetTicks();
   q=0;
   while(1){
     q++;
     round=SDL_GetTicks();
-
-    move_step(g, m, lvl, userr-userl);
-    if(q%2==0 && lvl->time>0)
-      lvl->time--;
-    update_scoreboard(play);
-
-    DISPLAY;
 
     while( SDL_PollEvent( &event ) ){
       /* We are only worried about SDL_KEYDOWN and SDL_KEYUP events */
@@ -115,9 +112,9 @@ int play_level(a_play* play){
 	  if( event.key.keysym.sym == SDLK_q){
 	    quit=1; // Abort game
 	  } else if (event.key.keysym.sym == SDLK_RIGHT){
-	    userr=1;
+	    userr=2;userrr=0;
 	  } else if (event.key.keysym.sym == SDLK_LEFT){
-	    userl=1;
+	    userl=2;userlr=0;
 	  } else if (event.key.keysym.sym == SDLK_ESCAPE){
 	    lvl->blocks=-1; // Kill this life.
 	  } else if (event.key.keysym.sym == SDLK_d){
@@ -130,10 +127,18 @@ int play_level(a_play* play){
 	  break;
 
 	case SDL_KEYUP:
+	  /* If the user releases the key in the same frame he presses
+	     it still move one step in the desired direction.  */
 	  if (event.key.keysym.sym == SDLK_RIGHT){
-	    userr=0;
+	    if(userr==1)
+	      userr=0;
+	    else
+	      userrr=1;
 	  } else if (event.key.keysym.sym == SDLK_LEFT){
-	    userl=0;
+	    if(userl==1)
+	      userl=0;
+	    else
+	      userlr=1;
 	  };
 	  break;
 
@@ -146,12 +151,39 @@ int play_level(a_play* play){
       };
     }
 
-    speed+=SDL_GetTicks()-round;
+    if(userr==2) userr=1;
+    if(userl==2) userl=1;
+
+    move_step(g, m, lvl, userr-userl);
+
+    if(userrr==1) userr=0;
+    if(userlr==1) userl=0;
+
+    if(q%2==0 && lvl->time>0)
+      lvl->time--;
+    update_scoreboard(play);
+
+    animate(g,a,0); // Move what is to move.
+
+    ticks=SDL_GetTicks()-round; 
+    speed+=ticks;
     round_d=SPEED-(SDL_GetTicks()-round);
-    if(round_d<0)
+    if(round_d<0){
       printf("CPU to slow by %d ticks/round\n",-round_d);
-    else
+    }else{
+#ifdef SCHEDULING_OK
       SDL_Delay(round_d);
+#else
+      round_d-=10;
+      if(round_d>0)
+	SDL_Delay(round_d);
+      ticks=0;
+      while(SDL_GetTicks()<SPEED+round){ticks++;};
+//      printf("Busy-loop: %d\n",ticks);
+#endif
+//      printf("De facto: %d ticks\n",SDL_GetTicks()-round);
+    }
+    DISPLAY;
 
     if(quit || lvl->blocks<=0){
       fprintf(stderr,"%f Ticks/frame\n",(float)speed/q);
@@ -161,5 +193,6 @@ int play_level(a_play* play){
 		  return(1);
       return(0);
     };
-  };
+
+  }; /* while(1) */
 };
