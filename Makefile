@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.30 2004/06/15 10:40:38 sec Exp $
+# $Id: Makefile,v 1.31 2004/06/16 23:26:10 sec Exp $
 #Config this:
 CFLAGS?=-O -pipe
 CFLAGS+=-g
@@ -69,23 +69,25 @@ clean:
 tags: brillion.c brillion.h graphics.c level.c physics.c play.c
 	-ctags *.[ch]
 
-install: $(PRG)
-	cp $(PRG) /usr/X11R6/bin
-	-mkdir /usr/X11R6/share/brillion
-	cp -r Original /usr/X11R6/share/brillion
-
-res.o: res.rc
+.ifdef WINDOWS
+res.o: res.rc brillion.ico
 	windres -i $< -o $@
 
 # Requires the nullsoft installer: http://sourceforge.net/projects/nsis/
 installer: $(PRG)
-.ifdef WINDOWS
+	strip brillion.exe
 	perl -p -e s/%VER%/`date +%Y-%m-%d`/ brillion.nsi>now.nsi
 	/cygdrive/c/Programme/NSIS/makensis now.nsi
 	rm -f now.nsi
+
+put:
+	ncftpput upload.sourceforge.net incoming Brillion-Setup-`date +%Y-%m-%d`.exe
 .else
-	@echo "Installer is only supported on Windows"
-	@false
+install: $(PRG)
+	strip $(PRG)
+	cp $(PRG) /usr/X11R6/bin
+	-mkdir /usr/X11R6/share/brillion
+	cp -r Original /usr/X11R6/share/brillion
 .endif
 
 .depend: brillion.c brillion.h graphics.c level.c physics.c play.c game.c
