@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.28 2003/03/17 23:20:28 sec Exp $
+ * $Id: play.c,v 1.29 2003/03/18 02:51:19 sec Exp $
  */
 #include "brillion.h"
 
@@ -37,6 +37,7 @@ void play_game(a_game* game){
 	// Display for Startup
 	SDL_BlitSurface(play->g->border, NULL, play->g->display, NULL);
 	paint_level();
+	render_font(100,440,play->f->desc);
 
 	if(play->level!=old_lvl) // Fade in...
 	    fade (play->g->display, 1000, 1);

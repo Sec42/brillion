@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.30 2003/03/17 19:37:24 sec Exp $
+ * $Id: graphics.c,v 1.31 2003/03/18 02:51:18 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -182,6 +182,7 @@ void load_graphics(void){
   g->level.w=(15)*QUAD; g->level.h=(11)*QUAD; // XXX^2
 
   g->font=IMG_Load("numbers.png");
+  g->tfont=init_font("font.png");
 
   //SDL_FillRect(g->display,NULL,g->colors[WHITE]);
 };
