@@ -23,10 +23,9 @@ CFLAGS+= -DDEVEL
 .endif
 
 # misses -pedantic (warns too much about system headers)
-# and -ansi (errors out on C++-style comments)
 .ifdef PEDANTIC
-CFLAGS+= -D_POSIX_C_SOURCE=2  -W -Wall -Wbad-function-cast -Wcast-align \
-	-Wcast-qual -Wchar-subscripts -Winline \
+CFLAGS+= -ansi -D_POSIX_SOURCE -D_POSIX_C_SOURCE=2 -W -Wall -Wcast-align \
+	-Wbad-function-cast -Wcast-qual -Wchar-subscripts -Winline \
 	-Wmissing-prototypes -Wnested-externs -Wpointer-arith \
 	-Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings
 .endif
