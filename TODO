@@ -1,0 +1,11 @@
++ Add better(complete) sound FX
++ Add mini-animation engine
+  (moving: ball, disk; stationary: stone_explosion, ball_explosion, death_anim)
++ Add music (ingame, title, credits) (cecile?)
++ Add better stone models (rotfl?)
++ Decide: color stones in-program or externally?
++ Add better bg graphic
++ Add layout description file & parser.
++ Add score
++ Add level switching
++ Add title screen, credits
