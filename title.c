@@ -1,15 +1,15 @@
 /* Display the title screen, and handle the main menu...
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: title.c,v 1.5 2003/12/05 00:58:03 sec Exp $
+ * $Id: title.c,v 1.6 2003/12/10 22:08:38 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
 
-#define MENU_ENTRIES 3
+#define MENU_ENTRIES 4
 
-char menus[][80] = { "PLAY", "LEVEL", "QUIT" };
-int  menux[]     = {100,100,100};
-int  menuy[]     = {360,400,440};
+char menus[][80] = { "PLAY", "LEVEL", "SCORES", "QUIT" };
+int  menux[]     = {100,100,100,100};
+int  menuy[]     = {320,360,400,440};
 
 void title_main(SDL_Surface *title){
     SDL_Event event;
@@ -39,17 +39,23 @@ char lvlnum[50];
 			    break;
 			case SDLK_RETURN:
 			case SDLK_SPACE:
-			    if(menu==3)exit(0);
+			    if(menu==MENU_ENTRIES)exit(0);
+			    if(menu==3){
+				display_scores();
+				SDL_BlitSurface(title,NULL,play->g->display,NULL);
+				SDL_Flip(g->display);
+				break; /* XXX: sane repaint */
+			    }
 			    if(menu==2){
 				SDL_Rect rr;
 				rr.x=220;rr.w=100;
-				rr.y=400;rr.h=50;
+				rr.y=360;rr.h=50;
 				lvl+=4;
 				if(lvl>21)lvl=1;
 				sprintf(lvlnum,"%2d",lvl);
 
 	    SDL_BlitSurface(title,&rr,play->g->display,&rr);
-				render_font(220,400,lvlnum);
+				render_font(220,360,lvlnum);
 				SDL_Flip(g->display);
 				break;
 			    };
