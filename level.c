@@ -1,6 +1,6 @@
 /* Parse the level setup file
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: level.c,v 1.8 2003/03/14 11:08:16 sec Exp $
+ * $Id: level.c,v 1.9 2003/03/21 01:03:19 sec Exp $
  */
 #include "brillion.h"
 
@@ -84,7 +84,7 @@ field * read_level(char * file){
 	lvl->w++;lvl->h++;
 	lvl->pieces=malloc((lvl->w+1)*(lvl->h+1)*sizeof(int));
 	lvl->colors=malloc((lvl->w+1)*(lvl->h+1)*sizeof(int));
-	for (x=0;x<=lvl->w;x++){ // Wall around gamefield.
+	for (x=0;x<=lvl->w;x++){ /* Wall around gamefield. */
 	  PIECE(x,0)=OUTER_WALL;
 	  PIECE(x,lvl->h)=OUTER_WALL;
 	  COLOR(x,0)=BLACK;
@@ -97,7 +97,7 @@ field * read_level(char * file){
 	  COLOR(lvl->w,y)=BLACK;
 	};
 
-	for (y=1;y<lvl->h;y++){ // For each line.
+	for (y=1;y<lvl->h;y++){ /* For each line. */
 	  fgets(word,50,level);
 	  for(x=1;x<lvl->w;x++){
 	    color=0;type=DEATH;
@@ -170,13 +170,13 @@ field * read_level(char * file){
   };
 
   if(!lvl->ppb){
-    lvl->ppb=1+2500.0/lvl->blocks; //XXX: Crude approx for original game
+    lvl->ppb=1+2500.0/lvl->blocks; /* XXX: Crude approx for original game */
     if(lvl->ppb>255)
       lvl->ppb=255;
   };
 
   return lvl;
-};
+}
 
 void free_level(field *lvl){
     if(lvl){
@@ -208,4 +208,4 @@ void dump_level(field * lvl){
     };
     putchar('\n');
   };
-};
+}

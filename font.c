@@ -1,11 +1,11 @@
 /* A very simple font blitter - uses SFont/BFont style proportional fonts.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: font.c,v 1.2 2003/03/18 03:35:10 sec Exp $
+ * $Id: font.c,v 1.3 2003/03/21 01:03:19 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
 
-a_font* init_font(char *file){
+a_font* init_font(const char *file){
     int x,y;
     SDL_PixelFormat pix;
     SDL_Surface *in,*tmp;
@@ -50,7 +50,7 @@ a_font* init_font(char *file){
     free(tmp);
 
     return(f);
-};
+}
 
 void render_font(int x, int y,char *txt){
     a_font *f=play->g->tfont;
@@ -74,5 +74,5 @@ void render_font(int x, int y,char *txt){
 	SDL_BlitSurface(f->font, &rs, play->g->display, &rd);
 	rd.x+=rs.w;
     };
-};
+}
 

@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.35 2003/03/19 15:39:17 sec Exp $
+ * $Id: graphics.c,v 1.36 2003/03/21 01:03:19 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -17,10 +17,11 @@ typedef struct {
     Uint8 a;
 } myc;
 
-// hue: color tone
-// sat -> 0 = white (other colors increase)
-// val -> 0 = black (primary color decreases)
-// relative brightness: Red: 88, Green: 127, Blue: 40 :: Sum should be == 255
+/* hue: color tone
+ * sat -> 0 = white (other colors increase)
+ * val -> 0 = black (primary color decreases)
+ * relative brightness: Red: 88, Green: 127, Blue: 40 :: Sum should be == 255
+ */
 
 #define BRED 88
 #define BGREEN 127
@@ -50,8 +51,6 @@ myc mk_color(int color, int br, int reality){
 	val=br*255/t;
     };
 
-//  if(reality&&(color==BLUE)){printf("%d -> col:%d, oth:%d\n",br,val,sat);};
-
     switch(color){
 	case RED:     c.r=val; c.g=sat; c.b=sat; c.a=0; break;
 	case CYAN:    c.r=sat; c.g=val; c.b=val; c.a=0; break;
@@ -63,7 +62,7 @@ myc mk_color(int color, int br, int reality){
     };
 
     return(c);
-};
+}
 
 /* Seems like an ugly hack, but I know no sane way */
 SDL_Surface* color_graphic(SDL_Surface* in, int color, int alpha){
@@ -110,7 +109,7 @@ SDL_Surface* color_graphic(SDL_Surface* in, int color, int alpha){
 	SDL_SetColorKey(out, SDL_SRCCOLORKEY, g->colors[BG]);
 
     return(out);
-};
+}
 
 void load_graphics(void){
     SDL_Surface* pad;
@@ -174,18 +173,16 @@ void load_graphics(void){
     assert(g->death!=NULL);
     SDL_FreeSurface(pad);
 
-    // XXX: do that somewhere else...
+    /* XXX: do that somewhere else... */
     g->border=IMG_Load("bkg.png");
     assert(g->border!=NULL);
-    g->level.x=20;g->level.y=(g->display->h - (QUAD*11))/2; // XXX read from somewhere...
-//  play->g->level.w=(play->f->w-1)*QUAD; play->g->level.h=(play->f->h-1)*QUAD;
-  g->level.w=(15)*QUAD; g->level.h=(11)*QUAD; // XXX^2
+    g->level.x=20;g->level.y=(g->display->h - (QUAD*11))/2; /* XXX read from somewhere... */
+/*  play->g->level.w=(play->f->w-1)*QUAD; play->g->level.h=(play->f->h-1)*QUAD; */
+  g->level.w=(15)*QUAD; g->level.h=(11)*QUAD; /* XXX^2 */
 
   g->font=IMG_Load("numbers.png");
   g->tfont=init_font("font.png");
-
-  //SDL_FillRect(g->display,NULL,g->colors[WHITE]);
-};
+}
 
 graphic* init_graphic(void){
     SDL_Surface* disp;
@@ -196,7 +193,7 @@ graphic* init_graphic(void){
 	exit(-1);
     };
 
-    // HWPALETTE, optional FULLSCREEN? check before ANYFORMAT?
+    /* HWPALETTE, optional FULLSCREEN? check before ANYFORMAT? */
     if(!(disp=SDL_SetVideoMode(MX, MY, 32, SDL_ANYFORMAT|SDL_HWPALETTE))){
 	printf("Could not set videomode: %s.\n", SDL_GetError());
 	exit(-1);
@@ -232,10 +229,10 @@ graphic* init_graphic(void){
 }
 
 /* -------------------------------------------------------------------- */
-// Where is a Block
+/* Where is a Block */
 #define POSX(z) (QUAD*(z-1)+g->level.x)
 #define POSY(z) (QUAD*(z-1)+g->level.y)
-// Where is the Ball
+/* Where is the Ball */
 #define POS2X(z) (QUAD/2*(z-2)+g->level.x)
 #define POS2Y(z) (QUAD/2*(z-2)+g->level.y)
 
@@ -247,7 +244,7 @@ void paint_level(void){
     for(y=1;y<lvl->h;y++)
 	for(x=1;x<lvl->w;x++)
 	    paint_block(x,y);
-};
+}
 
 void paint_ball(void){
     /* Paint new Ball */
@@ -262,7 +259,7 @@ void paint_ball(void){
     UPDATE(rect);
 
     return;
-};
+}
 
 void blank_block(int x, int y){
     SDL_Rect rect;
@@ -274,7 +271,7 @@ void blank_block(int x, int y){
 
     SDL_BlitSurface(g->back, NULL, g->display, &rect);
     UPDATE(rect);
-};
+}
 
 void paint_block(int x, int y){
     SDL_Rect rect;
@@ -308,7 +305,7 @@ void paint_block(int x, int y){
 	    fprintf(stderr,"Cannot draw %d at %d/%d\n",PIECE(x,y),x,y);
     };
     UPDATE(rect);
-};
+}
 
 void snapshot(void){
     static int q=0;
@@ -368,7 +365,7 @@ void print_number(int cacheno, int num, coord co){
 	};
 	dst.x+=dst.w;
     }
-};
+}
 
 void update_scoreboard(void){
     a_layout *l=play->layout;
@@ -378,22 +375,22 @@ void update_scoreboard(void){
     print_number(3, play->f->blocks,l->blocks);
     print_number(4, play->f->time,  l->time);
     print_number(5, play->lives,    l->lives);
-};
+}
 
 a_anim* init_anim(void){
     a_anim *a;
     a=calloc(MAX_ANIM,sizeof(a_anim));
     return a;
-};
+}
 
 void create_moveanim(anim_t type, int color, int ox, int oy, int nx, int ny){
     a_anim*  a=play->a;
     graphic* g=play->g;
     int v;
 
-    if(type!=A_BALL){ // Ball is always index 0.
+    if(type!=A_BALL){ /* Ball is always index 0. */
 	a++;
-	while(a->type != A_NONE) a++; // Search free anim space.
+	while(a->type != A_NONE) a++; /* Search free anim space. */
     };
 
 
@@ -432,15 +429,15 @@ void create_moveanim(anim_t type, int color, int ox, int oy, int nx, int ny){
 	    printf("Unknown type %d in create_moveanim\n",type);
 	    break;
     };
-};
+}
 
 void create_staticanim(anim_t type, int color, int x, int y){
     a_anim*  a=play->a;
     graphic* g=play->g;
 
-    a++; // Index 0 is always the ball move.
-    while(a->type != A_NONE) a++; // Search free anim space.
-    // XXX: Don't run over the end.
+    a++; /* Index 0 is always the ball move. */
+    while(a->type != A_NONE) a++; /* Search free anim space. */
+    /* XXX: Don't run over the end. */
 
     a->duration=0;
     a->color=color;
@@ -463,7 +460,7 @@ void create_staticanim(anim_t type, int color, int x, int y){
 	    printf("Unknown type %d in create_moveanim\n",type);
 	    break;
     };
-};
+}
 
 
 void animate(int step){
@@ -476,7 +473,7 @@ void animate(int step){
     for (aidx=0;aidx < MAX_ANIM; aidx++){
 	switch(a[aidx].type){
 	    case A_NONE:
-//	printf("No animation here\n");
+/*	printf("No animation here\n"); */
 		break;
 
 	    case A_BALL:
@@ -484,8 +481,9 @@ void animate(int step){
 		    for(y1=a[aidx].block[0].y;y1<=a[aidx].block[1].y;y1++)
 			blank_block(x1,y1);
 
-		// Ball displaying is last, so the ball can fly through another
-		// anim (only one relevant is A_EXPLODE for now)
+		/* Ball displaying is last, so the ball can fly through another
+		 * anim (only one relevant is A_EXPLODE for now)
+		 */
 		break;
 
 	    case A_DISK:
@@ -499,7 +497,7 @@ void animate(int step){
 			(step+AFRAMES*a[aidx].duration)/(2*AFRAMES));
 		SDL_BlitSurface(g->disk[a[aidx].color], NULL, g->display, &rect);
 
-		if(step == AFRAMES){ // Disk Animation is be 2 Frames long
+		if(step == AFRAMES){ /* Disk Animation is be 2 Frames long */
 		    if(++a[aidx].duration==2){
 			a[aidx].type=A_NONE;
 		    };
@@ -560,8 +558,8 @@ void animate(int step){
 	rect.y=a->pixel[0].y+(a->pixel[1].y*step/AFRAMES);
 	SDL_BlitSurface(g->ball[a->color], NULL, g->display, &rect);
 
-	if(step == AFRAMES){ // Ball Animation is one Frame long
+	if(step == AFRAMES){ /* Ball Animation is one Frame long */
 	    a->type=A_NONE;
 	};
     };
-};
+}

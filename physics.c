@@ -1,6 +1,6 @@
 /* Game physics/mechanics - i.e. How do things move inside the game
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: physics.c,v 1.13 2003/03/14 13:09:30 sec Exp $
+ * $Id: physics.c,v 1.14 2003/03/21 01:03:19 sec Exp $
  */
 #include "brillion.h"
 
@@ -14,8 +14,6 @@ void move_step(signed int input){
   ballx=lvl->x;bally=lvl->y;
 
   x=lvl->x/2; y=lvl->y/2; 
-
-//  paint_block(gp,lvl,x,y); /* Restore background */
 
   lvl->y+=lvl->dir; lvl->x+=input;
   xn=lvl->x/2; yn=lvl->y/2; 
@@ -51,8 +49,9 @@ void move_step(signed int input){
       };
     }else{ /* Tricky case: leaving square diagonally */
       if(PIECE(x,yn) && PIECE(xn,y)){
-	// XXX: What happens if both are STAR?
-	// XXX: This does only move one disk in the original.
+	/* XXX: What happens if both are STAR?
+	 * XXX: both disks: This does only move one disk in the original.
+	 */
 	move_touch(x,yn,0,lvl->dir);
 	move_touch(xn,y,input,0);
 	input=-input;
@@ -80,14 +79,14 @@ void move_step(signed int input){
     };
   };
 
-  if(play->status == S_DIE){ // Don't move if you die
+  if(play->status == S_DIE){ /* Don't move if you die */
     lvl->x=ballx;
     lvl->y=bally;
   }else{
     create_moveanim(A_BALL,lvl->color,ballx,bally,lvl->x,lvl->y);
   };
   return;
-};
+}
 
 int move_touch(int x, int y,signed int dx,signed int dy){
   int bounce=1;
@@ -104,16 +103,13 @@ int move_touch(int x, int y,signed int dx,signed int dy){
     case DEATH:
       play_touch(DEATH);
       printf("You die, how embarrassing!\n");
-      play->status=S_DIE; // XXX: layering
+      play->status=S_DIE; /* XXX: layering */
       break;
     case BLOCK:
       if(lvl->color==COLOR(x,y)){
 	play_touch(BLOCK);
 	PIECE(x,y)=SPACE;
-//	paint_block(gp,lvl,x,y);
-
 	create_staticanim(A_EXPLODE,COLOR(x,y),x,y);
-
 	if(--lvl->blocks ==0)
 	  play->status=S_FINISH;
 
@@ -127,10 +123,7 @@ int move_touch(int x, int y,signed int dx,signed int dy){
 	  PIECE(x+dx,y+dy)=PIECE(x,y);
 	  COLOR(x+dx,y+dy)=COLOR(x,y);
 	  PIECE(x,y)=SPACE;
-
 	  create_moveanim(A_DISK, COLOR(x,y), x, y, x+dx, y+dy);
-//	  paint_block(gp,lvl,x+dx,y+dy);
-//	  paint_block(gp,lvl,x,y);
 	}
       };
       break;
@@ -142,4 +135,4 @@ int move_touch(int x, int y,signed int dx,signed int dy){
       printf("Whoops?\n");
   };
   return bounce;
-};
+}

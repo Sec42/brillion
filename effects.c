@@ -1,6 +1,6 @@
 /* timed graphic effects
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: effects.c,v 1.6 2003/03/16 02:39:39 sec Exp $
+ * $Id: effects.c,v 1.7 2003/03/21 01:03:19 sec Exp $
  */
 #include "brillion.h"
 
@@ -125,7 +125,7 @@ void fade_p (SDL_Surface* s, Uint32 ticks, int fadein){
 	SDL_Flip(s);
     };
 
-//    SDL_SetPalette(s,SDL_PHYSPAL,g->palette, 0,g->ncolors);
+/*    SDL_SetPalette(s,SDL_PHYSPAL,g->palette, 0,g->ncolors); */
     free(colors);
 }
 

@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.29 2003/03/18 02:51:19 sec Exp $
+ * $Id: play.c,v 1.30 2003/03/21 01:03:19 sec Exp $
  */
 #include "brillion.h"
 
@@ -13,11 +13,11 @@
 int play_level(void);
 
 void play_game(a_game* game){
-    int	    old_lvl=999; // Just != cur_lvl
+    int	    old_lvl=999; /* Just != cur_lvl */
 
     play=calloc(1,sizeof(a_play));
 
-    // Graphic, Music&Sound static per game for now
+    /* Graphic, Music&Sound static per game for now */
     play->g=init_graphic();
     play->layout=game->layout;
     play->m=init_music();
@@ -26,7 +26,7 @@ void play_game(a_game* game){
     play->points=0;
 
     play->lives=game->lives;
-    play->level=0; //XXX
+    play->level=0; /* XXX */
 
     do{
 	play->f=read_level(game->levels[play->level]->name);
@@ -34,12 +34,12 @@ void play_game(a_game* game){
 	    die("Whoops, kein level?");
 	};
 
-	// Display for Startup
+	/* Display for Startup */
 	SDL_BlitSurface(play->g->border, NULL, play->g->display, NULL);
 	paint_level();
 	render_font(100,440,play->f->desc);
 
-	if(play->level!=old_lvl) // Fade in...
+	if(play->level!=old_lvl) /* Fade in... */
 	    fade (play->g->display, 1000, 1);
 	else
 	    split(play->g->display,&play->g->level,300,HORIZ_IN);
@@ -47,7 +47,7 @@ void play_game(a_game* game){
 	old_lvl=play->level;
 	SDL_Flip(play->g->display);
 
-	// Clear Animation list
+	/* Clear Animation list */
 	bzero(play->a,sizeof(play->a));
 
 	play->status=S_PLAY;
@@ -61,7 +61,7 @@ void play_game(a_game* game){
 	    case S_FINISH:
 		play->points+=10*(play->f->time+1);
 		play->level++;
-		fade (play->g->display, 1000, 0); // Fade out...
+		fade (play->g->display, 1000, 0); /* Fade out... */
 		break;
 	    case S_QUIT: /* Aborted */
 		play->lives=0;
@@ -80,10 +80,10 @@ void play_game(a_game* game){
 
     printf("You accumulated %d points\n",play->points);
 
-    // XXX: uninit_graphic/_music ?
+    /* XXX: uninit_graphic/_music ? */
     free(play);
     SDL_Quit();
-};
+}
 
 int play_level(void){
     SDL_Event event;
@@ -116,18 +116,18 @@ int play_level(void){
 	    switch( event.type ){
 		case SDL_KEYDOWN:
 		    if( event.key.keysym.sym == SDLK_q){
-			play->status=S_QUIT;		// Abort game
+			play->status=S_QUIT;		/* Abort game */
 		    } else if (event.key.keysym.sym == SDLK_RIGHT){
 			userr=2;userrr=0;
 		    } else if (event.key.keysym.sym == SDLK_LEFT){
 			userl=2;userlr=0;
 		    } else if (event.key.keysym.sym == SDLK_ESCAPE){
-			play->status=S_DIE;		// Kill this life.
+			play->status=S_DIE;		/* Kill this life. */
 		    } else if (event.key.keysym.sym == SDLK_d){
 			dump_level(lvl);
 #ifdef DEVEL
 		    } else if (event.key.keysym.sym == SDLK_s){
-			play->status=S_FINISH;		// XXX: Cheat ;-)
+			play->status=S_FINISH;		/* XXX: Cheat ;-) */
 		    } else if (event.key.keysym.sym == SDLK_p){
 			snapshot();
 		    } else if (event.key.keysym.sym == SDLK_BACKSPACE){
@@ -184,8 +184,8 @@ int play_level(void){
 		continue;
 	    };
 
-	    animate(z); // Move what is to move.
-//	    printf("%d rects\n",g->numrects);
+	    animate(z); /* Move what is to move. */
+/*	    printf("%d rects\n",g->numrects); */
 	    DISPLAY;
 
 	    if(z < AFRAMES){
@@ -193,17 +193,15 @@ int play_level(void){
 		t_gone=t_now-t_start;
 		t_left=t_end-t_now;
 
-//		printf("anim_sleep: %d\n",t_left);
+/*		printf("anim_sleep: %d\n",t_left); */
 		q=0;
 		if(t_left>0){
 		    ticks-=t_left;
 		    DELAY(t_left,t_end);
 		};
-//printf("sleep: wanted:%d actually:%d bsy=%d\n",a_left,SDL_GetTicks()-a_now,q);
+/*printf("sleep: wanted:%d actually:%d bsy=%d\n",a_left,SDL_GetTicks()-a_now,q); */
 	    };
 	};
-
-//printf("Speed: ran for %d ticks at %d/anim\n",t_gone,SPEED/AFRAMES);
 
 	t_end=t_start+SPEED;
 	t_now=SDL_GetTicks();
@@ -217,7 +215,7 @@ int play_level(void){
 	    printf("CPU to slow by %d ticks/round\n",-t_left);
 	};
 
-	if(play->status!=S_PLAY){ // Basically, time to exit.
+	if(play->status!=S_PLAY){ /* Basically, time to exit. */
 
 	    if(play->status == S_DIE && !dead){
 		create_staticanim(A_DIE,lvl->color,lvl->x,lvl->y);
@@ -236,4 +234,4 @@ int play_level(void){
 	    };
 	};
     }; /* while(1) */
-};
+}

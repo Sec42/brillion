@@ -1,6 +1,6 @@
 /* main(). Paramter parsing and other setup.Written by Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: brillion.c,v 1.9 2003/03/17 23:20:27 sec Exp $
+ * $Id: brillion.c,v 1.10 2003/03/21 01:03:19 sec Exp $
  */
 
 #define EXTERN /* Global variable(s) here... */
@@ -8,7 +8,6 @@
 
 int main(int argc,char **argv){
     char c;
-//    struct stat sb;
 
     /* die loudly if malloc runs out of ram */
 #ifndef _POSIX_SOURCE
@@ -23,7 +22,7 @@ int main(int argc,char **argv){
 #endif
 
     /* init section */
-    b=calloc(1,sizeof(the_status)); 	// This is global
+    b=calloc(1,sizeof(the_status)); 	/* This is global */
 
     b->prog=argv[0];
     if(!b->prog)b->prog="brillion";
@@ -32,8 +31,8 @@ int main(int argc,char **argv){
 	b->prog++;
     }
 
-    // XXX more sane checks please :)
-    //if(stat("/usr/X11R6/share/brillion",&sb))
+    /* XXX more sane checks please :)
+    if(stat("/usr/X11R6/share/brillion",&sb)) */
     chdir("/usr/X11R6/share/brillion");
 
     b->verbose=0;
@@ -51,7 +50,7 @@ int main(int argc,char **argv){
 		    die("Broken -g switch");
 		break;
 #ifdef DEVEL
-	    case 'l': // Ugly^99
+	    case 'l': /* Ugly^99 */
 		b->game=read_game("Original");
 		b->game->maxlevel=1;
 		b->game->levels[0]->name=optarg;
@@ -70,16 +69,16 @@ int main(int argc,char **argv){
     if(!b->game)
 	die("no game");
 
-//  argc -= optind; argv += optind; /* we want more args */
-//
-//  /* Check for argument errors */
-//  if ( argc ){
-//	fprintf(stderr,"%s: Error: too many parameters\n",prog);
-//	exit(-1);
-//  }
+/*  argc -= optind; argv += optind; // we want more args
+
+    // Check for argument errors
+    if ( argc ){
+	fprintf(stderr,"%s: Error: too many parameters\n",prog);
+	exit(-1);
+    } */
 
     play_game(b->game);
 
     fprintf(stderr,"%s: finished\n",b->prog);
-    exit(0); // Juhuu!
+    exit(0); /* Juhuu! */
 }

@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.26 2003/03/18 02:50:35 sec Exp $
+ * $Id: brillion.h,v 1.27 2003/03/21 01:03:19 sec Exp $
  */
 
 #include <stdio.h>
@@ -116,7 +116,7 @@ typedef struct {
 	Uint32	colors[MAX_COLORS];
 
 	/* For background */
-	//int	    xoff, yoff; /* Offset of the level area in main window */
+	/*int	    xoff, yoff;*//* Offset of the level area in main window */
 	SDL_Rect    level; /* Level Area */
 	SDL_Surface *border;
 
@@ -149,8 +149,8 @@ typedef struct {
 	g->numrects=0; \
 }while(0)
 
-// For development:
-//#define DISPLAY do{SDL_Flip(g->display);g->numrects=0;}while(0)
+/* For development: */
+/*#define DISPLAY do{SDL_Flip(g->display);g->numrects=0;}while(0) */
 
 
 typedef struct {
@@ -164,6 +164,7 @@ typedef struct {
 	Mix_Chunk   *block;
 	Mix_Chunk    *star;
 #else
+	int	    nothing;	/* To silence compiler warning */
 #endif
 } music;
 
@@ -176,10 +177,10 @@ typedef struct {
 	coord	    level;
 	coord	    lname;
 	coord	    field;
-	//coord   fieldsz;	// Just assume it matches :)
+	/*coord   fieldsz;	// Just assume it matches :) */
 } a_layout;
 
-typedef struct { // block, sound, music currently fixed per game.
+typedef struct { /* block, sound, music currently fixed per game. */
 	char	    *name;	/* Filename of the level file */
 } a_level;
 
@@ -225,12 +226,12 @@ typedef struct {
 } a_game;
 
 typedef struct {
-	int	    verbose;	// Debugging level
-	const char  *prog;	// Binary name
-	char	    *dir;	// Data directory
+	int	    verbose;	/* Debugging level */
+	const char  *prog;	/* Binary name */
+	char	    *dir;	/* Data directory */
 
-	// We can argue if they should be here...
-	a_game	    *game;	// (constant) things from selected game
+	/* We can argue if they should be here... */
+	a_game	    *game;	/* (constant) things from selected game */
 } the_status;
 
 #ifndef EXTERN
@@ -238,7 +239,7 @@ typedef struct {
 #endif
 
 /* a (small) global */
-EXTERN the_status   *b;  // The game
+EXTERN the_status   *b;  /* The game */
 EXTERN a_play	    *play; /* we are currently playing this */
 
 
@@ -310,5 +311,5 @@ signed int handle_save(signed int dir);
 void print_save(a_save *s);
 
 /* font.c */
-a_font* init_font(char *file);
+a_font* init_font(const char *file);
 void render_font(int x, int y,char *txt);

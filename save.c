@@ -1,12 +1,12 @@
 /* Save and load user actions
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: save.c,v 1.3 2003/03/14 11:08:16 sec Exp $
+ * $Id: save.c,v 1.4 2003/03/21 01:03:19 sec Exp $
  */
 #include "brillion.h"
 
 a_save* init_save(){
     a_save*s;
-    char *g=".........>>>>>>>>>>>>>>>>>>>>>>>>>>>..........................<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<..>>>>>>>>>>>>>>>>>>>>>>>>>...<<<........................<<<<<<....>>>..................<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<.>>>>>>>>>>>>>>>>>>>>>>>>>>>...>>>>>>......................<............<<<<<<<<<<<<<<<<<<<<<<<<<<<<.."; // Example for o-02.lvl
+    const char *g=".........>>>>>>>>>>>>>>>>>>>>>>>>>>>..........................<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<..>>>>>>>>>>>>>>>>>>>>>>>>>...<<<........................<<<<<<....>>>..................<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<.>>>>>>>>>>>>>>>>>>>>>>>>>>>...>>>>>>......................<............<<<<<<<<<<<<<<<<<<<<<<<<<<<<.."; /* Example for o-02.lvl */
     int a;
 
     s=calloc(1,sizeof(a_save));
@@ -25,7 +25,7 @@ a_save* init_save(){
     s->pos=0;
 
     return(s);
-};
+}
 
 signed int handle_save(signed int dir){
     a_save *s=play->s;
@@ -37,7 +37,7 @@ signed int handle_save(signed int dir){
 	if(s->pos < s->len){
 	    s->game[s->pos++]=dir+1;
 	}else{
-	    // Whoops, overflow %)
+	    /* Whoops, overflow %) */
 	};
 	return(dir);
     };
@@ -53,7 +53,7 @@ signed int handle_save(signed int dir){
 
     printf("Save type %d not supported\n",s->what);
     exit(-1);
-};
+}
 
 void print_save(a_save *s){
     int a;
@@ -66,5 +66,5 @@ void print_save(a_save *s){
 	    putchar('\n');
     };
     putchar('\n');
-    s->pos=0; //XXX
-};
+    s->pos=0; /* XXX */
+}
