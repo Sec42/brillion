@@ -17,8 +17,17 @@ void move_step(graphic* gp,music* m,field* lvl, signed int input){
   lvl->y+=lvl->dir; lvl->x+=input;
   xn=lvl->x/2; yn=lvl->y/2; 
 
-  /* Are we inside something? Can happen at start of level */
-  if(PIECE(x,y))
+  /* NOTE: In the original level 4 the following happens:
+   * Frame 1: Ball inside disk (24,20), heading downward
+   * Frame 2: Ball displaced into block, block is exploding
+   * Frame 3: Ball bounced back into disk,
+   * Frame 4: Ball bounces back into (now) free sqaure.
+   *
+   * Because this behaviour is hard to implement, and i doesn't matter for
+   * gameplay, I moved the starting point of the ball into the block, and
+   * 'hit' the block without moving simultaneously with the first frame.
+   */
+  if(PIECE(x,y)) /* Are we inside something? Can happen at start of level */
 	move_touch(gp,m,lvl,x,y,0,0);
 
   /* Where are we moving into? */
@@ -91,7 +100,7 @@ int move_touch(graphic* gp, music* m, field* lvl, int x, int y,signed int dx,sig
     case DEATH:
       play_touch(m, DEATH);
       printf("You die, how embarrassing!\n");
-      lvl->blocks=-1; // XXX
+      lvl->blocks=-1; // XXX: layering
       break;
     case BLOCK:
       if(lvl->color==COLOR(x,y)){

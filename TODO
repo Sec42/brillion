@@ -1,13 +1,13 @@
 + Add better(complete) sound FX
 . Add mini-animation engine
   (moving: ball, disk; stationary: stone_explosion, ball_explosion, "twinkle")
-  [all done except stone_explosion. "twinkle" is too expensive for now]
+  [all done. "twinkle" is too expensive for now]
 + Add music (ingame, title, credits) (cecile?)
 + Add better stone models (rotfl?)
   + Round ball: use either png:transparent or
     color keying instead of current method.
 + Add better bg graphic
-+ Add layout description file & parser.
+. Add layout description file & parser.
   (should now be in 'Settings' file)
 + Add title screen, credits
 + Add game rules description (perhaps in-game?)
@@ -46,3 +46,5 @@ diff: original game contains different 'Wall' blocks. No difference in
 ? steal some graphic effects from heroes?
 ? should the ball deform itself on impact?
   (original does that on top and bottom)
+
+? found out when extra lives are granted
