@@ -23,7 +23,7 @@ SDL_Surface* color_graphic(graphic* g, SDL_Surface* in, int color, int alpha){
       for(p4=out->pixels;p4<(Uint32*)out->pixels+(out->w*out->h);p4++){
 	if(*p4 == g->colors[BLUE])
 	  *p4=g->colors[color];
-	if(alpha)
+	if(alpha==1)
 	  if(*p4 == g->colors[WHITE])
 	    *p4=g->colors[NONE];
       };
@@ -32,7 +32,7 @@ SDL_Surface* color_graphic(graphic* g, SDL_Surface* in, int color, int alpha){
       for(p2=out->pixels;p2<(Uint16*)out->pixels+(out->w*out->h);p2++){
 	if(*p2 == g->colors[BLUE])
 	  *p2=g->colors[color];
-	if(alpha)
+	if(alpha==1)
 	  if(*p2 == g->colors[WHITE])
 	    *p2=g->colors[NONE];
       };
@@ -41,7 +41,7 @@ SDL_Surface* color_graphic(graphic* g, SDL_Surface* in, int color, int alpha){
       for(p1=out->pixels;p1<(Uint8*)out->pixels+(out->w*out->h);p1++){
 	if(*p1 == g->colors[BLUE])
 	  *p1=g->colors[color];
-	if(alpha)
+	if(alpha==1)
 	  if(*p1 == g->colors[WHITE])
 	    *p1=g->colors[NONE];
       };
@@ -52,6 +52,8 @@ SDL_Surface* color_graphic(graphic* g, SDL_Surface* in, int color, int alpha){
 
       exit(-1);
   };
+  if(alpha==2)
+    SDL_SetColorKey(out, SDL_SRCCOLORKEY, g->colors[BG]);
 
   return(out);
 };
@@ -67,17 +69,19 @@ void load_graphics(graphic * gp){
   gp->colors[BLUE]=    SDL_MapRGB(gp->display->format, 0x00, 0x00, 0xff);
   gp->colors[YELLOW]=  SDL_MapRGB(gp->display->format, 0xff, 0xff, 0x00);
   gp->colors[WHITE]=   SDL_MapRGB(gp->display->format, 0xff, 0xff, 0xff);
+  gp->colors[BG]=      SDL_MapRGB(gp->display->format, 0xff, 0x7f, 0x00);
+  gp->colors[FG]=      SDL_MapRGB(gp->display->format, 0xff, 0x7f, 0x7f);
   gp->colors[NONE]=    SDL_MapRGBA(gp->display->format,0,0,0,0);
 
   /* Load blocks, and create all colors */
   pad=IMG_Load("ball_blue.gif");
   for(x=1;x<GAME_COLORS;x++)
-    gp->ball[x]=color_graphic(gp,pad,x,1);
+    gp->ball[x]=color_graphic(gp,pad,x,2);
   SDL_FreeSurface(pad);
 
   pad=IMG_Load("ballX.gif");
   for(x=1;x<GAME_COLORS;x++)
-    gp->ballx[x]=color_graphic(gp,pad,x,1);
+    gp->ballx[x]=color_graphic(gp,pad,x,2);
   SDL_FreeSurface(pad);
 
   pad=IMG_Load("block_blue.gif");
@@ -87,7 +91,7 @@ void load_graphics(graphic * gp){
 
   pad=IMG_Load("blockX.gif");
   for(x=1;x<GAME_COLORS;x++)
-    gp->blockx[x]=color_graphic(gp,pad,x,1);
+    gp->blockx[x]=color_graphic(gp,pad,x,2);
   SDL_FreeSurface(pad);
 
   pad=IMG_Load("star_blue.gif");

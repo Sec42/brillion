@@ -1,6 +1,6 @@
 /* crillion.h, Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=8:
- * $Id: brillion.h,v 1.19 2003/03/04 00:17:00 sec Exp $
+ * $Id: brillion.h,v 1.20 2003/03/09 22:32:32 sec Exp $
  */
 
 #include <stdio.h>
@@ -25,7 +25,6 @@
 
 #define die(x) do{fprintf(stderr,"DIEd: \"%s\" in %s line %d\n",x,__FILE__,__LINE__);exit(-1);}while(0)
 
-#define GAME_COLORS    7
 
 #define BLACK          0
 #define RED            1
@@ -34,9 +33,13 @@
 #define GREEN          4
 #define BLUE           5
 #define YELLOW         6
+#define GAME_COLORS    7
+
 #define WHITE          7
-#define NONE           8
-#define MAX_COLORS     9
+#define BG             8
+#define FG             9
+#define NONE          10
+#define MAX_COLORS    11
 
 
 #define SPACE	0
@@ -156,6 +159,19 @@ typedef struct {
 	// block, sound, music currently fixed per game.
 } a_level;
 
+enum rec_type {
+	R_NONE,
+	R_PLAY,
+	R_RECORD
+};
+
+typedef struct {
+	enum rec_type what;
+	char*	 game;
+	int	 len;
+	int	 pos;
+} a_save;
+
 typedef struct {
 	graphic* g;
 	music*   m;
@@ -164,6 +180,7 @@ typedef struct {
 	int      anims;
 	int	 lives;
 	int	 points;
+	a_save*  s;
 } a_play;
 
 typedef struct {
@@ -247,3 +264,9 @@ typedef enum {
 
 void fade (SDL_Surface* s, Uint32 ticks, int fadein);
 void split (SDL_Surface* s, SDL_Rect* r_in, Uint32 ticks, split_t type);
+
+/* save.c */
+
+a_save* init_save();
+signed int handle_save(a_save* s,signed int dir);
+void print_save(a_save *s);
