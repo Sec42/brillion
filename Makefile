@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.24 2003/03/26 01:38:46 sec Exp $
+# $Id: Makefile,v 1.25 2003/03/26 18:18:21 sec Exp $
 #Config this:
 CFLAGS?=-O -pipe
 CFLAGS+=-g
@@ -17,10 +17,6 @@ OBJ=brillion.o graphics.o level.o physics.o play.o game.o effects.o \
 
 .ifdef OPTIMIZE
 CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe -DNDEBUG
-.endif
-
-.ifdef DEVEL
-CFLAGS+= -DDEVEL
 .endif
 
 # misses -pedantic (warns too much about system headers)
