@@ -1,6 +1,6 @@
 /* Display the title screen, and handle the main menu...
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: title.c,v 1.3 2003/03/26 17:35:28 sec Exp $
+ * $Id: title.c,v 1.4 2003/03/26 17:45:59 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -61,9 +61,10 @@ void title_main(SDL_Surface *title){
 
 	if(omenu!=menu){
 	    SDL_BlitSurface(title,&r,play->g->display,&r);
+	    UPDATE(r);
 	    r.x=menux[menu-1]-20;r.y=menuy[menu-1]+6;
 	    SDL_BlitSurface(play->g->ball[BLUE],NULL,play->g->display,&r);
-	    SDL_Flip(play->g->display);
+	    UPDATE(r);
 	    omenu=menu;
 	}else{
 	    SDL_Delay(100);
@@ -90,10 +91,8 @@ void title_main(SDL_Surface *title){
 	    };
 	    SDL_BlitSurface(play->g->ball[BLUE],NULL,play->g->display,&r);
 	    UPDATE(r);
-	    DISPLAY;
-
-
 	};
+	DISPLAY;
 
     }; /* while(1) */
 }
