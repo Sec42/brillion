@@ -1,6 +1,6 @@
 /* Written by Sec <sec@42.org>
  * vim:set cin sm ts=4 sw=4:
- * $Id: brillion.c,v 1.3 2003/02/25 14:26:03 sec Exp $
+ * $Id: brillion.c,v 1.4 2003/02/25 16:53:04 sec Exp $
  */
 
 #define EXTERN /**/
@@ -12,10 +12,14 @@ int main(int argc,char **argv){
 	char c;
 	struct stat sb;
 
-#ifdef __FreeBSD__
 	/* die loudly if malloc runs out of ram */
+#ifdef __FreeBSD__
+#if __FreeBSD__ > 4
+	_malloc_options = "X";
+#else
 	extern char *malloc_options;
 	malloc_options = "X";
+#endif
 #endif
 
 	/* init section */
