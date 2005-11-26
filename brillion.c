@@ -1,6 +1,6 @@
 /* main(). Paramter parsing and other setup.Written by Sec <sec@42.org>
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: brillion.c,v 1.14 2004/06/29 08:42:52 sec Exp $
+ * $Id: brillion.c,v 1.15 2005/11/26 18:23:57 sec Exp $
  */
 
 #define EXTERN /* Global variable(s) here... */
@@ -25,8 +25,9 @@ int main(int argc,char **argv){
 
     /* init section */
     b=calloc(1,sizeof(the_status)); 	/* This is global */
+    assert(b!=NULL);
 
-    b->prog=argv[0];
+    b->prog=(char *)argv[0];
     if(!b->prog)b->prog="brillion";
     if(strrchr(b->prog,'/')){
 	b->prog=strrchr(argv[0],'/');
@@ -35,7 +36,7 @@ int main(int argc,char **argv){
 
     /* XXX more sane checks please :)
     if(stat("/usr/X11R6/share/brillion",&sb)) */
-    chdir("/usr/X11R6/share/brillion");
+    (void) chdir("/usr/X11R6/share/brillion");
 
     b->verbose=0;
 
@@ -76,7 +77,7 @@ int main(int argc,char **argv){
     // Check for argument errors
     if ( argc ){
 	fprintf(stderr,"%s: Error: too many parameters\n",prog);
-	exit(-1);
+	exit(EXIT_FAILURE);
     } */
 
     run_game(b->game);

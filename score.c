@@ -1,6 +1,6 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.18 2004/08/07 23:33:03 sec Exp $
+ * $Id: score.c,v 1.19 2005/11/26 18:23:57 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -224,7 +224,7 @@ void display_scores(void){
 
 	render_num(350,r.y,w-2,scores->scores[x+start].score,font);
 /*	render_text(250,50+x*font->lineh,"4h30m",font,0); */
-	if(difftime(time(NULL),scores->scores[x+start].when)>60*60*12){
+	if(abs(difftime(time(NULL),scores->scores[x+start].when))>60*60*12){
 	    strftime(buf,49,"%d.%m.",localtime(&scores->scores[x+start].when));
 	}else{
 	    strftime(buf,49,"(%H:%M)",localtime(&scores->scores[x+start].when));

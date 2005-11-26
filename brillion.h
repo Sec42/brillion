@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.44 2004/08/11 08:51:23 sec Exp $
+ * $Id: brillion.h,v 1.45 2005/11/26 18:23:57 sec Exp $
  */
 
 #include <stdio.h>
@@ -24,7 +24,7 @@
 #include <dmalloc.h>
 #endif
 
-#define die(x) do{fprintf(stderr,"DIEd: \"%s\" in %s line %d\n",x,__FILE__,__LINE__);exit(-1);}while(0)
+#define die(x) do{fprintf(stderr,"DIEd: \"%s\" in %s line %d\n",x,__FILE__,__LINE__);exit(EXIT_FAILURE);}while(0)
 
 /* Colors */
 #define BLACK	     0
