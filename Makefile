@@ -1,7 +1,12 @@
-# $Id: Makefile,v 1.33 2004/06/21 12:26:14 sec Exp $
+# $Id: Makefile,v 1.34 2005/11/26 18:21:48 sec Exp $
 #Config this:
 CFLAGS?=-O -pipe
 CFLAGS+=-g
+
+# And perhaps this
+PREFIX?=/usr/X11R6
+BINDIR?=${PREFIX}/bin
+DATADIR?=${PREFIX}/share/brillion
 
 .if exists(.config)
 .include ".config"
@@ -29,6 +34,7 @@ CFLAGS+= -ansi -W -Wall -Wcast-align \
 	-Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings
 .endif
 
+CFLAGS+= -DBDATADIR=${DATADIR}
 CFLAGS+=-Wall `${SDL_CONFIG} --cflags`
 LDFLAGS+=`${SDL_CONFIG} --libs` -lSDL_image
 
@@ -85,9 +91,9 @@ put:
 .else
 install: $(PRG)
 	strip $(PRG)
-	cp $(PRG) /usr/X11R6/bin
-	-mkdir /usr/X11R6/share/brillion
-	cp -r Original /usr/X11R6/share/brillion
+	cp $(PRG) ${BINDIR}
+	-mkdir ${DATADIR}
+	cp -r Original ${DATADIR}
 .endif
 
 .depend: brillion.c brillion.h graphics.c level.c physics.c play.c game.c
