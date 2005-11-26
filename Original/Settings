@@ -1,11 +1,11 @@
 Brillion 42
 # Layout
 lives 4
-cpts    620 130
-ctime   620 170
-cblocks 620 210
-clives  620 250
-clevel  620 290
+cpts    620  91
+ctime   620 156
+cblocks 620 221
+clives  620 286
+clevel  620 351
 # Level list
 level o-01.lvl
 level o-02.lvl

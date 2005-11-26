@@ -1,6 +1,6 @@
 /* Display the game background & field. Do animations, too.
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: graphics.c,v 1.40 2004/06/21 12:29:57 sec Exp $
+ * $Id: graphics.c,v 1.41 2005/11/26 18:43:53 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -359,13 +359,12 @@ void print_number(int cacheno, int num, coord co){
     assert((cacheno+1)*8<100);
     for(d=(c=number_cache)+(cacheno*8);*c!=0;c++,d++){
 	if(*c != *d){
+	    SDL_BlitSurface(g->border, &dst, g->display, &dst);
 	    *d=*c;
 	    if(*c!=' '){
 		int xoff=*c-'0';
 		r.x=wid*xoff+fudge;
 		SDL_BlitSurface(g->font, &r, g->display, &dst);
-	    }else{
-		SDL_FillRect(g->display, &dst, g->colors[BLACK]);
 	    };
 	    UPDATE(dst);
 	};
