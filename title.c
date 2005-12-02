@@ -1,6 +1,6 @@
 /* Display the title screen, and handle the main menu...
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: title.c,v 1.12 2004/08/11 08:51:57 sec Exp $
+ * $Id: title.c,v 1.13 2005/12/02 00:53:42 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -33,7 +33,7 @@ SDL_Surface * create_title(menuentry * entries){
     bkg=SDL_ConvertSurface(title, s->format, SDL_SWSURFACE);
     SDL_FreeSurface(title);
 
-    xk=100;yk=280; /* XXX: Main_menu only */
+    xk=100;yk=260; /* XXX: Main_menu only */
     for(x=0;entries[x].name;x++){
 	render_font_to(xk,yk,entries[x].name,bkg);
 	yk+=MENU_LINE;
@@ -58,7 +58,7 @@ void cb_sound(SDL_Surface *title,int dwim){
 		};
     }
 
-    sndr.x=240;sndr.w=100; sndr.y=320;sndr.h=40; /* XXX: Why there? */
+    sndr.x=240;sndr.w=100; sndr.y=300;sndr.h=40; /* XXX: Why there? */
     SDL_BlitSurface(title,&sndr,play->g->display,&sndr);
 #ifdef SOUND
 	if(play->m){
@@ -82,7 +82,7 @@ void cb_lvl(SDL_Surface *title,int dwim){
 	if(play->level>20)play->level=0;
     }
 
-    lvlr.x=240;lvlr.w=100; lvlr.y=360;lvlr.h=50; /* XXX: Why there? */
+    lvlr.x=240;lvlr.w=100; lvlr.y=340;lvlr.h=50; /* XXX: Why there? */
     sprintf(lvlnum,"%2d",play->level+1);
 
     SDL_BlitSurface(title,&lvlr,play->g->display,&lvlr);
@@ -150,8 +150,8 @@ signed int menu(menuentry *entries){
 	if(omenu!=menu){
 	    SDL_BlitSurface(title,&r,play->g->display,&r);
 	    UPDATE(r);
-	    r.x=100-20;r.y=280+MENU_LINE*menu+6; // XXX!
-	    SDL_BlitSurface(play->g->ball[BLUE],NULL,play->g->display,&r);
+	    r.x=100-30;r.y=260+MENU_LINE*menu+6; // XXX!
+	    SDL_BlitSurface(play->g->ball[RED],NULL,play->g->display,&r);
 	    UPDATE(r);
 	    omenu=menu;
 	};
@@ -161,7 +161,7 @@ signed int menu(menuentry *entries){
 	    SDL_Delay(100);
 	    SDL_BlitSurface(title,&r,play->g->display,&r);
 	    UPDATE(r);
-	    r.x=100-20;r.y=280+MENU_LINE*menu+6; // XXX!
+	    r.x=100-30;r.y=260+MENU_LINE*menu+6; // XXX!
 	    switch(rand()&7){
 		case 0:
 		    r.x++;r.y++;break;
@@ -180,7 +180,7 @@ signed int menu(menuentry *entries){
 		case 7:
 		    r.x--;r.y--;break;
 	    };
-	    SDL_BlitSurface(play->g->ball[BLUE],NULL,play->g->display,&r);
+	    SDL_BlitSurface(play->g->ball[RED],NULL,play->g->display,&r);
 	    UPDATE(r);
 	};
 	DISPLAY;

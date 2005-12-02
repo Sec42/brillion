@@ -1,6 +1,6 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.19 2005/11/26 18:23:57 sec Exp $
+ * $Id: score.c,v 1.20 2005/12/02 00:53:42 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -209,7 +209,7 @@ void display_scores(void){
 
     r.y=BORDER;
     w=numwidth(font);
-    for(x=0;x<SSZ;x++){
+    for(x=0;x<=SSZ;x++){
 	char buf[50];
 	if(x+start>scores->maxscore)
 	    break;
@@ -222,24 +222,24 @@ void display_scores(void){
 	    nice_render_text(&r,scores->scores[x+start].name,font,0); 
 	};
 
-	render_num(350,r.y,w-2,scores->scores[x+start].score,font);
+	render_num(340,r.y,w-2,scores->scores[x+start].score,font);
 /*	render_text(250,50+x*font->lineh,"4h30m",font,0); */
 	if(abs(difftime(time(NULL),scores->scores[x+start].when))>60*60*12){
 	    strftime(buf,49,"%d.%m.",localtime(&scores->scores[x+start].when));
 	}else{
 	    strftime(buf,49,"(%H:%M)",localtime(&scores->scores[x+start].when));
 	};
-	render_fix(390,r.y,w-2,buf,font); 
+	render_fix(380,r.y,w-2,buf,font); 
 
 	if(scores->scores[x+start].howlong > 60*60){
-	    snprintf(buf,49,"%dh%dm",scores->scores[x+start].howlong/60/60,scores->scores[x+start].howlong/60%60);
+	    snprintf(buf,49,"%dh%d'",scores->scores[x+start].howlong/60/60,scores->scores[x+start].howlong/60%60);
 	}else if (scores->scores[x+start].howlong > 60){
-	    snprintf(buf,49,"%dm%ds",scores->scores[x+start].howlong/60,scores->scores[x+start].howlong%60);
+	    snprintf(buf,49,"%d'%d\"",scores->scores[x+start].howlong/60,scores->scores[x+start].howlong%60);
 	}else{
-	    snprintf(buf,49,"%ds",scores->scores[x+start].howlong);
+	    snprintf(buf,49,"%d\"",scores->scores[x+start].howlong);
 	};
 	buf[49]=0;
-	render_text(520,50+x*font->lineh,buf,font,0); 
+	render_text(510,50+x*font->lineh,buf,font,0); 
 
 	r.y+=font->lineh;
     }
