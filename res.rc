@@ -1,8 +1,4 @@
-brillion ICON PRELOAD "brillion.ico"
-/* rxvt ICON "rxvt.ico"
-XEmacs ICON "xemacs.ico"
-XEmacsFile ICON "File.ico"
-XEmacsLisp ICON "Lisp.ico" */
+SDL_app ICON PRELOAD "brillion.ico"
 
 #include <windows.h>
 
@@ -20,7 +16,6 @@ BEGIN
    VALUE "CompanyName", "A Sec\\Icd production\000"
    VALUE "FileDescription", "Small puzzle game\000"
    VALUE "FileVersion", "0.1\000"
-   VALUE "InternalName", "brillion\000"
    VALUE "LegalCopyright", "Copyright 2003 Stefan `Sec` Zehl\000"
    VALUE "OriginalFilename", "brillion.exe\000"
    VALUE "ProductName","Brillion\000"
