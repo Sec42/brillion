@@ -1,12 +1,14 @@
-# $Id: Makefile,v 1.34 2005/11/26 18:21:48 sec Exp $
+# $Id: Makefile,v 1.35 2005/12/05 01:08:39 sec Exp $
 #Config this:
 CFLAGS?=-O -pipe
-CFLAGS+=-g
+CFLAGS+=-Wall
 
 # And perhaps this
 PREFIX?=/usr/X11R6
 BINDIR?=${PREFIX}/bin
 DATADIR?=${PREFIX}/share/brillion
+
+DATE=`date +%Y-%m-%d`
 
 .if exists(.config)
 .include ".config"
@@ -19,9 +21,15 @@ config:
 PRG=brillion
 OBJ=brillion.o graphics.o level.o physics.o play.o game.o effects.o \
 	save.o font.o title.o score.o timer.o portab.o
+SRCS=brillion.c graphics.c level.c physics.c play.c game.c effects.c \
+	save.c font.c title.c score.c timer.c portab.c
 
 .ifdef OPTIMIZE
 CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe -DNDEBUG
+.endif
+
+.ifdef DEVEL
+CFLAGS+=-g -DDEVEL
 .endif
 
 # misses -pedantic (warns too much about system headers)
@@ -34,18 +42,17 @@ CFLAGS+= -ansi -W -Wall -Wcast-align \
 	-Wredundant-decls -Wshadow -Wstrict-prototypes -Wwrite-strings
 .endif
 
-CFLAGS+= -DBDATADIR=${DATADIR}
-CFLAGS+=-Wall `${SDL_CONFIG} --cflags`
-LDFLAGS+=`${SDL_CONFIG} --libs` -lSDL_image
-
 .ifdef SOUND
 CFLAGS+=-DSOUND
 LDFLAGS+=-lSDL_mixer
 OBJ+=music.o
 .endif
+SRCS+=music.c
 
 .ifdef WINDOWS
+.if exists(res.o)
 OBJ+=res.o
+.endif
 .endif
 
 .ifdef DMALLOC_OPTIONS
@@ -59,6 +66,12 @@ LDFLAGS+=-pg
 LDFLAGS=-pg -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL-1.1_p -lc_r -lSDL_image
 LDFLAGS+=-static -L/usr/X11R6/lib -lesd -laa -lncurses -lXext -lvga -lSDL-1.1 -lX11 -lpng -ltiff -lz -ljpeg -lm -lvgl -lusbhid
 .endif
+
+CFLAGS+=`${SDL_CONFIG} --cflags`
+LDFLAGS+=`${SDL_CONFIG} --libs`
+
+CFLAGS+= -DBDATADIR=${DATADIR}
+LDFLAGS+=-lSDL_image
 
 .if ${USER} == "sec"
 all: tags
@@ -82,12 +95,13 @@ res.o: res.rc brillion.ico
 # Requires the nullsoft installer: http://sourceforge.net/projects/nsis/
 installer: $(PRG)
 	strip brillion.exe
-	perl -p -e s/%VER%/`date +%Y-%m-%d`/ brillion.nsi>now.nsi
+	perl -p -e s/%VER%/$(DATE)/ brillion.nsi>now.nsi
 	/cygdrive/c/Programme/NSIS/makensis now.nsi
 	rm -f now.nsi
 
-put:
-	ncftpput upload.sourceforge.net incoming Brillion-Setup-`date +%Y-%m-%d`.exe
+winput:
+	ncftpput upload.sourceforge.net incoming Brillion-Setup-$(DATE).exe
+put: winput
 .else
 install: $(PRG)
 	strip $(PRG)
@@ -95,6 +109,16 @@ install: $(PRG)
 	-mkdir ${DATADIR}
 	cp -r Original ${DATADIR}
 .endif
+
+archive:
+	-rm -rf brillion-$(DATE)
+	mkdir brillion-$(DATE)
+	cp -pr INSTALL NOTES THANKS Makefile $(SRCS) brillion.h GNUify config.sh GNUmakefile Original/ brillion-$(DATE)
+	tar --exclude Original/Scores --exclude CVS -cvzf brillion-$(DATE).tgz brillion-$(DATE)
+	rm -rf brillion-$(DATE)
+
+put:
+	ncftpput upload.sourceforge.net incoming brillion-$(DATE).tgz
 
 .depend: brillion.c brillion.h graphics.c level.c physics.c play.c game.c
 	-$(CC) $(CFLAGS) -MM *.c>.depend

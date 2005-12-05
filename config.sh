@@ -1,6 +1,6 @@
 #!/bin/sh
 
-id='$Id: config.sh,v 1.10 2004/06/22 21:31:21 sec Exp $'
+id='$Id: config.sh,v 1.11 2005/12/05 01:08:39 sec Exp $'
 
 echo '*** Welcome to the configuration checker for brillion (V0.1)'
 echo ''
@@ -99,11 +99,11 @@ fi
 [ "$WINDOWS" = "NO" ] && unset WINDOWS
 
 :>.config
-for a in SDL_CONFIG PROFILE SOUND OPTIMIZE PEDANTIC WINDOWS; do
+for a in SDL_CONFIG PROFILE SOUND OPTIMIZE PEDANTIC WINDOWS DEVEL; do
 	eval "[ -z "\$$a" ] || echo \"$a=\$$a\"" >>.config
 done
 
-for a in DEVEL SAVE; do
+for a in SAVE; do
 	eval "[ -z "\$$a" ] || echo \"CFLAGS+=-D$a\"" >>.config
 done
 
