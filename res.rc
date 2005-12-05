@@ -2,6 +2,8 @@ SDL_app ICON PRELOAD "brillion.ico"
 
 #include <windows.h>
 
+// http://msdn.microsoft.com/library/default.asp?url=/library/en-us/wcesdkr/html/_Tools_VERSIONINFO_Resource.asp
+
 1 VERSIONINFO
 FILEVERSION 0, 1, 0, 0
 PRODUCTVERSION 0, 1, 0, 0
@@ -16,6 +18,7 @@ BEGIN
    VALUE "CompanyName", "A Sec\\Icd production\000"
    VALUE "FileDescription", "Small puzzle game\000"
    VALUE "FileVersion", "0.1\000"
+   VALUE "InternalName", "brillion\000"
    VALUE "LegalCopyright", "Copyright 2003 Stefan `Sec` Zehl\000"
    VALUE "OriginalFilename", "brillion.exe\000"
    VALUE "ProductName","Brillion\000"
@@ -25,7 +28,6 @@ BEGIN
  END
 BLOCK "VarFileInfo"
 BEGIN
-VALUE "Translation", 0x409, 1200  /* Sprache: Englisch */
-/* VALUE "Translation", 0x409, 1200 */ /* Sprachneutral */
+VALUE "Translation", 0x409, 1200  /* Sprache: Englisch, Unicode */
 END
 END
