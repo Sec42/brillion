@@ -1,6 +1,6 @@
 /* timed graphic effects
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: effects.c,v 1.8 2003/03/26 17:16:13 sec Exp $
+ * $Id: effects.c,v 1.9 2005/12/05 00:24:10 sec Exp $
  */
 #include "brillion.h"
 
@@ -323,12 +323,15 @@ void split (SDL_Surface* s, SDL_Rect* r_in, Uint32 ticks, split_t type){
 	SDL_BlitSurface(copy, &rectr, s, &drectr);
 
 	old_time=curr_time;
-	curr_time=SDL_GetTicks();
+	for(delta=0;delta==0;SDL_Delay(1)){
+	    curr_time=SDL_GetTicks();
 
-	SDL_UpdateRect(s,r->x,r->y,r->w,r->h);
+	    SDL_UpdateRect(s,r->x,r->y,r->w,r->h);
 
-	delta = target * ((float) (curr_time - old_time) / ticks);
-	if(delta>target/4){delta=target/4;} /* At least 4 updates */
+	    /* XXX: rounding errors here, effect takes too long */
+	    delta = target * ((float) (curr_time - old_time) / ticks);
+	    if(delta>target/4){delta=target/4;} /* At least 4 updates */
+	};
 	dist += delta;
 
     };
