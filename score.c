@@ -1,6 +1,6 @@
 /* The highscore file reader/writer
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: score.c,v 1.20 2005/12/02 00:53:42 sec Exp $
+ * $Id: score.c,v 1.21 2005/12/05 00:20:58 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
@@ -200,11 +200,9 @@ void display_scores(void){
     SDL_FreeSurface(img);
 
     SDL_BlitSurface(bkg,NULL,s,NULL);
-    size_text(&r,"High Scores",font);
-    render_font((640-r.w)/2,10,"High Scores");
     SDL_Flip(s);
 
-#define BORDER 50
+#define BORDER 75
 #define SSZ ((480-BORDER)/(font->lineh)) /* Wieviele Eintraege/Bildschirm */
 
     r.y=BORDER;
@@ -239,7 +237,7 @@ void display_scores(void){
 	    snprintf(buf,49,"%d\"",scores->scores[x+start].howlong);
 	};
 	buf[49]=0;
-	render_text(510,50+x*font->lineh,buf,font,0); 
+	render_text(510,r.y,buf,font,0); 
 
 	r.y+=font->lineh;
     }

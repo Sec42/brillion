@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.45 2005/11/26 18:23:57 sec Exp $
+ * $Id: brillion.h,v 1.46 2005/12/05 00:20:58 sec Exp $
  */
 
 #include <stdio.h>
@@ -222,7 +222,7 @@ typedef struct {
 	time_t	    starttime;
 } a_play;
 
-#define MAX_SCORES 10
+#define MAX_SCORES 11
 #define SCORENAMELEN 8
 
 typedef struct {
