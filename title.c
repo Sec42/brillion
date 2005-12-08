@@ -1,12 +1,12 @@
 /* Display the title screen, and handle the main menu...
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: title.c,v 1.13 2005/12/02 00:53:42 sec Exp $
+ * $Id: title.c,v 1.14 2005/12/08 11:11:18 sec Exp $
  */
 #include "brillion.h"
 #include <SDL_image.h>
 
 #define MENU_LINE 40
-#define MENU_ENTRIES 5 // XXXXXXXXXXXXXXXXXXXXXXXX!!!!
+#define MENU_ENTRIES 5 /* XXXXXXXXXXXXXXXXXXXXXXXX!!!! */
 
 SDL_Surface * create_title(menuentry * entries){
     SDL_Surface *title,*black,*s,*bkg;
@@ -90,7 +90,7 @@ void cb_lvl(SDL_Surface *title,int dwim){
     UPDATE(lvlr);
 }
 
-signed int menu(menuentry *entries){
+signed int do_menu(menuentry *entries){
     SDL_Event event;
     SDL_Rect r;
     signed int menu,omenu=1,done=0;
@@ -150,7 +150,7 @@ signed int menu(menuentry *entries){
 	if(omenu!=menu){
 	    SDL_BlitSurface(title,&r,play->g->display,&r);
 	    UPDATE(r);
-	    r.x=100-30;r.y=260+MENU_LINE*menu+6; // XXX!
+	    r.x=100-30;r.y=260+MENU_LINE*menu+6; /* XXX! */
 	    SDL_BlitSurface(play->g->ball[RED],NULL,play->g->display,&r);
 	    UPDATE(r);
 	    omenu=menu;
@@ -161,7 +161,7 @@ signed int menu(menuentry *entries){
 	    SDL_Delay(100);
 	    SDL_BlitSurface(title,&r,play->g->display,&r);
 	    UPDATE(r);
-	    r.x=100-30;r.y=260+MENU_LINE*menu+6; // XXX!
+	    r.x=100-30;r.y=260+MENU_LINE*menu+6; /* XXX! */
 	    switch(rand()&7){
 		case 0:
 		    r.x++;r.y++;break;
@@ -200,5 +200,5 @@ signed int title_main(){
 	{NULL, NULL}
     };
 
-    return menu(me);
+    return do_menu(me);
 }
