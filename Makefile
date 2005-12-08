@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.35 2005/12/05 01:08:39 sec Exp $
+# $Id: Makefile,v 1.36 2005/12/08 12:38:48 sec Exp $
 #Config this:
 CFLAGS?=-O -pipe
 CFLAGS+=-Wall
@@ -17,6 +17,10 @@ config:
 	${MAKE}
 .endif
 
+.if exists(.version)
+.include ".version"
+.endif
+
 # It shouldn't be necessary to edit anything below this line.
 PRG=brillion
 OBJ=brillion.o graphics.o level.o physics.o play.o game.o effects.o \
@@ -30,6 +34,8 @@ CFLAGS=-O3 -ffast-math -fforce-addr -fomit-frame-pointer -pipe -DNDEBUG
 
 .ifdef DEVEL
 CFLAGS+=-g -DDEVEL
+VERS?=CVS
+VERS+=(devel)
 .endif
 
 # misses -pedantic (warns too much about system headers)
@@ -50,9 +56,7 @@ OBJ+=music.o
 SRCS+=music.c
 
 .ifdef WINDOWS
-.if exists(res.o)
 OBJ+=res.o
-.endif
 .endif
 
 .ifdef DMALLOC_OPTIONS
@@ -72,6 +76,9 @@ LDFLAGS+=`${SDL_CONFIG} --libs`
 
 CFLAGS+= -DBDATADIR=${DATADIR}
 LDFLAGS+=-lSDL_image
+.ifdef VERS
+CFLAGS+= -DPROG_VERSION="\"${VERS}\""
+.endif
 
 .if ${USER} == "sec"
 all: tags
@@ -93,7 +100,7 @@ res.o: res.rc brillion.ico
 	windres -i $< -o $@
 
 # Requires the nullsoft installer: http://sourceforge.net/projects/nsis/
-installer: $(PRG)
+installer: release clean $(PRG)
 	strip brillion.exe
 	perl -p -e s/%VER%/$(DATE)/ brillion.nsi>now.nsi
 	/cygdrive/c/Programme/NSIS/makensis now.nsi
@@ -110,12 +117,15 @@ install: $(PRG)
 	cp -r Original ${DATADIR}
 .endif
 
-archive:
+archive: release
 	-rm -rf brillion-$(DATE)
 	mkdir brillion-$(DATE)
-	cp -pr INSTALL NOTES THANKS Makefile $(SRCS) brillion.h GNUify config.sh GNUmakefile Original/ brillion-$(DATE)
+	cp -pr INSTALL THANKS Makefile $(SRCS) brillion.h brillion.ico brillion.nsi res.rc GNUify .version config.sh GNUmakefile Original/ brillion-$(DATE)
 	tar --exclude Original/Scores --exclude CVS -cvzf brillion-$(DATE).tgz brillion-$(DATE)
 	rm -rf brillion-$(DATE)
+
+release:
+	echo VERS=${DATE} >.version
 
 put:
 	ncftpput upload.sourceforge.net incoming brillion-$(DATE).tgz

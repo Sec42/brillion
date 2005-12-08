@@ -1,6 +1,6 @@
 /* The all-in-one Header file
  * vim:set cin sm ts=8 sw=8 sts=4: Sec <sec@42.org>
- * $Id: brillion.h,v 1.46 2005/12/05 00:20:58 sec Exp $
+ * $Id: brillion.h,v 1.47 2005/12/08 12:38:48 sec Exp $
  */
 
 #include <stdio.h>
@@ -22,6 +22,11 @@
 
 #ifdef DMALLOC
 #include <dmalloc.h>
+#endif
+
+#define PROG_NAME "Brillion"
+#ifndef PROG_VERSION
+#define PROG_VERSION "(cvs)"
 #endif
 
 #define die(x) do{fprintf(stderr,"DIEd: \"%s\" in %s line %d\n",x,__FILE__,__LINE__);exit(EXIT_FAILURE);}while(0)
