@@ -1,6 +1,6 @@
 /* Handle the gameplay - take user input and act accordingly
  * vim:set cin sm ts=8 sw=4 sts=4: - Sec <sec@42.org>
- * $Id: play.c,v 1.47 2004/08/08 01:09:27 sec Exp $
+ * $Id: play.c,v 1.48 2006/01/05 20:19:15 sec Exp $
  */
 
 #include <time.h>
@@ -240,14 +240,13 @@ int play_level(void){
 		t_now=SDL_GetTicks();
 		t_gone=t_now-t_start;
 		t_left=t_end-t_now;
+//	printf("start: %5d, end: %5d, left: %5d, ticks: %5d, frame: %5d, z: %4d\n",t_start, t_end, t_left, ticks, frames, z);
 
-/*		printf("anim_sleep: %d\n",t_left); */
 		q=0;
 		if(t_left>0){
 		    ticks-=t_left;
 		    DELAY(t_left,t_end);
 		};
-/*printf("sleep: wanted:%d actually:%d bsy=%d\n",a_left,SDL_GetTicks()-a_now,q); */
 	    };
 	};
 
@@ -327,7 +326,11 @@ void init_delay(void){
 }
 
 void DELAY(Uint32 left,Uint32 end){
-    if(left>sleep_min) 
-	SDL_Delay(left-sleep_gran); 
+    if(left>sleep_min) {
+	if(left<sleep_gran)
+	    SDL_Delay(1);
+	else
+	    SDL_Delay(left-sleep_gran); 
+    };
     while(SDL_GetTicks()<end){ ; }; 
 }
