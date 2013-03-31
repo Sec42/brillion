@@ -1,0 +1,13 @@
+This is intended to be a faithful reimplementation of an old C=64 game called crillion.
+
+This game is quite finished. Some parts of the game could do with better error handling, but it runs very well.
+
+A few things are still missing:
+
+*   More levels
+*   Documentation
+*   Usable wrapper around save/load solutions
+*   Port for MacOS
+*   Binary packages for your favourite OS 
+
+If you can help with any of that, Feel free to contact me.
