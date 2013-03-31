@@ -1,0 +1,16 @@
+brillion
+Scores
+.depend
+.config
+*.swp
+*.org
+*.o
+brillion.exe
+SDL.dll
+SDL_image.dll
+SDL_mixer.dll
+jpeg.dll
+zlib.dll
+libpng1.dll
+stdout.txt
+stderr.txt
