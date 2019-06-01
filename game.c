@@ -47,8 +47,8 @@ a_game* read_game(const char * file){
 
     word[0]=(char*)malloc(LINELEN+1);
 
-    fscanf(f,"%10s %d ",word[0],&num);
-    if(strncmp(word[0],"Brillion",8) || (num != 42)){
+    if( fscanf(f,"%10s %d ",word[0],&num) < 2 ||
+	    strncmp(word[0],"Brillion",8) || (num != 42)){
 	fprintf(stderr,"Game '%s': Corrupt file format\n",file);
 	free(word[0]);
 	return(NULL);

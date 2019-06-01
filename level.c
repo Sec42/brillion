@@ -36,8 +36,8 @@ field * read_level(char * file){
     return(NULL);
   };
 
-  fscanf(level,"%10s %d ",word,&num);
-  if(strncmp(word,"Blvl",4) || (num != 42)){
+  if( fscanf(level,"%10s %d ",word,&num) < 0 ||
+	  strncmp(word,"Blvl",4) || (num != 42)){
     fprintf(stderr,"Level '%s': Corrupt level format\n",file);
     return(NULL);
   };
@@ -73,8 +73,10 @@ field * read_level(char * file){
       lvl->x++;lvl->y++;
     }else if(!strncmp(word,"level",5)){
       lvl->blocks=0;
-      fscanf(level,"%d %d ",&lvl->w,&lvl->h);
-      if((lvl->w != 15)||(lvl->h!=11)){ /* XXX: more dynamic ? */
+      if (fscanf(level,"%d %d ",&lvl->w,&lvl->h)<2){
+	fprintf(stderr,"Level '%s': Level file corrupt\n",file);
+	error++;
+      }else if((lvl->w != 15)||(lvl->h!=11)){ /* XXX: more dynamic ? */
 	fprintf(stderr,"Level '%s': Level dimensions illegal\n",file);
 	error++;
       }else if(lvl->pieces||lvl->colors){

@@ -35,8 +35,8 @@ the_scores* read_scores(void){
 	return(scores);
     };
 
-    fscanf(f,"%10s %d ",word[0],&num);
-    if(strncmp(word[0],"Bscores",7) || (num != 42)){
+    if( fscanf(f,"%10s %d ",word[0],&num) < 2 ||
+	    strncmp(word[0],"Bscores",7) || (num != 42)){
 	fprintf(stderr,"Scores: Corrupt file format\n");
 	return(NULL);
     };
