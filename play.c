@@ -93,7 +93,7 @@ void play_game(a_game* game){
 
 	/* Clear Animation list */
 /*	bzero(play->a,sizeof(play->a)); */
-	memset(play->a,0,sizeof(play->a));
+	memset(play->a,0,sizeof(a_anim));
 
 	play->status=S_PLAY;
 	clear_number_cache();
