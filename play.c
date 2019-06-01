@@ -146,7 +146,6 @@ int play_level(void){
     Uint32 t_start,t_end,t_gone,t_now;
     Sint32 t_left;
     Uint32 ticks;
-    Uint32 q;
 
     graphic* g=play->g;
     field* lvl=play->f;
@@ -242,7 +241,6 @@ int play_level(void){
 		t_left=t_end-t_now;
 //	printf("start: %5d, end: %5d, left: %5d, ticks: %5d, frame: %5d, z: %4d\n",t_start, t_end, t_left, ticks, frames, z);
 
-		q=0;
 		if(t_left>0){
 		    ticks-=t_left;
 		    DELAY(t_left,t_end);

@@ -9,7 +9,7 @@
 #define MENU_ENTRIES 5 /* XXXXXXXXXXXXXXXXXXXXXXXX!!!! */
 
 SDL_Surface * create_title(menuentry * entries){
-    SDL_Surface *title,*black,*s,*bkg;
+    SDL_Surface *title,*s,*bkg;
     int x;
     int xk,yk;
 
@@ -20,7 +20,6 @@ SDL_Surface * create_title(menuentry * entries){
 
     /* sleep(1); */ /* I'd like to have a cool intro here ;-) */
 
-    black=NULL;
     /* To make it more readable, perhaps?
     black=SDL_CreateRGBSurface(SDL_HWSURFACE, s->w, s->h, 
 	    s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, 
