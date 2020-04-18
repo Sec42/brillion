@@ -1,4 +1,4 @@
-name: builder
+name: win-builder
 
 on:
   push:
@@ -11,10 +11,12 @@ jobs:
     - name: Install MSYS2
       run: choco install msys2
     - uses: actions/checkout@v2
-    - name: depends
-      run: pacman -S mingw-w64-x86_64-SDL mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer
     - name: uname
       run: uname
+    - name: update
+      run: pacman -Syu
+    - name: depends
+      run: pacman -S mingw-w64-x86_64-SDL_image
     - name: configure
       run: ./config.sh windows
     - name: update makefile
