@@ -17,15 +17,15 @@ jobs:
     - name: configure
       run: msys2do ./config.sh windows
     - name: info
-      run: msys2do ls -ld /
+      run: msys2do ls -l /
     - name: info2
-      run: msys2do ls -l /mingw64
+      run: msys2do ls -l /mingw64/bin ; ls -l /mingw64/x86_64-w64-mingw32
 #    - name: update makefile
 #      run: msys2do make gnu
     - name: make
-      run: msys2do ls -l /a/_temp/msys/msys64/usr/bin ; ls l /a/_temp/
+      run: msys2do /mingw64/bin/make
     - name: make v2
       if: failure()
-      run: msys2do ls -l /a/_temp/
+      run: msys2do /mingw64/x86_64-w64-mingw32/bin/make
     outputs:
         binary: brillion.exe
