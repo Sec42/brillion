@@ -103,7 +103,7 @@ res.o: res.rc brillion.ico
 installer: release clean $(PRG)
 	strip brillion.exe
 	perl -p -e s/%VER%/$(DATE)/ brillion.nsi>now.nsi
-	/cygdrive/c/Programme/NSIS/makensis now.nsi
+	makensis now.nsi
 	rm -f now.nsi
 
 winput:

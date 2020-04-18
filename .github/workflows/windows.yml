@@ -8,6 +8,9 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
     - uses: numworks/setup-msys2@v1
     - uses: actions/checkout@v2
 #    - name: update
@@ -16,20 +19,15 @@ jobs:
       run: msys2do pacman --noconfirm --noprogressbar -S make perl mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer mingw-w64-x86_64-nsis
     - name: configure
       run: msys2do ./config.sh windows
-    - name: info
-      run: msys2do cat .config
     - name: info_64
+      if: false
       run: msys2do ls -l /mingw64/bin
-    - name: info_32
-      run: msys2do ls -l /mingw64/x86_64-w64-mingw32/bin
-#    - name: update makefile
-#      run: msys2do make gnu
+    - name: update makefile
+      run: msys2do make gnu
     - name: make
-      run: msys2do make CC=x86_64-w64-mingw32-gcc
-    - name: make
-      run: msys2do make CC=x86_64-w64-mingw32-gcc WINDOWS=y installer
+      run: msys2do make CC=x86_64-w64-mingw32-gcc installer
 #    - name: make v2
 #      if: failure()
 #      run: msys2do /mingw64/x86_64-w64-mingw32/bin/make
     outputs:
-        binary: brillion.exe
+        binary: Brillion-Setup-${{steps.date.outputs.date}}.exe
