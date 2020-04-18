@@ -13,17 +13,21 @@ jobs:
 #    - name: update
 #      run: msys2do pacman -Syu --noconfirm --noprogressbar
     - name: depends
-      run: msys2do pacman --noconfirm --noprogressbar -S make mingw-w64-x86_64-make mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer
+      run: msys2do pacman --noconfirm --noprogressbar -S make mingw-w64-x86_64-make mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer mingw-w64-x86_64-nsis
     - name: configure
       run: msys2do ./config.sh windows
     - name: info
+      run: msys2do cat .config
+    - name: info_64
       run: msys2do ls -l /mingw64/bin
-    - name: info2
-      run: msys2do ls -l /mingw64/x86_64-w64-mingw32
+    - name: info_32
+      run: msys2do ls -l /mingw64/x86_64-w64-mingw32/bin
 #    - name: update makefile
 #      run: msys2do make gnu
     - name: make
-      run: msys2do make CC=x86_64-w64-mingw32-gcc
+      run: msys2do make CC=x86_64-w64-mingw32-gcc WINDOWS=y
+    - name: make
+      run: msys2do make CC=x86_64-w64-mingw32-gcc WINDOWS=y installer
 #    - name: make v2
 #      if: failure()
 #      run: msys2do /mingw64/x86_64-w64-mingw32/bin/make
