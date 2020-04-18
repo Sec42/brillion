@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
     steps:
     - uses: actions/checkout@v2
     - name: depends
@@ -20,7 +20,7 @@ jobs:
       run: ./GNUify
     - name: make
       run: make
-    - name: Upload installer
+    - name: Upload binary
       uses: actions/upload-artifact@v1
       with:
         name: Ubuntu binary
