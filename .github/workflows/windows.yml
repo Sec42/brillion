@@ -16,9 +16,16 @@ jobs:
       run: msys2do pacman --noconfirm --noprogressbar -S mingw-w64-x86_64-make mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer
     - name: configure
       run: msys2do ./config.sh windows
+    - name: info
+      run: msys2do echo $PATH
+    - name: info2
+      run: echo $PATH
 #    - name: update makefile
 #      run: msys2do make gnu
     - name: make
-      run: msys2do mingw-w64-x86_64-make
+      run: mingw-w64-x86_64-make
+    - name: make v2
+      if: failure()
+      run: msys2do make
     outputs:
         binary: brillion.exe
