@@ -53,7 +53,8 @@ Section "Hauptgruppe" SEC01
   CreateShortCut "$SMPROGRAMS\Brillion\Brillion.lnk" "$INSTDIR\brillion.exe"
   CreateShortCut "$DESKTOP\Brillion.lnk" "$INSTDIR\brillion.exe"
   SetOverwrite ifnewer
-  File "SDL_mixer.dll"
+#  File "SDL_mixer.dll"
+  File "libSDL_mixer-1-2-0.dll"
   File "SDL_image.dll"
   File "SDL.dll"
   File "libpng1.dll"
