@@ -4,7 +4,7 @@ CFLAGS?=-O -pipe
 CFLAGS+=-Wall
 
 # And perhaps this
-PREFIX?=/usr/local
+PREFIX?=/usr/X11R6
 BINDIR?=${PREFIX}/bin
 DATADIR?=${PREFIX}/share/brillion
 
@@ -71,8 +71,7 @@ LDFLAGS=-pg -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL-1.1_p -lc_r -lSDL_i
 LDFLAGS+=-static -L/usr/X11R6/lib -lesd -laa -lncurses -lXext -lvga -lSDL-1.1 -lX11 -lpng -ltiff -lz -ljpeg -lm -lvgl -lusbhid
 .endif
 
-#CFLAGS+=`${SDL_CONFIG} --cflags`
-CFLAGS+=-I/usr/include/SDL
+CFLAGS+=`${SDL_CONFIG} --cflags`
 LDFLAGS+=`${SDL_CONFIG} --libs`
 
 CFLAGS+= -DBDATADIR=${DATADIR}
