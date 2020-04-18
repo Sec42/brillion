@@ -11,11 +11,11 @@ jobs:
     - uses: numworks/setup-msys2@v1
     - uses: actions/checkout@v2
     - name: update
-      run: msys2do pacman -Syu
+      run: msys2do pacman -Syu --noconfirm --noprogressbar
     - name: uname
       run: msys2do uname
     - name: depends
-      run: msys2do pacman -S mingw-w64-x86_64-SDL_image
+      run: msys2do pacman --noconfirm --noprogressbar -S mingw-w64-x86_64-SDL_image 
     - name: configure
       run: msys2do ./config.sh windows
     - name: update makefile
