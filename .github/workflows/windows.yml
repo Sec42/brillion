@@ -15,12 +15,12 @@ jobs:
     - name: uname
       run: uname
     - name: depends
-      run: msys2do pacman --noconfirm --noprogressbar -S make mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer
+      run: msys2do pacman --noconfirm --noprogressbar -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer
     - name: configure
       run: msys2do ./config.sh windows
-    - name: update makefile
-      run: msys2do make gnu
+#    - name: update makefile
+#      run: msys2do make gnu
     - name: make
-      run: msys2do make
+      run: msys2do mingw-w64-x86_64-make
     outputs:
         binary: brillion.exe
