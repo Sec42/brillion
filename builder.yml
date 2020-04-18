@@ -1,0 +1,24 @@
+name: builder
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [linux]
+    steps:
+    - uses: actions/checkout@v2
+    - name: depends
+      run: apt-get install -y libsdl1.2 libsdl-image1.2 libsdl-mixer1.2
+    - name: configure
+      run: ./config.sh
+    - name: update makefile
+      run: make gnu
+    - name: make
+      run: make
+    outputs:
+        binary: brillion
