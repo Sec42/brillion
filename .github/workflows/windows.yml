@@ -17,15 +17,17 @@ jobs:
     - name: configure
       run: msys2do ./config.sh windows
     - name: info
-      run: msys2do echo \$PATH
+      run: msys2do env
     - name: info2
       run: env
+    - name: info3
+      run: msys2do mount
 #    - name: update makefile
 #      run: msys2do make gnu
     - name: make
       run: msys2do mingw-w64-x86_64-make
     - name: make v2
       if: failure()
-      run: dir C:\\msys64
+      run: dir C:\msys64
     outputs:
         binary: brillion.exe
