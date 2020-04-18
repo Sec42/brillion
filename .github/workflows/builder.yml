@@ -25,6 +25,13 @@ jobs:
       with:
         name: Ubuntu binary
         path: brillion
+    - name: Create zip
+      run: msys2do zip -r Brillion-${{steps.date.outputs.date}}-Linux.zip brillion Original
+    - name: Upload zip
+      uses: actions/upload-artifact@v1
+      with:
+        name: Linux Archive
+        path: Brillion-${{steps.date.outputs.date}}-Linux.zip
   win-build:
     runs-on: windows-latest
     steps:
@@ -56,6 +63,13 @@ jobs:
     - name: Failure info
       if: failure()
       run: msys2do ls -l 
+    - name: Create zip
+      run: msys2do zip -r Brillion-${{steps.date.outputs.date}}.zip brillion.exe *.dll Original
+    - name: Upload zip
+      uses: actions/upload-artifact@v1
+      with:
+        name: Windows Archive
+        path: Brillion-${{steps.date.outputs.date}}.zip
     - name: Upload installer
       uses: actions/upload-artifact@v1
       with:
@@ -68,7 +82,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: autobuild-${{ steps.date.outputs.date }}
-        tag_commitish: ${{ github.sha }}
+#        tag_commitish: ${{ github.sha }}
         release_name: Release ${{ steps.date.outputs.date }}
         draft: false
         prerelease: false
