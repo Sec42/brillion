@@ -2,7 +2,6 @@ name: builder
 
 on:
   push:
-#    branches: [master]
   pull_request:
 
 jobs:
@@ -26,3 +25,59 @@ jobs:
       with:
         name: Ubuntu binary
         path: brillion
+  win-build:
+    runs-on: windows-latest
+    steps:
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+    - uses: numworks/setup-msys2@v1
+    - uses: actions/checkout@v2
+#    - name: update
+#      run: msys2do pacman -Syu --noconfirm --noprogressbar
+    - name: depends
+      run: msys2do pacman --noconfirm --noprogressbar -S make perl mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer mingw-w64-x86_64-nsis
+    - name: configure
+      run: msys2do ./config.sh windows
+    - name: info_64
+      if: false
+      run: msys2do ls -l /mingw64/bin
+    - name: update makefile
+      run: msys2do ./GNUify
+    - name: make
+      run: msys2do make CC=x86_64-w64-mingw32-gcc
+    - name: Upload binary
+      uses: actions/upload-artifact@v1
+      with:
+        name: Windows Binary
+        path: brillion.exe
+    - name: make installer
+      run: msys2do make CC=x86_64-w64-mingw32-gcc installer
+    - name: Failure info
+      if: failure()
+      run: msys2do ls -l 
+    - name: Upload installer
+      uses: actions/upload-artifact@v1
+      with:
+        name: Windows Installer
+        path: Brillion-Setup-${{steps.date.outputs.date}}.exe
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ steps.date.outputs.date }}
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./Brillion-Setup-${{steps.date.outputs.date}}.exe
+        asset_name: Brillion-Setup-${{steps.date.outputs.date}}.exe
+        asset_content_type: application/zip
