@@ -2,7 +2,7 @@ name: builder
 
 on:
   push:
-    branches: [master]
+#    branches: [master]
   pull_request:
 
 jobs:
@@ -18,8 +18,11 @@ jobs:
     - name: configure
       run: ./config.sh
     - name: update makefile
-      run: make gnu
+      run: ./GNUify
     - name: make
       run: make
-    outputs:
-        binary: brillion
+    - name: Upload installer
+      uses: actions/upload-artifact@v1
+      with:
+        name: Ubuntu binary
+        path: brillion
