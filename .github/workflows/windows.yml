@@ -33,9 +33,9 @@ jobs:
         path: brillion.exe
     - name: make installer
       run: msys2do make CC=x86_64-w64-mingw32-gcc installer
-#    - name: make v2
-#      if: failure()
-#      run: msys2do /mingw64/x86_64-w64-mingw32/bin/make
+    - name: Failure info
+      if: failure()
+      run: msys2do ls -l 
     - name: Upload installer
       uses: actions/upload-artifact@v1
       with:
