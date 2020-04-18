@@ -67,7 +67,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.sha }}
+        tag_name: autobuild-${{ steps.date.outputs.date }}
+        tag_commitish: ${{ github.sha }}
         release_name: Release ${{ steps.date.outputs.date }}
         draft: false
         prerelease: false
