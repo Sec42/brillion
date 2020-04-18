@@ -25,9 +25,19 @@ jobs:
     - name: update makefile
       run: msys2do ./GNUify
     - name: make
+      run: msys2do make CC=x86_64-w64-mingw32-gcc
+    - name: Upload binary
+      uses: actions/upload-artifact@v1
+      with:
+        name: Windows Binary
+        path: brillion.exe
+    - name: make installer
       run: msys2do make CC=x86_64-w64-mingw32-gcc installer
 #    - name: make v2
 #      if: failure()
 #      run: msys2do /mingw64/x86_64-w64-mingw32/bin/make
-    outputs:
-        binary: Brillion-Setup-${{steps.date.outputs.date}}.exe
+    - name: Upload installer
+      uses: actions/upload-artifact@v1
+      with:
+        name: Windows Installer
+        path: Brillion-Setup-${{steps.date.outputs.date}}.exe

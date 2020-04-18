@@ -4,7 +4,7 @@ CFLAGS?=-O -pipe
 CFLAGS+=-Wall
 
 # And perhaps this
-PREFIX?=/usr/X11R6
+PREFIX?=/usr/local
 BINDIR?=${PREFIX}/bin
 DATADIR?=${PREFIX}/share/brillion
 
@@ -71,7 +71,8 @@ LDFLAGS=-pg -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lSDL-1.1_p -lc_r -lSDL_i
 LDFLAGS+=-static -L/usr/X11R6/lib -lesd -laa -lncurses -lXext -lvga -lSDL-1.1 -lX11 -lpng -ltiff -lz -ljpeg -lm -lvgl -lusbhid
 .endif
 
-CFLAGS+=`${SDL_CONFIG} --cflags`
+#CFLAGS+=`${SDL_CONFIG} --cflags`
+CFLAGS+=-I/usr/include/SDL
 LDFLAGS+=`${SDL_CONFIG} --libs`
 
 CFLAGS+= -DBDATADIR=${DATADIR}
@@ -100,11 +101,15 @@ res.o: res.rc brillion.ico
 	windres -i $< -o $@
 
 # Requires the nullsoft installer: http://sourceforge.net/projects/nsis/
-installer: release clean $(PRG)
+installer: getlibs release clean $(PRG)
 	strip brillion.exe
 	perl -p -e s/%VER%/$(DATE)/ brillion.nsi>now.nsi
 	makensis now.nsi
 	rm -f now.nsi
+
+DLLDIR=/mingw64/bin
+getlibs:
+	cp ${DLLDIR}/*.dll .
 
 winput:
 	ncftpput upload.sourceforge.net incoming Brillion-Setup-$(DATE).exe
