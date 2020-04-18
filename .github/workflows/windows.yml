@@ -23,7 +23,7 @@ jobs:
       if: false
       run: msys2do ls -l /mingw64/bin
     - name: update makefile
-      run: msys2do make gnu
+      run: msys2do ./GNUify
     - name: make
       run: msys2do make CC=x86_64-w64-mingw32-gcc installer
 #    - name: make v2
