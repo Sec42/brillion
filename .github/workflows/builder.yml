@@ -26,7 +26,7 @@ jobs:
         name: Ubuntu binary
         path: brillion
     - name: Create zip
-      run: msys2do zip -r Brillion-${{steps.date.outputs.date}}-Linux.zip brillion Original
+      run: zip -r Brillion-${{steps.date.outputs.date}}-Linux.zip brillion Original
     - name: Upload zip
       uses: actions/upload-artifact@v1
       with:
@@ -43,7 +43,7 @@ jobs:
 #    - name: update
 #      run: msys2do pacman -Syu --noconfirm --noprogressbar
     - name: depends
-      run: msys2do pacman --noconfirm --noprogressbar -S make perl mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer mingw-w64-x86_64-nsis
+      run: msys2do pacman --noconfirm --noprogressbar -S make perl zip mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer mingw-w64-x86_64-nsis
     - name: configure
       run: msys2do ./config.sh windows
     - name: info_64
