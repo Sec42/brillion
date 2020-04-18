@@ -8,8 +8,7 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - name: Install MSYS2
-      run: choco install msys2
+    - uses: numworks/setup-msys2@v1
     - uses: actions/checkout@v2
     - name: uname
       run: uname
@@ -18,10 +17,10 @@ jobs:
     - name: depends
       run: pacman -S mingw-w64-x86_64-SDL_image
     - name: configure
-      run: ./config.sh windows
+      run: msys2do ./config.sh windows
     - name: update makefile
-      run: make gnu
+      run: msys2do make gnu
     - name: make
-      run: make
+      run: msys2do make
     outputs:
         binary: brillion.exe
