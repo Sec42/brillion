@@ -10,12 +10,12 @@ jobs:
     steps:
     - uses: numworks/setup-msys2@v1
     - uses: actions/checkout@v2
-    - name: uname
-      run: uname
     - name: update
-      run: pacman -Syu
+      run: msys2do pacman -Syu
+    - name: uname
+      run: msys2do uname
     - name: depends
-      run: pacman -S mingw-w64-x86_64-SDL_image
+      run: msys2do pacman -S mingw-w64-x86_64-SDL_image
     - name: configure
       run: msys2do ./config.sh windows
     - name: update makefile
