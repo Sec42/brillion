@@ -1,0 +1,25 @@
+name: builder
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Install MSYS2
+      run: choco install msys2
+    - uses: actions/checkout@v2
+    - name: depends
+      run: pacman -S mingw-w64-x86_64-SDL mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer
+    - name: uname
+      run: uname
+    - name: configure
+      run: ./config.sh windows
+    - name: update makefile
+      run: make gnu
+    - name: make
+      run: make
+    outputs:
+        binary: brillion.exe
