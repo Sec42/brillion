@@ -150,8 +150,6 @@ jobs:
       run: choco install wixtoolset
     - name: findme
       run: dir "C:\Program Files (x86)\WiX Toolset v3.11\bin"
-    - name: findme2
-      run: dir "C:\Program Files (x86)\bin"
     - uses: numworks/setup-msys2@v1
     - uses: actions/checkout@v2
     - name: get shortsha
