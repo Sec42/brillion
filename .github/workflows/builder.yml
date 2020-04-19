@@ -5,97 +5,97 @@ on:
   pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-    steps:
-    - uses: actions/checkout@v2
-    - name: depends
-      run: sudo apt-get install -y libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev
-    - name: configure
-      run: ./config.sh
-    - name: update makefile
-      run: ./GNUify
-    - name: make
-      run: make
-    - name: Upload binary
-      uses: actions/upload-artifact@v1
-      with:
-        name: Ubuntu binary
-        path: brillion
-    - name: Create zip
-      run: zip -r Brillion-${{steps.date.outputs.date}}-Linux.zip brillion Original
-    - name: Upload zip
-      uses: actions/upload-artifact@v1
-      with:
-        name: Linux Archive
-        path: Brillion-${{steps.date.outputs.date}}-Linux.zip
-  win-build:
-    runs-on: windows-latest
-    steps:
-    - name: Get current date
-      id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-    - uses: numworks/setup-msys2@v1
-    - uses: actions/checkout@v2
-#    - name: update
-#      run: msys2do pacman -Syu --noconfirm --noprogressbar
-    - name: depends
-      run: msys2do pacman --noconfirm --noprogressbar -S make perl zip mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer mingw-w64-x86_64-nsis
-    - name: configure
-      run: msys2do ./config.sh windows
-    - name: info_64
-      if: false
-      run: msys2do ls -l /mingw64/bin
-    - name: update makefile
-      run: msys2do ./GNUify
-    - name: make
-      run: msys2do make CC=x86_64-w64-mingw32-gcc
-    - name: Upload binary
-      uses: actions/upload-artifact@v1
-      with:
-        name: Windows Binary
-        path: brillion.exe
-    - name: make installer
-      run: msys2do make CC=x86_64-w64-mingw32-gcc installer
-    - name: Failure info
-      if: failure()
-      run: msys2do ls -l 
-    - name: Create zip
-      run: msys2do zip -r Brillion-${{steps.date.outputs.date}}.zip brillion.exe *.dll Original
-    - name: Upload zip
-      uses: actions/upload-artifact@v1
-      with:
-        name: Windows Archive
-        path: Brillion-${{steps.date.outputs.date}}.zip
-    - name: Upload installer
-      uses: actions/upload-artifact@v1
-      with:
-        name: Windows Installer
-        path: Brillion-Setup-${{steps.date.outputs.date}}.exe
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: autobuild-${{ steps.date.outputs.date }}
-#        tag_commitish: ${{ github.sha }}
-        release_name: Release ${{ steps.date.outputs.date }}
-        draft: false
-        prerelease: false
-    - name: Upload Release Asset
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./Brillion-Setup-${{steps.date.outputs.date}}.exe
-        asset_name: Brillion-Setup-${{steps.date.outputs.date}}.exe
-        asset_content_type: application/zip
+#  build:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        os: [ubuntu-latest]
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: depends
+#      run: sudo apt-get install -y libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev
+#    - name: configure
+#      run: ./config.sh
+#    - name: update makefile
+#      run: ./GNUify
+#    - name: make
+#      run: make
+#    - name: Upload binary
+#      uses: actions/upload-artifact@v1
+#      with:
+#        name: Ubuntu binary
+#        path: brillion
+#    - name: Create zip
+#      run: zip -r Brillion-${{steps.date.outputs.date}}-Linux.zip brillion Original
+#    - name: Upload zip
+#      uses: actions/upload-artifact@v1
+#      with:
+#        name: Linux Archive
+#        path: Brillion-${{steps.date.outputs.date}}-Linux.zip
+#  win-build:
+#    runs-on: windows-latest
+#    steps:
+#    - name: Get current date
+#      id: date
+#      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+#    - uses: numworks/setup-msys2@v1
+#    - uses: actions/checkout@v2
+##    - name: update
+##      run: msys2do pacman -Syu --noconfirm --noprogressbar
+#    - name: depends
+#      run: msys2do pacman --noconfirm --noprogressbar -S make perl zip mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer mingw-w64-x86_64-nsis
+#    - name: configure
+#      run: msys2do ./config.sh windows
+#    - name: info_64
+#      if: false
+#      run: msys2do ls -l /mingw64/bin
+#    - name: update makefile
+#      run: msys2do ./GNUify
+#    - name: make
+#      run: msys2do make CC=x86_64-w64-mingw32-gcc
+#    - name: Upload binary
+#      uses: actions/upload-artifact@v1
+#      with:
+#        name: Windows Binary
+#        path: brillion.exe
+#    - name: make installer
+#      run: msys2do make CC=x86_64-w64-mingw32-gcc installer
+#    - name: Failure info
+#      if: failure()
+#      run: msys2do ls -l 
+#    - name: Create zip
+#      run: msys2do zip -r Brillion-${{steps.date.outputs.date}}.zip brillion.exe *.dll Original
+#    - name: Upload zip
+#      uses: actions/upload-artifact@v1
+#      with:
+#        name: Windows Archive
+#        path: Brillion-${{steps.date.outputs.date}}.zip
+#    - name: Upload installer
+#      uses: actions/upload-artifact@v1
+#      with:
+#        name: Windows Installer
+#        path: Brillion-Setup-${{steps.date.outputs.date}}.exe
+#    - name: Create Release
+#      id: create_release
+#      uses: actions/create-release@v1
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        tag_name: autobuild-${{ steps.date.outputs.date }}
+##        tag_commitish: ${{ github.sha }}
+#        release_name: Release ${{ steps.date.outputs.date }}
+#        draft: false
+#        prerelease: false
+#    - name: Upload Release Asset
+#      id: upload-release-asset 
+#      uses: actions/upload-release-asset@v1
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        upload_url: ${{ steps.create_release.outputs.upload_url }}
+#        asset_path: ./Brillion-Setup-${{steps.date.outputs.date}}.exe
+#        asset_name: Brillion-Setup-${{steps.date.outputs.date}}.exe
+#        asset_content_type: application/zip
   win-build32:
     runs-on: windows-latest
     steps:
@@ -108,15 +108,20 @@ jobs:
     - uses: actions/checkout@v2
     - name: depends
       run: msys2do pacman --noconfirm --noprogressbar -S make perl zip mingw-w64-i686-gcc mingw-w64-i686-SDL_image mingw-w64-i686-SDL_mixer mingw-w64-i686-nsis
+    - name: info_64
+      run: msys2do ls -l /mingw64/bin
+    - name: info_32
+      run: msys2do ls -l /mingw32/bin
     - name: configure
       run: msys2do ./config.sh windows
-    - name: info_64
-      if: false
-      run: msys2do ls -l /mingw64/bin
+      env:
+        MSYS2_PATH_TYPE: inherit
     - name: update makefile
       run: msys2do ./GNUify
     - name: make
       run: msys2do make CC=i686-w64-mingw32-gcc
+      env:
+        MSYS2_PATH_TYPE: inherit
     - name: Upload binary
       uses: actions/upload-artifact@v1
       with:
@@ -146,7 +151,7 @@ jobs:
       id: date
       run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
     - name: install wix
-      run: choco install wix
+      run: choco install wixtoolset
     - uses: numworks/setup-msys2@v1
     - uses: actions/checkout@v2
     - name: depends
