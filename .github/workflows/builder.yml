@@ -96,50 +96,50 @@ jobs:
 #        asset_path: ./Brillion-Setup-${{steps.date.outputs.date}}.exe
 #        asset_name: Brillion-Setup-${{steps.date.outputs.date}}.exe
 #        asset_content_type: application/zip
-  win-build32:
-    runs-on: windows-latest
-    steps:
-    - name: Get current date
-      id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-    - uses: numworks/setup-msys2@v1
-      with:
-        msystem: MINGW32
-    - uses: actions/checkout@v2
-    - name: depends
-      run: msys2do pacman --noconfirm --noprogressbar -S make perl zip mingw-w64-i686-gcc mingw-w64-i686-SDL_image mingw-w64-i686-SDL_mixer mingw-w64-i686-nsis
-    - name: info_64
-      run: msys2do ls -l /mingw64/bin
-    - name: info_32
-      run: msys2do ls -l /mingw32/bin
-    - name: configure
-      run: msys2do ./config.sh windows
-    - name: update makefile
-      run: msys2do ./GNUify
-    - name: make
-      run: msys2do make CC=i686-w64-mingw32-gcc
-    - name: Upload binary
-      uses: actions/upload-artifact@v1
-      with:
-        name: Windows Binary
-        path: brillion.exe
-    - name: make installer
-      run: msys2do make CC=i686-w64-mingw32-gcc DLLDIR=/mingw32/bin installer
-    - name: Failure info
-      if: failure()
-      run: msys2do ls -l 
-    - name: Create zip
-      run: msys2do zip -r Brillion-${{steps.date.outputs.date}}-32bit.zip brillion.exe *.dll Original
-    - name: Upload zip
-      uses: actions/upload-artifact@v1
-      with:
-        name: Windows 32bit Archive
-        path: Brillion-${{steps.date.outputs.date}}-32bit.zip
-    - name: Upload installer
-      uses: actions/upload-artifact@v1
-      with:
-        name: Windows 32bit Installer
-        path: Brillion-Setup-${{steps.date.outputs.date}}.exe
+#  win-build32:
+#    runs-on: windows-latest
+#    steps:
+#    - name: Get current date
+#      id: date
+#      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+#    - uses: numworks/setup-msys2@v1
+#      with:
+#        msystem: MINGW32
+#    - uses: actions/checkout@v2
+#    - name: depends
+#      run: msys2do pacman --noconfirm --noprogressbar -S make perl zip mingw-w64-i686-gcc mingw-w64-i686-SDL_image mingw-w64-i686-SDL_mixer mingw-w64-i686-nsis
+#    - name: info_64
+#      run: msys2do ls -l /mingw64/bin
+#    - name: info_32
+#      run: msys2do ls -l /mingw32/bin
+#    - name: configure
+#      run: msys2do ./config.sh windows
+#    - name: update makefile
+#      run: msys2do ./GNUify
+#    - name: make
+#      run: msys2do make CC=i686-w64-mingw32-gcc
+#    - name: Upload binary
+#      uses: actions/upload-artifact@v1
+#      with:
+#        name: Windows Binary
+#        path: brillion.exe
+#    - name: make installer
+#      run: msys2do make CC=i686-w64-mingw32-gcc DLLDIR=/mingw32/bin installer
+#    - name: Failure info
+#      if: failure()
+#      run: msys2do ls -l 
+#    - name: Create zip
+#      run: msys2do zip -r Brillion-${{steps.date.outputs.date}}-32bit.zip brillion.exe *.dll Original
+#    - name: Upload zip
+#      uses: actions/upload-artifact@v1
+#      with:
+#        name: Windows 32bit Archive
+#        path: Brillion-${{steps.date.outputs.date}}-32bit.zip
+#    - name: Upload installer
+#      uses: actions/upload-artifact@v1
+#      with:
+#        name: Windows 32bit Installer
+#        path: Brillion-Setup-${{steps.date.outputs.date}}.exe
   win-msi:
     runs-on: windows-latest
     steps:
@@ -149,26 +149,18 @@ jobs:
     - name: install wix
       run: choco install wixtoolset
     - name: findme
-      run: msys2do ls -l /c/ProgramData
-    - name: compile installer
-      run: msys2do env
-      env:
-        MSYS2_PATH_TYPE: inherit
-        PATH: C:\ProgramData\Wix\bin
-    - name: compile installer
-      run: candle brillion.wxs
-      env:
-        PATH: C:\ProgramData\Wix\bin
-    - name: link installer
-      run: msys2do light brillion.wixobj
-      env:
-        MSYS2_PATH_TYPE: inherit
+      run: dir C:\ProgramData
     - uses: numworks/setup-msys2@v1
     - uses: actions/checkout@v2
     - name: depends
       run: msys2do pacman --noconfirm --noprogressbar -S make perl zip mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer
     - name: env
-      run: env
+      run: msys2do env
+    - name: env2
+      run: msys2do env
+      env:
+        MSYS2_PATH_TYPE: inherit
+        PATH: C:\ProgramData\Wix\bin
     - name: configure
       run: msys2do ./config.sh windows
     - name: info_64
@@ -178,6 +170,14 @@ jobs:
       run: msys2do ./GNUify
     - name: make
       run: msys2do make CC=x86_64-w64-mingw32-gcc
+    - name: compile installer
+      run: candle brillion.wxs
+      env:
+        PATH: C:\ProgramData\Wix\bin
+    - name: link installer
+      run: msys2do light brillion.wixobj
+      env:
+        MSYS2_PATH_TYPE: inherit
     - name: Upload installer
       uses: actions/upload-artifact@v1
       with:
