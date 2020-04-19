@@ -104,7 +104,7 @@ installer: getlibs release clean $(PRG)
 	strip brillion.exe
 	echo Bscores 42>Original/Scores
 	echo score Sec 72241 1559345943 596>>Original/Scores
-	perl -p -e s/%VER%/$(DATE)/ brillion.nsi>now.nsi
+	./mknsi.pl brillion.nsi>now.nsi
 	makensis now.nsi
 	rm -f now.nsi
 
