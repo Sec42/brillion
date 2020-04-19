@@ -167,7 +167,7 @@ jobs:
       run: msys2do env
       env:
         MSYS2_PATH_TYPE: inherit
-        PATH: "C:\Program Files (x86)\WiX Toolset v3.11\bin"
+        PATH: "C:\\Program Files (x86)\\WiX Toolset v3.11\\bin"
     - name: configure
       run: msys2do ./config.sh windows
     - name: info_64
@@ -181,12 +181,12 @@ jobs:
       run: candle brillion.wxs
       env:
         MSYS2_PATH_TYPE: inherit
-        PATH: "C:\Program Files (x86)\WiX Toolset v3.11\bin"
+        PATH: "C:\\Program Files (x86)\\WiX Toolset v3.11\\bin"
     - name: link installer
       run: msys2do light brillion.wixobj
       env:
         MSYS2_PATH_TYPE: inherit
-        PATH: "C:\Program Files (x86)\WiX Toolset v3.11\bin"
+        PATH: "C:\\Program Files (x86)\\WiX Toolset v3.11\\bin"
     - name: Upload installer
       uses: actions/upload-artifact@v1
       with:
