@@ -104,7 +104,7 @@ jobs:
       run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
     - uses: numworks/setup-msys2@v1
       with:
-        msystem: MING32
+        msystem: MINGW32
     - uses: actions/checkout@v2
     - name: depends
       run: msys2do pacman --noconfirm --noprogressbar -S make perl zip mingw-w64-i686-gcc mingw-w64-i686-SDL_image mingw-w64-i686-SDL_mixer mingw-w64-i686-nsis
@@ -156,6 +156,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: depends
       run: msys2do pacman --noconfirm --noprogressbar -S make perl zip mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer
+    - name: env
+      run: env
+    - name: findme
+      run: msys2do ls -l /c/
     - name: configure
       run: msys2do ./config.sh windows
     - name: info_64
@@ -167,8 +171,12 @@ jobs:
       run: msys2do make CC=x86_64-w64-mingw32-gcc
     - name: compile installer
       run: msys2do candle brillion.wxs
+      env:
+        MSYS2_PATH_TYPE: inherit
     - name: link installer
       run: msys2do light brillion.wixobj
+      env:
+        MSYS2_PATH_TYPE: inherit
     - name: Upload installer
       uses: actions/upload-artifact@v1
       with:
