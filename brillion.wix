@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<?define ProductVersion = "0.0.1"?>
+<?define ProductUpgradeCode = "c40f8c19-41d5-4f10-9df6-b5f2417a57db"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+   <Product Id="*" UpgradeCode="$(var.ProductUpgradeCode)" 
+
+            Name="Brillion" Version="$(var.ProductVersion)" Manufacturer="Sec" Language="1033">
+      <Package InstallerVersion="200" Compressed="yes" Comments="Windows Installer Package"/>
+      <Media Id="1" Cabinet="product.cab" EmbedCab="yes"/>
+      <Icon Id="ProductIcon" SourceFile="brillion.ico"/>
+      <Property Id="ARPPRODUCTICON" Value="ProductIcon"/>
+      <Property Id="ARPHELPLINK" Value="https://github.com/Sec42/brillion"/>
+      <Property Id="ARPURLINFOABOUT" Value="https://github.com/Sec42/brillion"/>
+      <Property Id="ARPNOREPAIR" Value="1"/>
+      <Property Id="ARPNOMODIFY" Value="1"/>
+      <Upgrade Id="$(var.ProductUpgradeCode)">
+         <UpgradeVersion Minimum="$(var.ProductVersion)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED"/>
+         <UpgradeVersion Minimum="0.0.0" Maximum="$(var.ProductVersion)" IncludeMinimum="yes" IncludeMaximum="no" 
+
+                         Property="OLDERVERSIONBEINGUPGRADED"/>
+      </Upgrade>
+      <Condition Message="A newer version of this software is already installed.">NOT NEWERVERSIONDETECTED</Condition>
+
+      <Directory Id="TARGETDIR" Name="SourceDir">
+         <Directory Id="ProgramFilesFolder">
+            <Directory Id="INSTALLDIR" Name="Brillion">
+               <Component Id="ApplicationFiles" Guid="0e6b0f62-21b9-4d8d-bd70-a44c5a9a9a15">
+                  <File Id="ApplicationFile1" Source="brillion.exe" KeyPath="yes" Checksum="yes"/>
+               </Component>
+               <Directory Id="OriginalLevels" Name="Original">
+                   <Component Id="LevelSet" Guid="02977774-27c4-47b2-a1e6-4dca447bcbea">
+                      <File Id="Settings" Source="Settings" KeyPath="yes"/>
+
+                      <File Id="Level01" Source="o-01.lvl"/>
+                      <File Id="Level01" Source="o-01.lvl"/>
+                      <File Id="Level02" Source="o-02.lvl"/>
+                      <File Id="Level03" Source="o-03.lvl"/>
+                      <File Id="Level04" Source="o-04.lvl"/>
+                      <File Id="Level05" Source="o-05.lvl"/>
+                      <File Id="Level06" Source="o-06.lvl"/>
+                      <File Id="Level07" Source="o-07.lvl"/>
+                      <File Id="Level08" Source="o-08.lvl"/>
+                      <File Id="Level09" Source="o-09.lvl"/>
+                      <File Id="Level10" Source="o-10.lvl"/>
+                      <File Id="Level11" Source="o-11.lvl"/>
+                      <File Id="Level12" Source="o-12.lvl"/>
+                      <File Id="Level13" Source="o-13.lvl"/>
+                      <File Id="Level14" Source="o-14.lvl"/>
+                      <File Id="Level15" Source="o-15.lvl"/>
+                      <File Id="Level16" Source="o-16.lvl"/>
+                      <File Id="Level17" Source="o-17.lvl"/>
+                      <File Id="Level18" Source="o-18.lvl"/>
+                      <File Id="Level19" Source="o-19.lvl"/>
+                      <File Id="Level20" Source="o-20.lvl"/>
+                      <File Id="Level21" Source="o-21.lvl"/>
+                      <File Id="Level22" Source="o-22.lvl"/>
+                      <File Id="Level23" Source="o-23.lvl"/>
+                      <File Id="Level24" Source="o-24.lvl"/>
+                      <File Id="Level25" Source="o-25.lvl"/>
+
+                      <File Id="Title" Source="title.png"/>
+                      <File Id="Bkg" Source="bkg.png"/>
+                      <File Id="Scores" Source="scores.png"/>
+
+                      <File Id="Numbers" Source="numbers.png"/>
+                      <File Id="Font" Source="font.png"/>
+
+                      <File Id="Star" Source="star_blue.gif"/>
+                      <File Id="Space" Source="space.gif"/>
+                      <File Id="Disk" Source="disk_blue.gif"/>
+                      <File Id="Death" Source="death.gif"/>
+                      <File Id="BlockX" Source="blockX.gif"/>
+                      <File Id="Block" Source="block_blue.gif"/>
+                      <File Id="BallX" Source="ballX.gif"/>
+                      <File Id="Ball" Source="ball_grey.gif"/>
+                      <File Id="Wall" Source="wall.gif"/>
+
+                      <File Id="SndBlock" Source="block.wav"/>
+                      <File Id="SndDeath" Source="death.wav"/>
+                      <File Id="SndLevel" Source="level.wav"/>
+                      <File Id="SndStar" Source="star.wav"/>
+                      <File Id="SndWall" Source="wall.wav"/>
+                      <File Id="SndDisk" Source="disk.wav"/>
+                   </Component>
+                   <Component Id="Scores" Guid="0e55603d-6bf5-4884-871b-ef66d6e6cdcb" NeverOverwrite="yes">
+                      <File Id="Scores" Source="Scores" KeyPath="yes"/>
+                   </Component>
+               </Directory>
+            </Directory>
+         </Directory>
+
+         <Directory Id="ProgramMenuFolder">
+            <Directory Id="ProgramMenuSubfolder" Name="Brillion">
+               <Component Id="ApplicationShortcuts" Guid="cf8fa1f3-200f-4686-b121-7530e33dcd78">
+                  <Shortcut Id="ApplicationShortcut1" Name="Brillion" Description="Play Brillion" 
+
+                            Target="[INSTALLDIR]brillion.exe" WorkingDirectory="INSTALLDIR"/>
+                  <RegistryValue Root="HKCU" Key="Software\Sec\Brillion" 
+
+                            Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+                  <RemoveFolder Id="ProgramMenuSubfolder" On="uninstall"/>
+               </Component>
+            </Directory>
+         </Directory>
+      </Directory>
+
+      <InstallExecuteSequence>
+         <RemoveExistingProducts After="InstallValidate"/>
+      </InstallExecuteSequence>
+
+      <Feature Id="DefaultFeature" Level="1">
+         <ComponentRef Id="ApplicationFiles"/>
+         <ComponentRef Id="ApplicationShortcuts"/>
+      </Feature>
+   </Product>
+</Wix>
