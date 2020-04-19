@@ -114,21 +114,17 @@ jobs:
       run: msys2do ls -l /mingw32/bin
     - name: configure
       run: msys2do ./config.sh windows
-      env:
-        MSYS2_PATH_TYPE: inherit
     - name: update makefile
       run: msys2do ./GNUify
     - name: make
       run: msys2do make CC=i686-w64-mingw32-gcc
-      env:
-        MSYS2_PATH_TYPE: inherit
     - name: Upload binary
       uses: actions/upload-artifact@v1
       with:
         name: Windows Binary
         path: brillion.exe
     - name: make installer
-      run: msys2do make CC=i686-w64-mingw32-gcc installer
+      run: msys2do make CC=i686-w64-mingw32-gcc DLLDIR=/mingw32/bin installer
     - name: Failure info
       if: failure()
       run: msys2do ls -l 
@@ -152,14 +148,27 @@ jobs:
       run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
     - name: install wix
       run: choco install wixtoolset
+    - name: findme
+      run: msys2do ls -l /c/ProgramData
+    - name: compile installer
+      run: msys2do env
+      env:
+        MSYS2_PATH_TYPE: inherit
+        PATH: C:\ProgramData\Wix\bin
+    - name: compile installer
+      run: candle brillion.wxs
+      env:
+        PATH: C:\ProgramData\Wix\bin
+    - name: link installer
+      run: msys2do light brillion.wixobj
+      env:
+        MSYS2_PATH_TYPE: inherit
     - uses: numworks/setup-msys2@v1
     - uses: actions/checkout@v2
     - name: depends
       run: msys2do pacman --noconfirm --noprogressbar -S make perl zip mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer
     - name: env
       run: env
-    - name: findme
-      run: msys2do ls -l /c/
     - name: configure
       run: msys2do ./config.sh windows
     - name: info_64
@@ -169,14 +178,6 @@ jobs:
       run: msys2do ./GNUify
     - name: make
       run: msys2do make CC=x86_64-w64-mingw32-gcc
-    - name: compile installer
-      run: msys2do candle brillion.wxs
-      env:
-        MSYS2_PATH_TYPE: inherit
-    - name: link installer
-      run: msys2do light brillion.wixobj
-      env:
-        MSYS2_PATH_TYPE: inherit
     - name: Upload installer
       uses: actions/upload-artifact@v1
       with:
