@@ -32,7 +32,6 @@
                       <File Id="Settings" Source="Settings" KeyPath="yes"/>
 
                       <File Id="Level01" Source="o-01.lvl"/>
-                      <File Id="Level01" Source="o-01.lvl"/>
                       <File Id="Level02" Source="o-02.lvl"/>
                       <File Id="Level03" Source="o-03.lvl"/>
                       <File Id="Level04" Source="o-04.lvl"/>
@@ -58,9 +57,9 @@
                       <File Id="Level24" Source="o-24.lvl"/>
                       <File Id="Level25" Source="o-25.lvl"/>
 
-                      <File Id="Title" Source="title.png"/>
-                      <File Id="Bkg" Source="bkg.png"/>
-                      <File Id="Scores" Source="scores.png"/>
+                      <File Id="BkgTitle" Source="title.png"/>
+                      <File Id="BkgLevel" Source="bkg.png"/>
+                      <File Id="BkgScores" Source="scores.png"/>
 
                       <File Id="Numbers" Source="numbers.png"/>
                       <File Id="Font" Source="font.png"/>
@@ -82,7 +81,7 @@
                       <File Id="SndWall" Source="wall.wav"/>
                       <File Id="SndDisk" Source="disk.wav"/>
                    </Component>
-                   <Component Id="Scores" Guid="0e55603d-6bf5-4884-871b-ef66d6e6cdcb" NeverOverwrite="yes">
+                   <Component Id="ScoresFile" Guid="0e55603d-6bf5-4884-871b-ef66d6e6cdcb" NeverOverwrite="yes">
                       <File Id="Scores" Source="Scores" KeyPath="yes"/>
                    </Component>
                </Directory>
