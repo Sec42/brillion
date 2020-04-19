@@ -149,18 +149,16 @@ jobs:
     - name: install wix
       run: choco install wixtoolset
     - name: findme
-      run: dir "C:\Program Files"
+      run: dir "C:\Program Files (x86)\WiX Toolset v3.11\bin"
     - name: findme2
-      run: dir "C:\Program Files (x86)"
-    - name: findme3
-      run: dir C:\
+      run: dir "C:\Program Files (x86)\bin"
+    - uses: numworks/setup-msys2@v1
+    - uses: actions/checkout@v2
     - name: get shortsha
       id: vars
       run: echo ::set-output name=sha_short::$(git rev-parse --short=4 ${{ github.sha }})
     - name: Show output
       run: echo "${{steps.date.outputs.sha_short}}"
-    - uses: numworks/setup-msys2@v1
-    - uses: actions/checkout@v2
     - name: depends
       run: msys2do pacman --noconfirm --noprogressbar -S make perl zip mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL_image mingw-w64-x86_64-SDL_mixer
     - name: env
@@ -169,7 +167,7 @@ jobs:
       run: msys2do env
       env:
         MSYS2_PATH_TYPE: inherit
-        PATH: C:\ProgramData\chocolatey\Wix\bin
+        PATH: "C:\Program Files (x86)\WiX Toolset v3.11\bin"
     - name: configure
       run: msys2do ./config.sh windows
     - name: info_64
@@ -182,11 +180,13 @@ jobs:
     - name: compile installer
       run: candle brillion.wxs
       env:
-        PATH: C:\ProgramData\Wix\bin
+        MSYS2_PATH_TYPE: inherit
+        PATH: "C:\Program Files (x86)\WiX Toolset v3.11\bin"
     - name: link installer
       run: msys2do light brillion.wixobj
       env:
         MSYS2_PATH_TYPE: inherit
+        PATH: "C:\Program Files (x86)\WiX Toolset v3.11\bin"
     - name: Upload installer
       uses: actions/upload-artifact@v1
       with:
